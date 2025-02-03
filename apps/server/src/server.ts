@@ -8,8 +8,23 @@ import { Feed } from "./schema";
 import { PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
 
+type Handler = (url: string) => Promise<Feed>;
+
+function getHandler(feed: PrismaFeed): Handler {
+  const url = new URL(feed.url);
+  switch (url.hostname) {
+    case "www.youtube.com":
+      return youtube;
+    case "www.patreon.com":
+      return patreon;
+    default:
+      return rss;
+  }
+}
+
 async function refreshFeed(feed: PrismaFeed) {
-  const items = await rss(feed.url);
+  const handler = getHandler(feed);
+  const items = await handler(feed.url);
 
   // TODO: fix this lol
   await db.feedItem.deleteMany({
@@ -60,20 +75,9 @@ const rpc = router({
     return db.feed.findMany({ select: { id: true, url: true } });
   }),
 
-  demo: proc.query(async () => {
-    const feeds = await Promise.all([
-      rss("https://www.kickscondor.com/rss.xml"),
-      rss("https://brr.fyi/feed.xml"),
-      youtube("https://www.youtube.com/contrapoints"),
-      patreon("https://www.patreon.com/contrapoints"),
-      patreon("https://www.patreon.com/chapotraphouse"),
-      rss("https://blog.archive.org/feed/"),
-    ]);
-
-    const items = feeds.flat();
-    return items.sort((a, b) => {
-      if (!a.timestamp || !b.timestamp) return 0; // TODO: ignore i guess? lol, or have 'first seen'
-      return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
+  wall: proc.query(async () => {
+    return db.feedItem.findMany({
+      orderBy: { timestamp: "desc" },
     });
   }),
 });
@@ -84,7 +88,7 @@ app.use("/rpc", createExpressMiddleware({ router: rpc }));
 export default app;
 export type RPC = typeof rpc;
 
-async function rss(url: string): Promise<Feed> {
+const rss: Handler = async (url: string) => {
   const rss = new RSS();
   const { items } = await rss.parseURL(url); // TODO: get/write a parser that includes images
   return items.map((item) => {
@@ -96,9 +100,9 @@ async function rss(url: string): Promise<Feed> {
       timestamp: Date.parse(item.isoDate!),
     };
   });
-}
+};
 
-async function youtube(url: string): Promise<Feed> {
+const youtube: Handler = async (url: string) => {
   const res = await fetch(url);
   const body = await res.text();
 
@@ -116,7 +120,7 @@ async function youtube(url: string): Promise<Feed> {
       timestamp: Date.parse(item.isoDate!),
     };
   });
-}
+};
 
 type PatreonPostsResponse = {
   data: {
@@ -139,7 +143,7 @@ type PatreonPostsResponse = {
   }[];
 };
 
-async function patreon(url: string): Promise<Feed> {
+const patreon: Handler = async (url: string) => {
   const ires = await fetch(url);
   const itext = await ires.text();
   const $ = cheerio.load(itext);
@@ -166,4 +170,4 @@ async function patreon(url: string): Promise<Feed> {
         timestamp: Date.parse(item.attributes.published_at),
       };
     });
-}
+};

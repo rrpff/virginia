@@ -28,7 +28,7 @@ export default function App() {
 
 function HomePage() {
   const feeds = rpc.feeds.useQuery();
-  const feed = rpc.demo.useQuery();
+  const wall = rpc.wall.useQuery();
   const addFeed = rpc.addFeed.useMutation();
   const refresh = rpc.refresh.useMutation();
 
@@ -37,11 +37,11 @@ function HomePage() {
     async (e: FormEvent) => {
       e.preventDefault();
 
-      const res = await addFeed.mutateAsync({ url: url.trim() });
-      console.log(res);
+      await addFeed.mutateAsync({ url: url.trim() });
       setUrl("");
+      feeds.refetch();
     },
-    [addFeed, url]
+    [addFeed, feeds, url]
   );
 
   return (
@@ -80,9 +80,9 @@ function HomePage() {
       </section>
 
       <article className="p-4 pt-2">
-        {feed.isLoading && <span>loading...</span>}
+        {wall.isLoading && <span>loading...</span>}
         <ul className="flex flex-col gap-4">
-          {feed.data?.map((item) => (
+          {wall.data?.map((item) => (
             <li key={item.url} className="max-w-120">
               <a href={item.url} className="block visited:text-purple-400">
                 <span className="font-black font-serif text-lg">
