@@ -1,13 +1,14 @@
 {
   "name": "virginia",
   "scripts": {
-    "build": "run-s 'build -w packages/core' 'build -w apps/server'",
-    "dev": "run-p 'dev -w apps/server' 'dev -w packages/core'",
+    "build": "run-s 'build -w packages/core' 'build -w apps/server' 'build -w apps/web'",
+    "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core'",
     "start": "run-p 'start -w apps/server'"
   },
   "workspaces": [
     "apps/server",
     "apps/tray",
+    "apps/web",
     "packages/core",
     "packages/tsconfig"
   ],
