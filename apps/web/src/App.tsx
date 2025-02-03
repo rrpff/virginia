@@ -64,7 +64,11 @@ function HomePage() {
   return (
     <main className="flex flex-row">
       <header className="flex flex-col gap-4 p-4">
-        <div className="font-black font-serif">Virginia</div>
+        <div className="text-3xl">
+          <span className="flex items-center justify-center w-8 h-8 font-black font-serif text-3xl bg-black text-white">
+            V
+          </span>
+        </div>
         <section>
           <span className="font-bold">feeds</span>
           <ul>
