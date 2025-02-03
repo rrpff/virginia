@@ -15,22 +15,16 @@ type FeedItem = {
 };
 
 app.get("/", async (req, res) => {
-  const kicks = await rss("https://www.kickscondor.com/rss.xml");
-  const brr = await rss("https://brr.fyi/feed.xml");
-  const contraYT = await youtube("https://www.youtube.com/contrapoints");
-  const contraPatreon = await patreon("https://www.patreon.com/contrapoints");
-  const chapo = await patreon("https://www.patreon.com/chapotraphouse");
-  const archive = await rss("https://blog.archive.org/feed/");
+  const feeds = await Promise.all([
+    rss("https://www.kickscondor.com/rss.xml"),
+    rss("https://brr.fyi/feed.xml"),
+    youtube("https://www.youtube.com/contrapoints"),
+    patreon("https://www.patreon.com/contrapoints"),
+    patreon("https://www.patreon.com/chapotraphouse"),
+    rss("https://blog.archive.org/feed/"),
+  ]);
 
-  const items = [
-    ...kicks,
-    ...brr,
-    ...contraYT,
-    ...contraPatreon,
-    ...chapo,
-    ...archive,
-  ];
-
+  const items = feeds.flat();
   const feed = items.sort((a, b) => {
     if (!a.timestamp || !b.timestamp) return 0; // TODO: ignore i guess? lol, or have 'first seen'
     return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
