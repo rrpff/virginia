@@ -4252,6 +4252,7 @@ dependencies = [
 name = "tray"
 version = "0.1.0"
 dependencies = [
+ "open",
  "serde",
  "serde_json",
  "tauri",
