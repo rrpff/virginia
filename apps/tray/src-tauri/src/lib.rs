@@ -12,6 +12,9 @@ pub fn run() {
             let item_quit = MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?;
             let menu = Menu::with_items(app, &[&item_open, &item_quit])?;
 
+            // #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             TrayIconBuilder::new()
                 .menu(&menu)
                 .show_menu_on_left_click(true)
