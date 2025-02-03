@@ -1,5 +1,21 @@
 {
   "name": "@virginia/core",
   "version": "0.0.1",
-  "types": "./types.ts"
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "scripts": {
+    "build": "run-p build:*",
+    "build:js": "swc src -d dist -C module.type=commonjs",
+    "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
+    "dev": "run-p dev:*",
+    "dev:js": "npm run build:js -- --watch",
+    "dev:types": "npm run build:types -- --watch --preserveWatchOutput"
+  },
+  "devDependencies": {
+    "@swc/cli": "^0.6.0",
+    "@swc/core": "^1.10.12",
+    "@virginia/tsconfig": "*",
+    "chokidar": "^4.0.3",
+    "npm-run-all": "^4.1.5"
+  }
 }
