@@ -25,7 +25,7 @@ pub fn run() {
         })
         .on_menu_event(|app, event| match event.id.as_ref() {
             "open" => {
-                open::that("https://bsky.app").unwrap_or_else(|error| {
+                open::that("http://localhost:26540").unwrap_or_else(|error| {
                     println!("error when opening URL {:?}", error);
                 });
             }
