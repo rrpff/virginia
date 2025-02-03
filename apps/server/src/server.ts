@@ -76,19 +76,23 @@ const rpc = router({
   }),
 
   wall: proc
-    .input(z.object({ search: z.string().optional() }))
-    .query(async ({ input: { search } }) => {
-      const query: Prisma.FeedItemWhereInput = search
-        ? {
-            title: {
-              contains: search,
-            },
-          }
-        : {};
+    // TODO: better cursor type
+    .input(
+      z.object({
+        cursor: z.string().optional(),
+        search: z.string().optional(),
+      })
+    )
+    .query(async ({ input: { cursor, search } }) => {
+      const query: Prisma.FeedItemWhereInput = {};
+      if (search) query.title = { contains: search };
 
       return db.feedItem.findMany({
-        orderBy: { timestamp: "desc" },
+        orderBy: [{ timestamp: "desc" }, { url: "desc" }],
+        cursor: cursor ? { id: cursor } : undefined,
         where: query,
+        skip: cursor ? 1 : 0,
+        take: 20,
       });
     }),
 });

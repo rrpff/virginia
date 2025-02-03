@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useState } from "react";
+import { FormEvent, Fragment, useCallback, useState } from "react";
 import { rpc } from "./rpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
@@ -31,7 +31,15 @@ function HomePage() {
   // TODO: debounce
 
   const feeds = rpc.feeds.useQuery();
-  const wall = rpc.wall.useQuery({ search });
+  const wall = rpc.wall.useInfiniteQuery(
+    { search },
+    {
+      getNextPageParam: (last) => {
+        if (last.length < 20) return null; // TODO: magic number
+        return last[last.length - 1].id;
+      },
+    }
+  );
   const addFeed = rpc.addFeed.useMutation();
   const refresh = rpc.refresh.useMutation();
 
@@ -93,17 +101,31 @@ function HomePage() {
         />
         {wall.isLoading && <span>loading...</span>}
         <ul className="flex flex-col gap-4">
-          {wall.data?.map((item) => (
-            <li key={item.url} className="max-w-120">
-              <a href={item.url} className="block visited:text-purple-400">
-                <span className="font-black font-serif text-lg">
-                  {item.title}
-                </span>
-                <span className="line-clamp-3">{item.description}</span>
-              </a>
-            </li>
+          {wall.data?.pages.map((page) => (
+            <Fragment>
+              {page.map((item) => (
+                <li key={item.url} className="max-w-120">
+                  <a href={item.url} className="block visited:text-purple-400">
+                    <span className="font-black font-serif text-lg">
+                      {item.title}
+                    </span>
+                    <span className="line-clamp-3">{item.description}</span>
+                  </a>
+                </li>
+              ))}
+            </Fragment>
           ))}
         </ul>
+        {wall.hasNextPage ? (
+          <button
+            className="bg-black p-1 px-2 text-white"
+            onClick={() => wall.fetchNextPage()}
+          >
+            more
+          </button>
+        ) : (
+          <span>🏝️ You're at the end. Take it easy.</span>
+        )}
       </article>
     </main>
   );
