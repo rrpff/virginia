@@ -10,10 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@trpc/client": "^10.45.2",
+    "@trpc/server": "^10.45.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@virginia/server": "*",
     "@eslint/js": "^9.17.0",
     "@tailwindcss/vite": "^4.0.3",
     "@types/react": "^18.3.18",

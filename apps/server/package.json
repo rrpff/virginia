@@ -1,17 +1,26 @@
 {
   "name": "@virginia/server",
+  "types": "./dist/src/index.d.ts",
   "scripts": {
-    "build": "swc src -d dist -C module.type=commonjs",
-    "dev": "tsx watch ./src/index.ts",
+    "build": "run-p build:*",
+    "build:js": "swc src -d dist -C module.type=commonjs",
+    "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
+    "dev": "run-p dev:*",
+    "dev:watch": "tsx watch ./src/index.ts",
+    "dev:types": "npm run build:types -- --watch --preserveWatchOutput",
     "start": "node ./dist/src/index.js"
   },
   "dependencies": {
+    "@trpc/server": "^10.45.2",
     "@virginia/core": "*",
     "cheerio": "^1.0.0",
+    "cors": "^2.8.5",
     "express": "^4.21.2",
-    "rss-parser": "^3.13.0"
+    "rss-parser": "^3.13.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
     "@virginia/tsconfig": "*",

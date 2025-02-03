@@ -1,37 +1,37 @@
 import express from "express";
 import RSS from "rss-parser";
 import * as cheerio from "cheerio";
+import cors from "cors";
+import { proc, router } from "./rpc";
+import { createExpressMiddleware } from "@trpc/server/adapters/express";
+import { Feed } from "./schema";
 
 const app = express();
-export default app;
 
-type Feed = FeedItem[];
-type FeedItem = {
-  url: string;
-  title: string;
-  description: string;
-  image_url?: string;
-  timestamp: number;
-};
+const rpc = router({
+  feeds: proc.query(async () => {
+    const feeds = await Promise.all([
+      rss("https://www.kickscondor.com/rss.xml"),
+      rss("https://brr.fyi/feed.xml"),
+      youtube("https://www.youtube.com/contrapoints"),
+      patreon("https://www.patreon.com/contrapoints"),
+      patreon("https://www.patreon.com/chapotraphouse"),
+      rss("https://blog.archive.org/feed/"),
+    ]);
 
-app.get("/", async (req, res) => {
-  const feeds = await Promise.all([
-    rss("https://www.kickscondor.com/rss.xml"),
-    rss("https://brr.fyi/feed.xml"),
-    youtube("https://www.youtube.com/contrapoints"),
-    patreon("https://www.patreon.com/contrapoints"),
-    patreon("https://www.patreon.com/chapotraphouse"),
-    rss("https://blog.archive.org/feed/"),
-  ]);
-
-  const items = feeds.flat();
-  const feed = items.sort((a, b) => {
-    if (!a.timestamp || !b.timestamp) return 0; // TODO: ignore i guess? lol, or have 'first seen'
-    return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
-  });
-
-  res.json(feed);
+    const items = feeds.flat();
+    return items.sort((a, b) => {
+      if (!a.timestamp || !b.timestamp) return 0; // TODO: ignore i guess? lol, or have 'first seen'
+      return a.timestamp > b.timestamp ? -1 : a.timestamp < b.timestamp ? 1 : 0;
+    });
+  }),
 });
+
+app.use(cors());
+app.use("/rpc", createExpressMiddleware({ router: rpc }));
+
+export default app;
+export type RPC = typeof rpc;
 
 async function rss(url: string): Promise<Feed> {
   const rss = new RSS();
