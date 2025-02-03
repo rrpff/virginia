@@ -72,28 +72,42 @@ const rpc = router({
   }),
 
   feeds: proc.query(async () => {
-    return db.feed.findMany({ select: { id: true, url: true } });
+    const feedOrders = await db.feedItem.groupBy({
+      by: ["feedId"],
+      _max: {
+        timestamp: true,
+      },
+    });
+
+    const feeds = await db.feed.findMany({
+      include: { items: { orderBy: { timestamp: "desc" }, take: 5 } },
+    });
+
+    return feeds
+      .map((feed) => {
+        const latest = feedOrders.find((f) => f.feedId === feed.id);
+        return { ...feed, latest: latest?._max.timestamp };
+      })
+      .sort((a, b) => {
+        if (!a.latest || !b.latest) return 0;
+        return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
+      });
   }),
 
-  wall: proc
-    // TODO: better cursor type
+  items: proc
     .input(
       z.object({
+        feedId: z.string(),
         cursor: z.string().optional(),
-        search: z.string().optional(),
       })
     )
-    .query(async ({ input: { cursor, search } }) => {
-      const query: Prisma.FeedItemWhereInput = {};
-      if (search) query.title = { contains: search };
-
+    .query(async ({ input: { feedId, cursor } }) => {
       return db.feedItem.findMany({
         orderBy: [{ timestamp: "desc" }, { url: "desc" }],
         cursor: cursor ? { id: cursor } : undefined,
-        include: { feed: { select: { url: true } } },
-        where: query,
+        where: { feedId },
         skip: cursor ? 1 : 0,
-        take: 20,
+        take: 5,
       });
     }),
 });
