@@ -10,17 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query": "^4.36.1",
     "@trpc/client": "^10.45.2",
+    "@trpc/react-query": "^10.45.2",
     "@trpc/server": "^10.45.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@virginia/server": "*",
     "@eslint/js": "^9.17.0",
     "@tailwindcss/vite": "^4.0.3",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
+    "@virginia/server": "*",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "eslint": "^9.17.0",
     "eslint-plugin-react-hooks": "^5.0.0",
