@@ -27,8 +27,10 @@ export default function App() {
 }
 
 function HomePage() {
+  const feeds = rpc.feeds.useQuery();
   const feed = rpc.demo.useQuery();
   const addFeed = rpc.addFeed.useMutation();
+  const refresh = rpc.refresh.useMutation();
 
   const [url, setUrl] = useState("");
   const submit = useCallback(
@@ -60,6 +62,22 @@ function HomePage() {
           </div>
         </form>
       </header>
+
+      <section className="p-4">
+        <span>feeds</span>
+        <ul>
+          {feeds.data?.map((feed) => (
+            <li key={feed.id}>{feed.url}</li>
+          ))}
+        </ul>
+        <button
+          className="mt-2 bg-black p-1 px-2 text-white"
+          disabled={refresh.isLoading}
+          onClick={() => refresh.mutate()}
+        >
+          {refresh.isLoading ? "refreshing..." : "refresh feeds"}
+        </button>
+      </section>
 
       <article className="p-4 pt-2">
         {feed.isLoading && <span>loading...</span>}

@@ -5,8 +5,39 @@ import cors from "cors";
 import { proc, router } from "./rpc";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { Feed } from "./schema";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
+
+async function refreshFeed(feed: PrismaFeed) {
+  const items = await rss(feed.url);
+
+  // TODO: fix this lol
+  await db.feedItem.deleteMany({
+    where: { feedId: feed.id, url: { in: items.map((i) => i.url) } },
+  });
+
+  await db.feedItem.createMany({
+    data: items.map((item) => {
+      return {
+        feedId: feed.id,
+        url: item.url,
+        title: item.title,
+        description: item.description,
+        imageUrl: item.image_url,
+        timestamp: new Date(item.timestamp),
+      };
+    }),
+  });
+}
+
+async function refresh() {
+  const feeds = await db.feed.findMany();
+  await Promise.all(
+    feeds.map((feed) => {
+      return refreshFeed(feed);
+    })
+  );
+}
 
 const app = express();
 const db = new PrismaClient();
@@ -20,6 +51,14 @@ const rpc = router({
         },
       });
     }),
+
+  refresh: proc.mutation(async () => {
+    await refresh();
+  }),
+
+  feeds: proc.query(async () => {
+    return db.feed.findMany({ select: { id: true, url: true } });
+  }),
 
   demo: proc.query(async () => {
     const feeds = await Promise.all([

@@ -13,13 +13,18 @@ datasource db {
 model Feed {
   id  String @id @default(uuid())
   url String
+
+  items FeedItem[]
 }
 
 model FeedItem {
   id          String   @id @default(uuid())
+  feedId      String
   url         String
   title       String
   description String?
-  image_url   String?
+  imageUrl    String?
   timestamp   DateTime
+
+  feed Feed @relation(fields: [feedId], references: [id])
 }
