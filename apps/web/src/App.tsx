@@ -27,8 +27,11 @@ export default function App() {
 }
 
 function HomePage() {
+  const [search, setSearch] = useState("");
+  // TODO: debounce
+
   const feeds = rpc.feeds.useQuery();
-  const wall = rpc.wall.useQuery();
+  const wall = rpc.wall.useQuery({ search });
   const addFeed = rpc.addFeed.useMutation();
   const refresh = rpc.refresh.useMutation();
 
@@ -80,6 +83,14 @@ function HomePage() {
       </section>
 
       <article className="p-4 pt-2">
+        <span>latest</span>
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.currentTarget.value)}
+          className="bg-white border border-black p-1 px-2"
+          placeholder="Search"
+        />
         {wall.isLoading && <span>loading...</span>}
         <ul className="flex flex-col gap-4">
           {wall.data?.map((item) => (

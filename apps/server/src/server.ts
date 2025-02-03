@@ -5,7 +5,7 @@ import cors from "cors";
 import { proc, router } from "./rpc";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { Feed } from "./schema";
-import { PrismaClient, Feed as PrismaFeed } from "@prisma/client";
+import { Prisma, PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
 
 type Handler = (url: string) => Promise<Feed>;
@@ -75,11 +75,22 @@ const rpc = router({
     return db.feed.findMany({ select: { id: true, url: true } });
   }),
 
-  wall: proc.query(async () => {
-    return db.feedItem.findMany({
-      orderBy: { timestamp: "desc" },
-    });
-  }),
+  wall: proc
+    .input(z.object({ search: z.string().optional() }))
+    .query(async ({ input: { search } }) => {
+      const query: Prisma.FeedItemWhereInput = search
+        ? {
+            title: {
+              contains: search,
+            },
+          }
+        : {};
+
+      return db.feedItem.findMany({
+        orderBy: { timestamp: "desc" },
+        where: query,
+      });
+    }),
 });
 
 app.use(cors());
