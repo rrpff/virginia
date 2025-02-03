@@ -11,6 +11,7 @@
     "start": "node ./dist/src/index.js"
   },
   "dependencies": {
+    "@prisma/client": "^6.3.0",
     "@trpc/server": "^10.45.2",
     "@virginia/core": "*",
     "cheerio": "^1.0.0",
@@ -24,6 +25,7 @@
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
     "@virginia/tsconfig": "*",
+    "prisma": "^6.3.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }

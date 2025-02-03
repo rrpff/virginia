@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { rpc } from "./rpc";
 import { Feed } from "@virginia/server";
 
@@ -6,18 +6,39 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [feed, setFeed] = useState<Feed>([]);
 
+  const [url, setUrl] = useState("");
+
   useEffect(() => {
-    rpc.feeds.query().then((items) => {
+    rpc.demo.query().then((items) => {
       console.log(items);
       setFeed(items);
       setLoading(false);
     });
   }, []);
 
+  const submit = useCallback(
+    async (e: FormEvent) => {
+      e.preventDefault();
+      if (!url.trim()) return;
+
+      console.log(await rpc.addFeed.mutate({ url: url.trim() }));
+      setUrl("");
+    },
+    [url]
+  );
+
   return (
     <main>
       <header className="p-4 pb-2">
-        <span>Virginia</span>
+        <div>Virginia</div>
+        <form onSubmit={submit}>
+          <input
+            type="text"
+            value={url}
+            onChange={(e) => setUrl(e.currentTarget.value)}
+          />
+          <button>add</button>
+        </form>
       </header>
 
       <article className="p-4 pt-2">

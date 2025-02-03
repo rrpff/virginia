@@ -5,11 +5,23 @@ import cors from "cors";
 import { proc, router } from "./rpc";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { Feed } from "./schema";
+import { PrismaClient } from "@prisma/client";
+import z from "zod";
 
 const app = express();
-
+const db = new PrismaClient();
 const rpc = router({
-  feeds: proc.query(async () => {
+  addFeed: proc
+    .input(z.object({ url: z.string().url() }))
+    .mutation(async ({ input: { url } }) => {
+      return await db.feed.create({
+        data: {
+          url,
+        },
+      });
+    }),
+
+  demo: proc.query(async () => {
     const feeds = await Promise.all([
       rss("https://www.kickscondor.com/rss.xml"),
       rss("https://brr.fyi/feed.xml"),
