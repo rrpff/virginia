@@ -62,47 +62,52 @@ function HomePage() {
   }, [feeds, refresh]);
 
   return (
-    <main>
-      <header className="p-4 pb-2">
-        <div className="pb-4 font-black font-serif">Virginia</div>
-        <form onSubmit={submit} className="flex flex-row items-center gap-2">
-          <input
-            type="text"
-            className="bg-white border border-black p-1 px-2"
-            placeholder="Feed URL"
-            value={url}
-            onChange={(e) => setUrl(e.currentTarget.value)}
-          />
-          <button className="bg-black p-1 px-2 text-white">add</button>
-          <div className="text-red-500">
-            {addFeed.error && "Something bad went wrong"}
-          </div>
-        </form>
+    <main className="flex flex-row">
+      <header className="flex flex-col gap-4 p-4">
+        <div className="font-black font-serif">Virginia</div>
+        <section>
+          <span className="font-bold">feeds</span>
+          <ul>
+            {feeds.data?.map((feed) => (
+              <li key={feed.id}>{feed.url}</li>
+            ))}
+          </ul>
+        </section>
+        <section>
+          <span className="font-bold">add a feed</span>
+          <form onSubmit={submit} className="flex flex-row items-center gap-2">
+            <input
+              type="text"
+              className="bg-white border border-black p-1 px-2"
+              placeholder="Feed URL"
+              value={url}
+              onChange={(e) => setUrl(e.currentTarget.value)}
+            />
+            <button className="bg-black p-1 px-2 text-white">add</button>
+            <div className="text-red-500">
+              {addFeed.error && "Something bad went wrong"}
+            </div>
+          </form>
+        </section>
+        <section>
+          <span className="font-bold">refresh feeds</span>
+          <button
+            className="block bg-black p-1 px-2 text-white"
+            disabled={refresh.isLoading}
+            onClick={() => reload()}
+          >
+            {refresh.isLoading ? "refreshing..." : "do it!"}
+          </button>
+        </section>
       </header>
 
-      <section className="p-4">
-        <span>feeds</span>
-        <ul>
-          {feeds.data?.map((feed) => (
-            <li key={feed.id}>{feed.url}</li>
-          ))}
-        </ul>
-        <button
-          className="mt-2 bg-black p-1 px-2 text-white"
-          disabled={refresh.isLoading}
-          onClick={() => reload()}
-        >
-          {refresh.isLoading ? "refreshing..." : "refresh feeds"}
-        </button>
-      </section>
-
       <article className="p-4 pt-2">
-        <span>latest</span>
+        <span className="block font-bold">latest</span>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.currentTarget.value)}
-          className="bg-white border border-black p-1 px-2"
+          className="bg-white border border-black p-1 px-2 mb-4"
           placeholder="Search"
         />
         {wall.isLoading && <span>loading...</span>}
@@ -128,10 +133,10 @@ function HomePage() {
         </ul>
         {wall.hasNextPage ? (
           <button
-            className="bg-black p-1 px-2 text-white"
+            className="bg-black p-1 px-2 text-white mt-4"
             onClick={() => wall.fetchNextPage()}
           >
-            more
+            load more
           </button>
         ) : (
           <span>🏝️ You're at the end. Take it easy.</span>
