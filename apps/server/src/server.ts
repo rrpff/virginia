@@ -90,6 +90,7 @@ const rpc = router({
       return db.feedItem.findMany({
         orderBy: [{ timestamp: "desc" }, { url: "desc" }],
         cursor: cursor ? { id: cursor } : undefined,
+        include: { feed: { select: { url: true } } },
         where: query,
         skip: cursor ? 1 : 0,
         take: 20,

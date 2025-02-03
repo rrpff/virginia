@@ -105,7 +105,11 @@ function HomePage() {
             <Fragment>
               {page.map((item) => (
                 <li key={item.url} className="max-w-120">
-                  <a href={item.url} className="block visited:text-purple-400">
+                  <a
+                    href={item.url}
+                    className="flex flex-col visited:text-purple-400"
+                  >
+                    <span>{formatURL(item.feed.url)}</span>
                     <span className="font-black font-serif text-lg">
                       {item.title}
                     </span>
@@ -129,4 +133,9 @@ function HomePage() {
       </article>
     </main>
   );
+}
+
+function formatURL(url: string) {
+  const uri = new URL(url);
+  return uri.host.replace("www.", "") + uri.pathname;
 }
