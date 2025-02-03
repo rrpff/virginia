@@ -1,3 +1,13 @@
 {
-  "name": "virginia"
+  "name": "virginia",
+  "scripts": {
+    "dev": "run-p 'dev -w apps/server'"
+  },
+  "workspaces": [
+    "apps/server",
+    "packages/core"
+  ],
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
 }
