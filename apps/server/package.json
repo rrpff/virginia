@@ -7,12 +7,14 @@
   },
   "dependencies": {
     "@virginia/core": "*",
-    "express": "^4.21.2"
+    "cheerio": "^1.0.0",
+    "express": "^4.21.2",
+    "rss-parser": "^3.13.0"
   },
   "devDependencies": {
-    "@virginia/tsconfig": "*",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
+    "@virginia/tsconfig": "*",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3"
   }
