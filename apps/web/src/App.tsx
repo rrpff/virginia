@@ -15,17 +15,24 @@ export default function App() {
   }, []);
 
   return (
-    <div className="bg-yellow-50 text-red-400">
-      <div>Virginia</div>
-      {loading && <span>loading...</span>}
-      <div>
-        {feed.map((item) => (
-          <div key={item.url}>
-            {item.title}
-            {item.description}
-          </div>
-        ))}
-      </div>
-    </div>
+    <main>
+      <header className="p-4 pb-2">
+        <span>Virginia</span>
+      </header>
+
+      <article className="p-4 pt-2">
+        {loading && <span>loading...</span>}
+        <ul className="flex flex-col gap-4">
+          {feed.map((item) => (
+            <li key={item.url} className="max-w-120">
+              <a href={item.url} className="block visited:text-purple-400">
+                <span className="font-bold text-lg">{item.title}</span>
+                <span className="line-clamp-3">{item.description}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </article>
+    </main>
   );
 }
