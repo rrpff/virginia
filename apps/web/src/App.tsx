@@ -50,10 +50,16 @@ function HomePage() {
 
       await addFeed.mutateAsync({ url: url.trim() });
       setUrl("");
-      feeds.refetch();
+
+      await feeds.refetch();
     },
     [addFeed, feeds, url]
   );
+
+  const reload = useCallback(async () => {
+    await refresh.mutateAsync();
+    await feeds.refetch();
+  }, [feeds, refresh]);
 
   return (
     <main>
@@ -84,7 +90,7 @@ function HomePage() {
         <button
           className="mt-2 bg-black p-1 px-2 text-white"
           disabled={refresh.isLoading}
-          onClick={() => refresh.mutate()}
+          onClick={() => reload()}
         >
           {refresh.isLoading ? "refreshing..." : "refresh feeds"}
         </button>
