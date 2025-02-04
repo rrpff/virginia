@@ -80,7 +80,7 @@ const rpc = router({
     });
 
     const feeds = await db.feed.findMany({
-      include: { items: { orderBy: { timestamp: "desc" }, take: 5 } },
+      include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
     });
 
     return feeds

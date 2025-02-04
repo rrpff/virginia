@@ -1,15 +1,10 @@
-import {
-  ComponentProps,
-  FormEvent,
-  Fragment,
-  useCallback,
-  useState,
-} from "react";
+import { FormEvent, Fragment, useCallback, useState } from "react";
 import { rpc, RpcOutputs } from "./rpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import TimeAgo from "./components/TimeAgo";
 import classNames from "classnames";
+import { WEEK } from "./utils/time";
 
 const host = `http://${window.location.hostname}:26541`;
 
@@ -91,10 +86,10 @@ function HomePage() {
       </header>
 
       <article className="p-4 pt-2">
-        <span className="block font-bold">
+        <span className="block font-bold pb-4">
           latest {feeds.isLoading && "(loading...)"}
         </span>
-        <ul className="flex flex-col gap-4">
+        <ul className="flex flex-col gap-8">
           {feeds.data?.map((feed) => (
             <Feed key={feed.url} feed={feed} />
           ))}
@@ -118,7 +113,7 @@ function Feed({ feed }: { feed: FeedWithItems }) {
       initialCursor: feed.items[feed.items.length - 1].id,
       staleTime: 30_000, // see: https://github.com/TanStack/query/discussions/1648
       getNextPageParam: (last) => {
-        if (last.length < 5) return null; // TODO: magic number
+        if (last.length < 3) return null; // TODO: magic number
         return last[last.length - 1].id;
       },
     }
@@ -126,10 +121,7 @@ function Feed({ feed }: { feed: FeedWithItems }) {
 
   return (
     <li className="max-w-120">
-      <span>
-        {formatURL(feed.url)}{" "}
-        <TimeBadge className="text-sm" time={feed.latest} />
-      </span>
+      <span className="flex items-center gap-2">{formatURL(feed.url)}</span>
       <ul className="flex flex-col gap-0.5">
         {items.data?.pages.map((page, idx) => (
           <Fragment key={idx}>
@@ -137,12 +129,12 @@ function Feed({ feed }: { feed: FeedWithItems }) {
               <a
                 key={item.url}
                 href={item.url}
-                className="flex flex-row text-xs items-center"
+                className="flex flex-row text-xs items-center group"
               >
-                <span className="font-bold font-sans line-clamp-1">
+                <span className="font-bold font-sans line-clamp-1 group-hover:underline">
                   {item.title}
                 </span>
-                <TimeBadge className="text-sm scale-75" time={item.timestamp} />
+                <TimeBadge time={item.timestamp} />
               </a>
             ))}
           </Fragment>
@@ -150,7 +142,12 @@ function Feed({ feed }: { feed: FeedWithItems }) {
       </ul>
 
       {items.hasNextPage && (
-        <button onClick={() => items.fetchNextPage()}>more</button>
+        <button
+          className="cursor-pointer bg-gray-50 text-sm pb-2 px-2 rounded-sm"
+          onClick={() => items.fetchNextPage()}
+        >
+          &hellip;
+        </button>
       )}
     </li>
   );
@@ -161,22 +158,15 @@ function formatURL(url: string) {
   return uri.host.replace("www.", "") + uri.pathname;
 }
 
-function TimeBadge({
-  time,
-  ...props
-}: ComponentProps<"span"> & { time?: number | null | string }) {
+function TimeBadge({ time }: { time?: number | null | string }) {
   if (!time) return;
 
   const timeF = typeof time === "string" ? Date.parse(time) : time;
   return (
     <span
-      {...props}
       className={classNames(
-        "px-1.5 py-1 rounded-md",
-        Date.now() - timeF < 86_400_000
-          ? "bg-green-600 text-white"
-          : " bg-gray-200",
-        props.className
+        "px-2 py-1 rounded-sm text-xs scale-75",
+        Date.now() - timeF < WEEK ? "bg-green-600 text-white" : " bg-gray-200"
       )}
     >
       <TimeAgo time={timeF} />
