@@ -27,7 +27,7 @@ export default function HomePage() {
   if (!categories.data || !feeds.data) return;
 
   return (
-    <main className="flex flex-row gap-18">
+    <main className="flex flex-row gap-36">
       <header className="flex flex-col items-center gap-4">
         <CategoryLink
           icon="🌍"
