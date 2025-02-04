@@ -4,6 +4,7 @@ import TimeAgo from "../components/TimeAgo";
 import { rpc, RpcOutputs } from "../rpc";
 import { WEEK } from "../utils/time";
 import { Link } from "wouter";
+import { LuPlus, LuRefreshCw } from "react-icons/lu";
 
 export default function HomePage() {
   const feeds = rpc.feeds.useQuery();
@@ -17,27 +18,32 @@ export default function HomePage() {
   if (!feeds.isFetched) return;
 
   return (
-    <main className="flex flex-row gap-12">
-      <header className="flex flex-col gap-4 w-32">
-        <div className="text-3xl">✌️</div>
+    <main className="flex flex-row gap-18">
+      <header className="flex flex-col items-center gap-4">
+        <div className="text-2xl">✌️</div>
         <section className="flex flex-col gap-1">
           <button
-            className="v-button"
+            className="v-button bg-background! text-foreground! text-lg aspect-square"
             disabled={refresh.isLoading}
             onClick={() => reload()}
           >
-            {refresh.isLoading ? "Refreshing..." : "Refresh"}
+            <LuRefreshCw
+              style={{
+                transition: "transform 0.4s",
+                animation: refresh.isLoading ? "spin 1s infinite" : "",
+              }}
+            />
           </button>
-          <Link className="v-button text-center" href="/add">
-            Add
+          <Link
+            className="v-button bg-background! text-foreground! flex items-center text-xl aspect-square"
+            href="/add"
+          >
+            <LuPlus />
           </Link>
         </section>
       </header>
 
-      <article>
-        <span className="block font-bold pb-4">
-          latest {feeds.isLoading && "(loading...)"}
-        </span>
+      <article className="py-1">
         <ul className="flex flex-col gap-8">
           {feeds.data?.map((feed) => (
             <Feed key={feed.url} feed={feed} />
@@ -69,7 +75,7 @@ function Feed({ feed }: { feed: FeedWithItems }) {
   );
 
   return (
-    <li className="max-w-120 flex flex-row">
+    <li className="max-w-180 flex flex-row">
       <div className="shrink-0 px-2">
         {<img src={feed.iconUrl ?? ""} className="v-icon" />}
       </div>

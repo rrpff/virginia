@@ -25,3 +25,21 @@
   @apply absolute top-0 left-0 w-full h-full;
   @apply content-[''];
 }
+
+@keyframes spin {
+  0% {
+    rotate: 0deg;
+  }
+
+  25% {
+    rotate: 90deg;
+  }
+
+  50% {
+    rotate: 180deg;
+  }
+
+  75% {
+    rotate: 270deg;
+  }
+}

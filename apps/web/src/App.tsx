@@ -23,7 +23,7 @@ export default function App() {
   return (
     <rpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <main className="p-4">
+        <main className="p-8">
           <Router>
             <Switch>
               <Route path="/" component={HomePage} />
