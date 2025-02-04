@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, Fragment } from "react";
+import { useCallback, useState, useMemo } from "react";
 import TimeAgo from "../components/TimeAgo";
 import { rpc, RpcOutputs } from "../rpc";
 import { WEEK } from "../utils/time";
@@ -73,23 +73,37 @@ export default function HomePage() {
 
 type FeedWithItems = RpcOutputs["feeds"][number];
 function Feed({ feed }: { feed: FeedWithItems }) {
-  const items = rpc.items.useInfiniteQuery(
+  const [enabled, setEnabled] = useState(false);
+  const additionalItems = rpc.items.useInfiniteQuery(
     {
       feedId: feed.id,
     },
     {
-      initialData: {
-        pages: [feed.items],
-        pageParams: [],
-      },
       initialCursor: feed.items[feed.items.length - 1]?.id,
-      staleTime: 30_000, // see: https://github.com/TanStack/query/discussions/1648 // TODO: refocus breaks this, fix
+      enabled: enabled,
       getNextPageParam: (last) => {
         if (last.length < 3) return null; // TODO: magic number
         return last[last.length - 1].id;
       },
     }
   );
+
+  const items = useMemo(() => {
+    return [...feed.items, ...(additionalItems.data?.pages ?? [])].flat();
+  }, [feed.items, additionalItems.data?.pages]);
+
+  const shouldShowMore = useMemo(() => {
+    // `hasNextPage` is `undefined` while loading. Assume there's more until it's explicitly false.
+    return !enabled || additionalItems.hasNextPage !== false;
+  }, [enabled, additionalItems.hasNextPage]);
+
+  const showMore = useCallback(() => {
+    if (enabled) {
+      setEnabled(true); // Make first additional query
+    } else {
+      additionalItems.fetchNextPage(); // Load more
+    }
+  }, [additionalItems, enabled]);
 
   return (
     <li className="max-w-180 flex flex-row">
@@ -110,28 +124,24 @@ function Feed({ feed }: { feed: FeedWithItems }) {
           )}
         </span>
         <ul className="flex flex-col gap-0.5">
-          {items.data?.pages.map((page, idx) => (
-            <Fragment key={idx}>
-              {page.map((item, idx) => (
-                <a
-                  key={idx}
-                  href={item.url}
-                  className="flex flex-row text-xs items-center group"
-                >
-                  <span className="font-bold font-sans line-clamp-1 group-hover:underline">
-                    {item.title}
-                  </span>
-                  <TimeBadge time={item.timestamp} />
-                </a>
-              ))}
-            </Fragment>
+          {items.map((item, idx) => (
+            <a
+              key={idx}
+              href={item.url}
+              className="flex flex-row text-xs items-center group"
+            >
+              <span className="font-bold font-sans line-clamp-1 group-hover:underline">
+                {item.title}
+              </span>
+              <TimeBadge time={item.timestamp} />
+            </a>
           ))}
         </ul>
 
-        {items.hasNextPage && (
+        {shouldShowMore && (
           <button
             className="cursor-pointer bg-white/50 text-foreground text-sm pb-2 px-2 rounded-sm"
-            onClick={() => items.fetchNextPage()}
+            onClick={showMore}
           >
             &hellip;
           </button>
