@@ -2,12 +2,13 @@ import express from "express";
 import cors from "cors";
 import { proc, router } from "./rpc";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { PrismaClient, Feed as PrismaFeed } from "@prisma/client";
+import { Feed, PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
 import { Adapter } from "./adapters";
 import { RSSAdapter } from "./adapters/rss";
 import { PatreonAdapter } from "./adapters/patreon";
 import { YoutubeAdapter } from "./adapters/youtube";
+import { FeedItem } from "./schema";
 
 const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
 
@@ -22,23 +23,38 @@ async function refreshFeed(feed: PrismaFeed) {
   const site = await adapter.site(feed.url); // TODO: not every time lol
   const items = await adapter.feed(feed.url);
 
-  await db.feed.update({
-    where: { id: feed.id },
-    data: {
-      name: site.name,
-      iconUrl: site.icon_url,
-    },
-  });
+  return {
+    site,
+    items,
+  };
+}
 
-  // TODO: fix this lol
-  await db.feedItem.deleteMany({
-    where: { feedId: feed.id, url: { in: items.map((i) => i.url) } },
-  });
+async function refresh() {
+  const feeds = await db.feed.findMany();
+  const updates = await Promise.all(
+    feeds.map(async (feed) => {
+      const { site, items } = await refreshFeed(feed);
+      return { site, items, feed };
+    })
+  );
 
+  const allItems: (FeedItem & { feed: Feed })[] = [];
+  for (const { site, items, feed } of updates) {
+    allItems.push(...items.map((item) => ({ ...item, feed })));
+    await db.feed.update({
+      where: { id: feed.id },
+      data: {
+        name: site.name,
+        iconUrl: site.icon_url,
+      },
+    });
+  }
+
+  await db.feedItem.deleteMany();
   await db.feedItem.createMany({
-    data: items.map((item) => {
+    data: allItems.map((item) => {
       return {
-        feedId: feed.id,
+        feedId: item.feed.id,
         url: item.url,
         title: item.title,
         description: item.description,
@@ -47,15 +63,6 @@ async function refreshFeed(feed: PrismaFeed) {
       };
     }),
   });
-}
-
-async function refresh() {
-  const feeds = await db.feed.findMany();
-  await Promise.all(
-    feeds.map((feed) => {
-      return refreshFeed(feed);
-    })
-  );
 }
 
 const app = express();
