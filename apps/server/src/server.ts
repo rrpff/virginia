@@ -104,7 +104,7 @@ const rpc = router({
   categories: proc.query(async () => {
     const feeds = await db.feed.findMany();
     const feedCategories = feeds.flatMap((f) =>
-      f.categories.split(" ").map((c) => c.trim())
+      !f.categories ? [] : f.categories.split(" ").map((c) => c.trim())
     );
     const categories: Record<string, number> = {};
     for (const category of feedCategories) {
