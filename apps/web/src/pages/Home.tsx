@@ -78,7 +78,9 @@ function Feed({ feed }: { feed: FeedWithItems }) {
           {feed.name ? (
             <span>
               {feed.name}{" "}
-              <small className="opacity-50">{formatURL(feed.url)}</small>
+              <a href={feed.url} className="opacity-50 hover:underline">
+                <small>{formatURL(feed.url)}</small>
+              </a>
             </span>
           ) : (
             formatURL(feed.url)
