@@ -121,6 +121,15 @@ const rpc = router({
     });
   }),
 
+  feed: proc
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input: { id } }) => {
+      return await db.feed.findFirst({
+        where: { id },
+        include: { items: { orderBy: { timestamp: "desc" } } },
+      });
+    }),
+
   feeds: proc
     .input(z.object({ category: z.string().optional() }))
     .query(async ({ input: { category } }) => {
@@ -148,23 +157,6 @@ const rpc = router({
           if (!a.latest || !b.latest) return 0;
           return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
         });
-    }),
-
-  items: proc
-    .input(
-      z.object({
-        feedId: z.string(),
-        cursor: z.string().optional(),
-      })
-    )
-    .query(async ({ input: { feedId, cursor } }) => {
-      return db.feedItem.findMany({
-        orderBy: [{ timestamp: "desc" }, { url: "desc" }],
-        cursor: cursor ? { id: cursor } : undefined,
-        where: { feedId },
-        skip: cursor ? 1 : 0,
-        take: 5,
-      });
     }),
 });
 
