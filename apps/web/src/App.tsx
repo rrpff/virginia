@@ -171,7 +171,7 @@ function Feed({ feed }: { feed: FeedWithItems }) {
 
 function formatURL(url: string) {
   const uri = new URL(url);
-  return uri.host.replace("www.", "") + uri.pathname;
+  return uri.host.replace("www.", "") + uri.pathname.replace(/\/$/, "");
 }
 
 function TimeBadge({ time }: { time?: number | null | string }) {

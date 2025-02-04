@@ -120,7 +120,15 @@ const rpc = router({
 });
 
 app.use(cors());
-app.use("/rpc", createExpressMiddleware({ router: rpc }));
+app.use(
+  "/rpc",
+  createExpressMiddleware({
+    router: rpc,
+    onError({ error }) {
+      console.error("Error:", error);
+    },
+  })
+);
 
 export default app;
 export type RPC = typeof rpc;
