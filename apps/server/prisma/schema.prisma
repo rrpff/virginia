@@ -14,6 +14,9 @@ model Feed {
   id  String @id @default(uuid())
   url String
 
+  name    String?
+  iconUrl String?
+
   items FeedItem[]
 }
 

@@ -76,11 +76,11 @@ function HomePage() {
         <section>
           <span className="block font-bold">refresh feeds</span>
           <button
-            className="v-button"
+            className="v-button w-full"
             disabled={refresh.isLoading}
             onClick={() => reload()}
           >
-            {refresh.isLoading ? "refreshing..." : "do it!"}
+            {refresh.isLoading ? "Refreshing..." : "Do it!"}
           </button>
         </section>
       </header>
@@ -120,35 +120,42 @@ function Feed({ feed }: { feed: FeedWithItems }) {
   );
 
   return (
-    <li className="max-w-120">
-      <span className="flex items-center gap-2">{formatURL(feed.url)}</span>
-      <ul className="flex flex-col gap-0.5">
-        {items.data?.pages.map((page, idx) => (
-          <Fragment key={idx}>
-            {page.map((item) => (
-              <a
-                key={item.url}
-                href={item.url}
-                className="flex flex-row text-xs items-center group"
-              >
-                <span className="font-bold font-sans line-clamp-1 group-hover:underline">
-                  {item.title}
-                </span>
-                <TimeBadge time={item.timestamp} />
-              </a>
-            ))}
-          </Fragment>
-        ))}
-      </ul>
+    <li className="max-w-120 flex flex-row">
+      <div className="shrink-0 py-1 px-2">
+        <img src={feed.iconUrl ?? ""} className="w-6 h-6" />
+      </div>
+      <div>
+        <span className="flex items-center gap-2">
+          {feed.name ?? formatURL(feed.url)}
+        </span>
+        <ul className="flex flex-col gap-0.5">
+          {items.data?.pages.map((page, idx) => (
+            <Fragment key={idx}>
+              {page.map((item) => (
+                <a
+                  key={item.url}
+                  href={item.url}
+                  className="flex flex-row text-xs items-center group"
+                >
+                  <span className="font-bold font-sans line-clamp-1 group-hover:underline">
+                    {item.title}
+                  </span>
+                  <TimeBadge time={item.timestamp} />
+                </a>
+              ))}
+            </Fragment>
+          ))}
+        </ul>
 
-      {items.hasNextPage && (
-        <button
-          className="cursor-pointer bg-white/50 text-foreground text-sm pb-2 px-2 rounded-sm"
-          onClick={() => items.fetchNextPage()}
-        >
-          &hellip;
-        </button>
-      )}
+        {items.hasNextPage && (
+          <button
+            className="cursor-pointer bg-white/50 text-foreground text-sm pb-2 px-2 rounded-sm"
+            onClick={() => items.fetchNextPage()}
+          >
+            &hellip;
+          </button>
+        )}
+      </div>
     </li>
   );
 }

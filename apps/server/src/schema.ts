@@ -1,5 +1,11 @@
 import z from "zod";
 
+export type Site = z.infer<typeof SiteSchema>;
+export const SiteSchema = z.object({
+  name: z.string().nullish(),
+  icon_url: z.string().url().nullish(),
+});
+
 export type FeedItem = z.infer<typeof FeedItemSchema>;
 export const FeedItemSchema = z.object({
   url: z.string().url(),
