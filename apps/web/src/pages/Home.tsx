@@ -1,27 +1,13 @@
 import classNames from "classnames";
-import { useState, useCallback, FormEvent, Fragment } from "react";
+import { useCallback, Fragment } from "react";
 import TimeAgo from "../components/TimeAgo";
 import { rpc, RpcOutputs } from "../rpc";
 import { WEEK } from "../utils/time";
+import { Link } from "wouter";
 
 export default function HomePage() {
   const feeds = rpc.feeds.useQuery();
-  const addFeed = rpc.addFeed.useMutation();
   const refresh = rpc.refresh.useMutation();
-
-  const [url, setUrl] = useState("");
-  const submit = useCallback(
-    async (e: FormEvent) => {
-      e.preventDefault();
-
-      await addFeed.mutateAsync({ url: url.trim() });
-      setUrl("");
-
-      await refresh.mutateAsync();
-      await feeds.refetch();
-    },
-    [addFeed, feeds, refresh, url]
-  );
 
   const reload = useCallback(async () => {
     await refresh.mutateAsync();
@@ -31,38 +17,24 @@ export default function HomePage() {
   if (!feeds.isFetched) return;
 
   return (
-    <main className="flex flex-row gap-4">
-      <header className="flex flex-col gap-4 p-4">
+    <main className="flex flex-row gap-12">
+      <header className="flex flex-col gap-4 w-32">
         <div className="text-3xl">✌️</div>
-        <section>
-          <span className="font-bold">add a feed</span>
-          <form onSubmit={submit} className="flex flex-col items-center gap-2">
-            <input
-              type="text"
-              className="bg-white border-2 rounded-sm border-foreground p-1 px-2"
-              placeholder="Feed URL"
-              value={url}
-              onChange={(e) => setUrl(e.currentTarget.value)}
-            />
-            <button className="v-button w-full">Add</button>
-            <div className="text-red-500 text-sm">
-              {addFeed.error && "Something bad went wrong"}
-            </div>
-          </form>
-        </section>
-        <section>
-          <span className="block font-bold">refresh feeds</span>
+        <section className="flex flex-col gap-1">
           <button
-            className="v-button w-full"
+            className="v-button"
             disabled={refresh.isLoading}
             onClick={() => reload()}
           >
-            {refresh.isLoading ? "Refreshing..." : "Do it!"}
+            {refresh.isLoading ? "Refreshing..." : "Refresh"}
           </button>
+          <Link className="v-button text-center" href="/add">
+            Add
+          </Link>
         </section>
       </header>
 
-      <article className="p-4">
+      <article>
         <span className="block font-bold pb-4">
           latest {feeds.isLoading && "(loading...)"}
         </span>

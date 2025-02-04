@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
 import HomePage from "./pages/Home";
 import { Route, Router, Switch } from "wouter";
+import AddFeedPage from "./pages/AddFeed";
 
 const host = `http://${window.location.hostname}:26541`;
 
@@ -22,17 +23,18 @@ export default function App() {
   return (
     <rpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <Router>
-          <Switch>
-            <Route path="/" component={HomePage} />
-            <Route>
-              <main className="p-4">
+        <main className="p-4">
+          <Router>
+            <Switch>
+              <Route path="/" component={HomePage} />
+              <Route path="/add" component={AddFeedPage} />
+              <Route>
                 <h1 className="font-bold">404</h1>
                 <p>Nothing here, friend</p>
-              </main>
-            </Route>
-          </Switch>
-        </Router>
+              </Route>
+            </Switch>
+          </Router>
+        </main>
       </QueryClientProvider>
     </rpc.Provider>
   );
