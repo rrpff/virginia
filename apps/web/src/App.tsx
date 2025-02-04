@@ -125,7 +125,7 @@ function Feed({ feed }: { feed: FeedWithItems }) {
         <img src={feed.iconUrl ?? ""} className="w-6 h-6" />
       </div>
       <div>
-        <span className="flex items-center gap-2">
+        <span className="flex items-center gap-2 font-bold">
           {feed.name ?? formatURL(feed.url)}
         </span>
         <ul className="flex flex-col gap-0.5">
