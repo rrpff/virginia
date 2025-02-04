@@ -70,14 +70,14 @@ function Feed({ feed }: { feed: FeedWithItems }) {
 
   return (
     <li className="max-w-120 flex flex-row">
-      <div className="shrink-0 py-1 px-2">
-        <img src={feed.iconUrl ?? ""} className="w-6 h-6" />
+      <div className="shrink-0 px-2">
+        {<img src={feed.iconUrl ?? ""} className="v-icon" />}
       </div>
       <div>
         <span className="flex items-center gap-2 font-bold">
           {feed.name ? (
-            <span>
-              {feed.name}{" "}
+            <span className="mb-1" style={{ lineHeight: "1em" }}>
+              <span>{feed.name}</span>{" "}
               <a href={feed.url} className="opacity-50 hover:underline">
                 <small>{formatURL(feed.url)}</small>
               </a>
