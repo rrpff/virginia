@@ -9,6 +9,7 @@ import { RSSAdapter } from "./adapters/rss";
 import { PatreonAdapter } from "./adapters/patreon";
 import { YoutubeAdapter } from "./adapters/youtube";
 import { FeedItem, Site } from "./schema";
+import { keys } from "../utils/objects";
 
 const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
 
@@ -94,31 +95,54 @@ const rpc = router({
     await refresh();
   }),
 
-  feeds: proc.query(async () => {
-    const feedOrders = await db.feedItem.groupBy({
-      by: ["feedId"],
-      _max: {
-        timestamp: true,
-      },
-    });
+  categories: proc.query(async () => {
+    const feeds = await db.feed.findMany();
+    const feedCategories = feeds.flatMap((f) =>
+      f.categories.split(" ").map((c) => c.trim())
+    );
+    const categories: Record<string, number> = {};
+    for (const category of feedCategories) {
+      categories[category] ||= 0;
+      categories[category] += 1;
+    }
 
-    const feeds = await db.feed.findMany({
-      include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
+    return keys(categories).sort((a, b) => {
+      return categories[a]! > categories[b]!
+        ? -1
+        : categories[b]! > categories[a]!
+        ? 1
+        : 0;
     });
-
-    return feeds
-      .map((feed) => {
-        const latest = feedOrders.find((f) => f.feedId === feed.id);
-        return {
-          ...feed,
-          latest: latest ? Number(latest._max.timestamp) : null,
-        };
-      })
-      .sort((a, b) => {
-        if (!a.latest || !b.latest) return 0;
-        return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
-      });
   }),
+
+  feeds: proc
+    .input(z.object({ category: z.string().optional() }))
+    .query(async ({ input: { category } }) => {
+      const feedOrders = await db.feedItem.groupBy({
+        by: ["feedId"],
+        _max: {
+          timestamp: true,
+        },
+      });
+
+      const feeds = await db.feed.findMany({
+        where: category ? { categories: { contains: category } } : {},
+        include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
+      });
+
+      return feeds
+        .map((feed) => {
+          const latest = feedOrders.find((f) => f.feedId === feed.id);
+          return {
+            ...feed,
+            latest: latest ? Number(latest._max.timestamp) : null,
+          };
+        })
+        .sort((a, b) => {
+          if (!a.latest || !b.latest) return 0;
+          return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
+        });
+    }),
 
   items: proc
     .input(

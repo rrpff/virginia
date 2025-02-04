@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useCallback, Fragment } from "react";
+import { useCallback, Fragment, useState, MouseEvent } from "react";
 import TimeAgo from "../components/TimeAgo";
 import { rpc, RpcOutputs } from "../rpc";
 import { WEEK } from "../utils/time";
@@ -7,21 +7,48 @@ import { Link } from "wouter";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
 
 export default function HomePage() {
-  const feeds = rpc.feeds.useQuery();
+  const [category, setCategory] = useState("🌍");
   const refresh = rpc.refresh.useMutation();
+  const categories = rpc.categories.useQuery();
+  const feeds = rpc.feeds.useQuery(
+    {
+      category: category === "🌍" ? undefined : category,
+    },
+    {
+      keepPreviousData: true,
+    }
+  );
 
   const reload = useCallback(async () => {
     await refresh.mutateAsync();
     await feeds.refetch();
   }, [feeds, refresh]);
 
-  if (!feeds.isFetched) return;
+  if (!categories.data || !feeds.data) return;
 
   return (
     <main className="flex flex-row gap-18">
       <header className="flex flex-col items-center gap-4">
-        <div className="text-2xl">✌️</div>
-        <section className="flex flex-col gap-1">
+        <CategoryLink
+          icon="🌍"
+          isActive={category === "🌍"}
+          onClick={(e) => {
+            e.preventDefault();
+            setCategory("🌍");
+          }}
+        />
+        {categories.data?.map((cat) => (
+          <CategoryLink
+            key={cat}
+            icon={cat}
+            isActive={category === cat}
+            onClick={(e) => {
+              e.preventDefault();
+              setCategory(cat);
+            }}
+          />
+        ))}
+        <section className="flex flex-col gap-1 mt-2">
           <button
             className="v-button bg-background! text-foreground! text-lg aspect-square"
             disabled={refresh.isLoading}
@@ -43,7 +70,7 @@ export default function HomePage() {
         </section>
       </header>
 
-      <article className="py-1">
+      <article className="py-3">
         <ul className="flex flex-col gap-8">
           {feeds.data?.map((feed) => (
             <Feed key={feed.url} feed={feed} />
@@ -144,5 +171,30 @@ function TimeBadge({ time }: { time?: number | null | string }) {
     >
       <TimeAgo time={timeF} />
     </span>
+  );
+}
+
+function CategoryLink({
+  icon,
+  isActive,
+  onClick,
+}: {
+  icon: string;
+  isActive: boolean;
+  onClick: (e: MouseEvent) => void;
+}) {
+  return (
+    <div className="relative mb-10">
+      <Link
+        href="/"
+        onClick={onClick}
+        className={classNames(
+          "text-2xl absolute -left-13 pl-10 pr-4 py-2 rounded-r-md",
+          isActive ? "bg-white" : "bg-background hover:bg-foreground/10"
+        )}
+      >
+        {icon}
+      </Link>
+    </div>
   );
 }

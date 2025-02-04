@@ -11,8 +11,9 @@ datasource db {
 }
 
 model Feed {
-  id  String @id @default(uuid())
-  url String
+  id         String @id @default(uuid())
+  url        String
+  categories String @default("") // space separated
 
   name    String?
   iconUrl String?
