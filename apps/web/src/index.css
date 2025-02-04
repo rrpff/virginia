@@ -1,1 +1,15 @@
 @import "tailwindcss";
+
+@theme {
+  --color-background: oklch(94.85% 0.0148 19.18148516721477);
+  --color-foreground: oklch(37.5% 0.0296 19.18148516721477);
+}
+
+:root {
+  @apply bg-background text-foreground;
+}
+
+.v-button {
+  @apply cursor-pointer p-1 px-2 rounded-sm;
+  @apply bg-foreground text-background;
+}
