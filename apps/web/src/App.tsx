@@ -2,7 +2,7 @@ import { useState } from "react";
 import { rpc } from "./rpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
-import HomePage from "./pages/Home";
+import CategoryPage from "./pages/Category";
 import { Route, Router, Switch } from "wouter";
 import AddFeedPage from "./pages/AddFeed";
 import NotFound from "./pages/NotFound";
@@ -33,8 +33,8 @@ export default function App() {
               <Switch>
                 <Route path="/feed/:id" component={FeedPage} />
                 <Route path="/add" component={AddFeedPage} />
-                <Route path="/:category" component={HomePage} />
-                <Route path="/" component={HomePage} />
+                <Route path="/:category" component={CategoryPage} />
+                <Route path="/" component={CategoryPage} />
                 <Route component={NotFound} />
               </Switch>
             </Router>

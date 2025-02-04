@@ -4,8 +4,7 @@ import { LuArrowRight } from "react-icons/lu";
 import Feed from "../components/Feed";
 import NotFound from "./NotFound";
 
-// TODO: rename to categorypage
-export default function HomePage() {
+export default function CategoryPage() {
   const { category } = useParams();
   const categories = rpc.categories.useQuery();
   const feeds = rpc.feeds.useQuery({ category }, { keepPreviousData: true });
