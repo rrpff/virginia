@@ -132,7 +132,7 @@ function TimeBadge({ time }: { time?: number | null | string }) {
       className={classNames(
         "px-2 py-1 rounded-sm text-xs scale-75 font-bold",
         Date.now() - timeF < WEEK
-          ? "bg-green-600 text-white"
+          ? "bg-foreground text-white"
           : " bg-white/70 text-foreground/70"
       )}
     >
