@@ -12,7 +12,7 @@ export const RSSAdapter: Adapter = {
     const res = await fetch(root);
     const html = await res.text();
     const data = await new RSS().parseURL(feedUrl);
-    const icon = getIcon(root, html);
+    const icon = data.image?.url ?? getIcon(root, html);
 
     return {
       name: data.title,
@@ -22,11 +22,21 @@ export const RSSAdapter: Adapter = {
   feed: async (feedUrl: string) => {
     const rss = new RSS();
     const { items } = await rss.parseURL(feedUrl); // TODO: get/write a parser that includes images
+    if (feedUrl.includes("dukope")) {
+      console.log(items);
+    }
+
     return items.map((item) => {
+      const title = item.title || item.contentSnippet;
+      let description = item.contentSnippet;
+      if (title === description) {
+        description = undefined;
+      }
+
       return {
         url: item.link!,
-        title: item.title!,
-        description: item.contentSnippet!,
+        title: title!,
+        description: description,
         image_url: undefined, // TODO: implement
         timestamp: Date.parse(item.isoDate!),
       };

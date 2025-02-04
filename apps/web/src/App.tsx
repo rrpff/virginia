@@ -110,8 +110,8 @@ function Feed({ feed }: { feed: FeedWithItems }) {
         pages: [feed.items],
         pageParams: [],
       },
-      initialCursor: feed.items[feed.items.length - 1].id,
-      staleTime: 30_000, // see: https://github.com/TanStack/query/discussions/1648
+      initialCursor: feed.items[feed.items.length - 1]?.id,
+      staleTime: 30_000, // see: https://github.com/TanStack/query/discussions/1648 // TODO: refocus breaks this, fix
       getNextPageParam: (last) => {
         if (last.length < 3) return null; // TODO: magic number
         return last[last.length - 1].id;
@@ -126,7 +126,14 @@ function Feed({ feed }: { feed: FeedWithItems }) {
       </div>
       <div>
         <span className="flex items-center gap-2 font-bold">
-          {feed.name ?? formatURL(feed.url)}
+          {feed.name ? (
+            <span>
+              {feed.name}{" "}
+              <small className="opacity-50">{formatURL(feed.url)}</small>
+            </span>
+          ) : (
+            formatURL(feed.url)
+          )}
         </span>
         <ul className="flex flex-col gap-0.5">
           {items.data?.pages.map((page, idx) => (
