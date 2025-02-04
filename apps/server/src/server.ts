@@ -28,7 +28,7 @@ async function refreshFeed(feed: PrismaFeed) {
     console.error(`Unable to fetch site meta for ${feed.url}: ${err}`);
   }
 
-  let items: FeedItem[] = [];
+  let items: Omit<FeedItem, "id" | "feedId">[] = [];
   try {
     items = await adapter.feed(feed.url);
   } catch (err) {
@@ -57,7 +57,7 @@ async function refresh() {
       where: { id: feed.id },
       data: {
         name: site.name,
-        iconUrl: site.icon_url,
+        iconUrl: site.iconUrl,
       },
     });
   }
@@ -70,7 +70,7 @@ async function refresh() {
         url: item.url ?? item.feed.url, // TODO: what do i do here??? tilde town help
         title: item.title,
         description: item.description,
-        imageUrl: item.image_url,
+        imageUrl: item.imageUrl,
         timestamp: new Date(item.timestamp),
       };
     }),
@@ -84,14 +84,18 @@ const rpc = router({
     .input(
       z.object({
         url: z.string().url(),
-        categories: z.string().optional(),
+        categoryIds: z.array(z.string()),
       })
     )
-    .mutation(async ({ input: { url, categories } }) => {
+    .mutation(async ({ input: { url, categoryIds } }) => {
       return await db.feed.create({
         data: {
           url,
-          categories,
+          categories: {
+            connect: categoryIds.map((categoryId) => ({
+              id: categoryId,
+            })),
+          },
         },
       });
     }),
@@ -101,7 +105,7 @@ const rpc = router({
       z.object({
         id: z.string(),
         url: z.string().url().optional(),
-        categories: z.string().optional(),
+        categories: z.array(z.string()).optional(),
       })
     )
     .mutation(async ({ input: { id, url, categories } }) => {
@@ -109,7 +113,13 @@ const rpc = router({
         where: { id },
         data: {
           url,
-          categories,
+          categories: categories
+            ? {
+                connect: categories.map((category) => ({
+                  id: category,
+                })),
+              }
+            : undefined,
         },
       });
     }),
@@ -119,37 +129,31 @@ const rpc = router({
   }),
 
   categories: proc.query(async () => {
-    const feeds = await db.feed.findMany();
-    const feedCategories = feeds.flatMap((f) =>
-      !f.categories ? [] : f.categories.split(" ").map((c) => c.trim())
-    );
-    const categories: Record<string, number> = {};
-    for (const category of feedCategories) {
-      categories[category] ||= 0;
-      categories[category] += 1;
-    }
-
-    return keys(categories).sort((a, b) => {
-      return categories[a]! > categories[b]!
-        ? -1
-        : categories[b]! > categories[a]!
-        ? 1
-        : 0;
-    });
+    return db.category.findMany();
   }),
+
+  // TODO: validate icon+name are not taken
+  addCategory: proc
+    .input(z.object({ name: z.string(), icon: z.string() }))
+    .mutation(async ({ input: { name, icon } }) => {
+      return db.category.create({ data: { name, icon } });
+    }),
 
   feed: proc
     .input(z.object({ id: z.string() }))
     .query(async ({ input: { id } }) => {
       return await db.feed.findFirst({
         where: { id },
-        include: { items: { orderBy: { timestamp: "desc" } } },
+        include: {
+          categories: true,
+          items: { orderBy: { timestamp: "desc" } },
+        },
       });
     }),
 
   feeds: proc
-    .input(z.object({ category: z.string().optional() }))
-    .query(async ({ input: { category } }) => {
+    .input(z.object({ categoryId: z.string().optional() }))
+    .query(async ({ input: { categoryId } }) => {
       const feedOrders = await db.feedItem.groupBy({
         by: ["feedId"],
         _max: {
@@ -158,8 +162,16 @@ const rpc = router({
       });
 
       const feeds = await db.feed.findMany({
-        where: category ? { categories: { contains: category } } : {},
         include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
+        where: categoryId
+          ? {
+              categories: {
+                some: {
+                  id: categoryId,
+                },
+              },
+            }
+          : {},
       });
 
       return feeds

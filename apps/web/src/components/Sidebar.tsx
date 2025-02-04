@@ -26,10 +26,10 @@ export default function Sidebar() {
         <CategoryLink href="/" icon="🌍" isActive={location === "/"} />
         {categories.data.map((cat) => (
           <CategoryLink
-            key={cat}
-            icon={cat}
-            href={`/${cat}`}
-            isActive={location === `/${cat}`}
+            key={cat.id}
+            icon={cat.icon}
+            href={`/${cat.id}`} // TODO: use vanity
+            isActive={location === `/${cat.id}`}
           />
         ))}
       </div>

@@ -8,7 +8,7 @@ export const PatreonAdapter: Adapter = {
 
     return {
       name: meta.props.pageProps.bootstrapEnvelope.meta.title,
-      icon_url:
+      iconUrl:
         meta.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.data
           .attributes.avatar_photo_image_urls.thumbnail_small,
     };
@@ -22,7 +22,7 @@ export const PatreonAdapter: Adapter = {
           url: item.attributes.url,
           title: item.attributes.title,
           description: item.attributes.teaser_text,
-          image_url: item.attributes.image?.large_url, // TODO: implement
+          imageUrl: item.attributes.image?.large_url, // TODO: implement
           timestamp: Date.parse(item.attributes.published_at),
         };
       });

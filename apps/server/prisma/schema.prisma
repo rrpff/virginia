@@ -11,14 +11,14 @@ datasource db {
 }
 
 model Feed {
-  id         String @id @default(uuid())
-  url        String
-  categories String @default("") // space separated
+  id  String @id @default(uuid())
+  url String
 
   name    String?
   iconUrl String?
 
-  items FeedItem[]
+  categories Category[]
+  items      FeedItem[]
 }
 
 model FeedItem {
@@ -31,4 +31,12 @@ model FeedItem {
   timestamp   DateTime
 
   feed Feed @relation(fields: [feedId], references: [id])
+}
+
+model Category {
+  id   String @id @default(uuid())
+  name String
+  icon String
+
+  feeds Feed[]
 }

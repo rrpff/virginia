@@ -11,7 +11,7 @@ export const RSSAdapter: Adapter = {
 
     return {
       name: data.title,
-      icon_url: icon,
+      iconUrl: icon,
     };
   },
   feed: async (siteUrl: string) => {
@@ -30,7 +30,7 @@ export const RSSAdapter: Adapter = {
         url: item.link!,
         title: title!,
         description: description,
-        image_url: undefined, // TODO: implement
+        imageUrl: undefined, // TODO: implement
         timestamp: Date.parse(item.isoDate!),
       };
     });

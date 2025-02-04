@@ -7,7 +7,10 @@ import NotFound from "./NotFound";
 export default function CategoryPage() {
   const { category } = useParams();
   const categories = rpc.categories.useQuery();
-  const feeds = rpc.feeds.useQuery({ category }, { keepPreviousData: true });
+  const feeds = rpc.feeds.useQuery(
+    { categoryId: category },
+    { keepPreviousData: true }
+  );
 
   if (!categories.data || !feeds.data) return null;
   if (feeds.data.length === 0) return <NotFound />;

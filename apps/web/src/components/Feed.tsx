@@ -4,7 +4,7 @@ import TimeAgo from "./TimeAgo";
 import { RpcOutputs } from "../rpc";
 
 // TODO: this is getting ugly, what was going on with those domain types huh
-type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "items">;
+type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "items" | "categories">;
 type Item = NonNullable<RpcOutputs["feed"]>["items"][number];
 
 export default function Feed({ feed, items }: { feed: Feed; items: Item[] }) {

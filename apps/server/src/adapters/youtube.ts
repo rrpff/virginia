@@ -11,7 +11,7 @@ export const YoutubeAdapter: Adapter = {
 
     return {
       name: $('meta[property="og:title"]').attr("content"),
-      icon_url: $('meta[property="og:image"]').attr("content"),
+      iconUrl: $('meta[property="og:image"]').attr("content"),
     };
   },
   feed: async (url: string) => {
@@ -28,7 +28,7 @@ export const YoutubeAdapter: Adapter = {
         url: item.link!,
         title: item.title!,
         description: item.contentSnippet!,
-        image_url: undefined, // TODO: implement
+        imageUrl: undefined, // TODO: implement
         timestamp: Date.parse(item.isoDate!),
       };
     });

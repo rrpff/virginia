@@ -11,7 +11,7 @@ export default function FeedPage() {
   const updateFeed = rpc.updateFeed.useMutation();
 
   const [url, setUrl] = useState("");
-  const [categories, setCategories] = useState("");
+  const [categoryIds, setCategoryIds] = useState<string[]>([]);
   const submit = useCallback(
     async (e: FormEvent) => {
       if (!id) return;
@@ -20,19 +20,19 @@ export default function FeedPage() {
       await updateFeed.mutateAsync({
         id: id,
         url: url.trim(),
-        categories: categories.trim(),
+        categories: categoryIds,
       });
 
       feed.refetch();
     },
-    [categories, feed, id, updateFeed, url]
+    [categoryIds, feed, id, updateFeed, url]
   );
 
   useEffect(() => {
     if (!feed.data) return;
     console.log("replacing");
     setUrl(feed.data.url);
-    setCategories(feed.data.categories);
+    setCategoryIds(feed.data.categories.map((c) => c.id));
   }, [feed.data]);
 
   if (!id) return <NotFound />;
@@ -59,7 +59,7 @@ export default function FeedPage() {
               onChange={(e) => setUrl(e.currentTarget.value)}
             />
           </div>
-          <div>
+          {/* <div>
             <label className="block text-sm font-bold" htmlFor="categories">
               Categories
             </label>
@@ -71,7 +71,7 @@ export default function FeedPage() {
               value={categories}
               onChange={(e) => setCategories(e.currentTarget.value)}
             />
-          </div>
+          </div> */}
           <div>
             <button className="v-button px-8!">Save</button>
           </div>
