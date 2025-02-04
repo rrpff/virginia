@@ -1,18 +1,18 @@
 import classNames from "classnames";
-import { useCallback, Fragment, useState, MouseEvent } from "react";
+import { useCallback, Fragment } from "react";
 import TimeAgo from "../components/TimeAgo";
 import { rpc, RpcOutputs } from "../rpc";
 import { WEEK } from "../utils/time";
-import { Link } from "wouter";
+import { Link, useParams } from "wouter";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
 
 export default function HomePage() {
-  const [category, setCategory] = useState("🌍");
+  const { category } = useParams();
   const refresh = rpc.refresh.useMutation();
   const categories = rpc.categories.useQuery();
   const feeds = rpc.feeds.useQuery(
     {
-      category: category === "🌍" ? undefined : category,
+      category,
     },
     {
       keepPreviousData: true,
@@ -29,23 +29,13 @@ export default function HomePage() {
   return (
     <main className="flex flex-row gap-36">
       <header className="flex flex-col items-center gap-4">
-        <CategoryLink
-          icon="🌍"
-          isActive={category === "🌍"}
-          onClick={(e) => {
-            e.preventDefault();
-            setCategory("🌍");
-          }}
-        />
+        <CategoryLink href="/" icon="🌍" isActive={category === undefined} />
         {categories.data?.map((cat) => (
           <CategoryLink
             key={cat}
             icon={cat}
+            href={`/${cat}`}
             isActive={category === cat}
-            onClick={(e) => {
-              e.preventDefault();
-              setCategory(cat);
-            }}
           />
         ))}
         <section className="flex flex-col gap-1 mt-2">
@@ -173,19 +163,18 @@ function TimeBadge({ time }: { time?: number | null | string }) {
 }
 
 function CategoryLink({
+  href,
   icon,
   isActive,
-  onClick,
 }: {
+  href: string;
   icon: string;
   isActive: boolean;
-  onClick: (e: MouseEvent) => void;
 }) {
   return (
     <div className="relative mb-9">
       <Link
-        href="/"
-        onClick={onClick}
+        href={href}
         className={classNames(
           "text-2xl absolute -left-13 pl-10 pr-4 py-2 rounded-r-md",
           isActive ? "bg-white" : "bg-background hover:bg-foreground/10"

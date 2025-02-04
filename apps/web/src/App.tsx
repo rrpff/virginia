@@ -27,6 +27,7 @@ export default function App() {
           <Router>
             <Switch>
               <Route path="/" component={HomePage} />
+              <Route path="/:category" component={HomePage} />
               <Route path="/add" component={AddFeedPage} />
               <Route>
                 <h1 className="font-bold">404</h1>
