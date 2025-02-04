@@ -1,7 +1,15 @@
-import { FormEvent, Fragment, useCallback, useState } from "react";
+import {
+  ComponentProps,
+  FormEvent,
+  Fragment,
+  useCallback,
+  useState,
+} from "react";
 import { rpc, RpcOutputs } from "./rpc";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { httpBatchLink } from "@trpc/client";
+import TimeAgo from "./components/TimeAgo";
+import classNames from "classnames";
 
 const host = `http://${window.location.hostname}:26541`;
 
@@ -118,17 +126,23 @@ function Feed({ feed }: { feed: FeedWithItems }) {
 
   return (
     <li className="max-w-120">
-      <span>{formatURL(feed.url)}</span>
-      <ul>
+      <span>
+        {formatURL(feed.url)}{" "}
+        <TimeBadge className="text-sm" time={feed.latest} />
+      </span>
+      <ul className="flex flex-col gap-0.5">
         {items.data?.pages.map((page, idx) => (
           <Fragment key={idx}>
             {page.map((item) => (
               <a
                 key={item.url}
                 href={item.url}
-                className="flex flex-col text-xs"
+                className="flex flex-row text-xs items-center"
               >
-                <span className="font-black font-serif">{item.title}</span>
+                <span className="font-bold font-sans line-clamp-1">
+                  {item.title}
+                </span>
+                <TimeBadge className="text-sm scale-75" time={item.timestamp} />
               </a>
             ))}
           </Fragment>
@@ -145,4 +159,27 @@ function Feed({ feed }: { feed: FeedWithItems }) {
 function formatURL(url: string) {
   const uri = new URL(url);
   return uri.host.replace("www.", "") + uri.pathname;
+}
+
+function TimeBadge({
+  time,
+  ...props
+}: ComponentProps<"span"> & { time?: number | null | string }) {
+  if (!time) return;
+
+  const timeF = typeof time === "string" ? Date.parse(time) : time;
+  return (
+    <span
+      {...props}
+      className={classNames(
+        "px-1.5 py-1 rounded-md",
+        Date.now() - timeF < 86_400_000
+          ? "bg-green-600 text-white"
+          : " bg-gray-200",
+        props.className
+      )}
+    >
+      <TimeAgo time={timeF} />
+    </span>
+  );
 }

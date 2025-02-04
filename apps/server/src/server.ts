@@ -86,7 +86,10 @@ const rpc = router({
     return feeds
       .map((feed) => {
         const latest = feedOrders.find((f) => f.feedId === feed.id);
-        return { ...feed, latest: latest?._max.timestamp };
+        return {
+          ...feed,
+          latest: latest ? Number(latest._max.timestamp) : null,
+        };
       })
       .sort((a, b) => {
         if (!a.latest || !b.latest) return 0;
