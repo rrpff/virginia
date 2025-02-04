@@ -182,7 +182,7 @@ function CategoryLink({
   onClick: (e: MouseEvent) => void;
 }) {
   return (
-    <div className="relative mb-10">
+    <div className="relative mb-9">
       <Link
         href="/"
         onClick={onClick}
