@@ -26,9 +26,9 @@ export default function App() {
   return (
     <rpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
-        <main className="p-8 flex flex-row gap-36">
+        <main className="pl-0 p-8 flex flex-row gap-24">
           <Sidebar />
-          <article className="py-3">
+          <article className="py-3 w-full">
             <Router>
               <Switch>
                 <Route path="/feed/:id" component={FeedPage} />

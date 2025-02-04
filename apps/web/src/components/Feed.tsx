@@ -16,7 +16,7 @@ export default function Feed({ feed, items }: { feed: Feed; items: Item[] }) {
       <div>
         <span className="flex items-center gap-2 font-bold">
           {feed.name ? (
-            <span className="mb-1" style={{ lineHeight: "1em" }}>
+            <span className="mb-1 leading-none">
               <span>{feed.name}</span>{" "}
               <a href={feed.url} className="opacity-50 hover:underline">
                 <small>{formatURL(feed.url)}</small>

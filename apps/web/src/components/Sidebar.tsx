@@ -22,16 +22,18 @@ export default function Sidebar() {
 
   return (
     <header className="flex flex-col items-center gap-4">
-      <CategoryLink href="/" icon="🌍" isActive={location === "/"} />
-      {categories.data.map((cat) => (
-        <CategoryLink
-          key={cat}
-          icon={cat}
-          href={`/${cat}`}
-          isActive={location === `/${cat}`}
-        />
-      ))}
-      <section className="flex flex-col gap-1 mt-2">
+      <div className="flex flex-col gap-1">
+        <CategoryLink href="/" icon="🌍" isActive={location === "/"} />
+        {categories.data.map((cat) => (
+          <CategoryLink
+            key={cat}
+            icon={cat}
+            href={`/${cat}`}
+            isActive={location === `/${cat}`}
+          />
+        ))}
+      </div>
+      <section className="flex flex-col gap-1 mt-2 pl-4">
         <button
           className="v-button bg-background! text-foreground! text-lg aspect-square"
           disabled={refresh.isLoading}
@@ -65,16 +67,14 @@ function CategoryLink({
   isActive: boolean;
 }) {
   return (
-    <div className="relative mb-9">
-      <Link
-        href={href}
-        className={classNames(
-          "text-2xl absolute -left-13 pl-10 pr-4 py-2 rounded-r-md",
-          isActive ? "bg-white" : "bg-background hover:bg-foreground/10"
-        )}
-      >
-        {icon}
-      </Link>
-    </div>
+    <Link
+      href={href}
+      className={classNames(
+        "text-2xl pl-8 pr-4 py-2 rounded-r-md",
+        isActive ? "bg-white" : "bg-background hover:bg-foreground/10"
+      )}
+    >
+      {icon}
+    </Link>
   );
 }

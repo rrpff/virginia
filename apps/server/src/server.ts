@@ -97,6 +97,24 @@ const rpc = router({
       });
     }),
 
+  updateFeed: proc
+    .input(
+      z.object({
+        id: z.string(),
+        url: z.string().url().optional(),
+        categories: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input: { id, url, categories } }) => {
+      return await db.feed.update({
+        where: { id },
+        data: {
+          url,
+          categories,
+        },
+      });
+    }),
+
   refresh: proc.mutation(async () => {
     await refresh();
   }),

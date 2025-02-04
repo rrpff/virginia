@@ -25,23 +25,27 @@ export default function AddFeedPage() {
     <main>
       <h1 className="font-bold text-xl mb-2">Add a new website</h1>
       <form onSubmit={submit} className="flex flex-col gap-2">
-        <div className="flex flex-row items-center gap-2">
-          <label htmlFor="url">URL:</label>
+        <div>
+          <label className="block text-sm font-bold" htmlFor="url">
+            URL
+          </label>
           <input
             id="url"
             type="text"
-            className="bg-white border-2 rounded-sm border-foreground p-1 px-2"
+            className="v-input"
             placeholder="website"
             value={url}
             onChange={(e) => setUrl(e.currentTarget.value)}
           />
         </div>
-        <div className="flex flex-row items-center gap-2">
-          <label htmlFor="url">Categories:</label>
+        <div>
+          <label className="block text-sm font-bold" htmlFor="categories">
+            Categories
+          </label>
           <input
-            id="url"
+            id="categories"
             type="text"
-            className="bg-white border-2 rounded-sm border-foreground p-1 px-2"
+            className="v-input"
             placeholder="space separated emojis"
             value={categories}
             onChange={(e) => setCategories(e.currentTarget.value)}
