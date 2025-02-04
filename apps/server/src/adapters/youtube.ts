@@ -1,6 +1,6 @@
 import RSS from "rss-parser";
 import * as cheerio from "cheerio";
-import { Adapter } from ".";
+import { Adapter } from "./index.js";
 
 export const YoutubeAdapter: Adapter = {
   hostname: "www.youtube.com",

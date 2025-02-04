@@ -1,12 +1,15 @@
 {
   "name": "@virginia/server",
-  "types": "./dist/src/index.d.ts",
+  "main": "./dist/src/client.js",
+  "type": "module",
+  "types": "./dist/src/client.d.ts",
   "scripts": {
     "build": "run-p build:*",
-    "build:js": "swc src -d dist -C module.type=commonjs",
+    "build:js": "swc src -d dist",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
     "dev": "run-p dev:*",
     "dev:watch": "tsx watch ./src/index.ts",
+    "dev:js": "npm run build:js -- --watch",
     "dev:types": "npm run build:types -- --watch --preserveWatchOutput",
     "start": "node ./dist/src/index.js"
   },

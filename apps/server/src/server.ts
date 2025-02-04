@@ -1,15 +1,14 @@
 import express from "express";
 import cors from "cors";
-import { proc, router } from "./rpc";
+import { proc, router } from "./rpc.js";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { Feed, PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
-import { Adapter } from "./adapters";
-import { RSSAdapter } from "./adapters/rss";
-import { PatreonAdapter } from "./adapters/patreon";
-import { YoutubeAdapter } from "./adapters/youtube";
-import { FeedItem, Site } from "./schema";
-import { keys } from "../utils/objects";
+import { Adapter } from "./adapters/index.js";
+import { RSSAdapter } from "./adapters/rss.js";
+import { PatreonAdapter } from "./adapters/patreon.js";
+import { YoutubeAdapter } from "./adapters/youtube.js";
+import { FeedItem, Site } from "./schema.js";
 
 const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
 

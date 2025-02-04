@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { Adapter } from ".";
+import { Adapter } from "./index.js";
 
 export const PatreonAdapter: Adapter = {
   hostname: "www.patreon.com",

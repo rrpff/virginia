@@ -1,7 +1,7 @@
 import RSS from "rss-parser";
 import * as cheerio from "cheerio";
 import url from "url";
-import { Adapter } from ".";
+import { Adapter } from "./index.js";
 
 export const RSSAdapter: Adapter = {
   site: async (siteUrl: string) => {

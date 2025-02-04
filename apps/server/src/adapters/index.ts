@@ -1,4 +1,4 @@
-import type { Feed, Site } from "../schema";
+import type { Feed, Site } from "../schema.js";
 
 export type Adapter = {
   hostname?: string;
