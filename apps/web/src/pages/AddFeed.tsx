@@ -1,74 +1,86 @@
-import { Fragment } from "react";
-import { Field, Formik } from "formik";
 import { FeedSchema } from "@virginia/server";
-import { toFormikValidate } from "zod-formik-adapter";
 import { rpc } from "../rpc";
 import AddCategoryForm from "../components/AddCategoryForm";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { ErrorMessage } from "@hookform/error-message";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const Schema = FeedSchema.omit({ id: true });
+
+// function EmojiCheckboxField({ emoji, name }: { name: string; emoji: string }) {
+//   const [props] = useField<string>(name);
+//   return (
+//     <div className="relative">
+//       <input id={emoji} type="checkbox" {...props} />
+//       <label htmlFor={emoji}>{emoji}</label>
+//     </div>
+//   );
+// }
 
 export default function AddFeedPage() {
   const addFeed = rpc.addFeed.useMutation();
   const categories = rpc.categories.useQuery();
   const utils = rpc.useUtils();
 
+  const form = useForm<z.infer<typeof Schema>>({
+    values: { url: "", categoryIds: [] },
+    resolver: zodResolver(Schema),
+  });
+
+  const submit = form.handleSubmit(async (values) => {
+    await addFeed.mutateAsync(values);
+    await utils.feeds.invalidate();
+    form.reset();
+    // TODO: redirect?
+  });
+
   return (
     <main>
       <h1 className="font-bold text-xl mb-2">Add a category</h1>
-      <Formik
-        initialValues={{ url: "", categoryIds: [] as string[] }}
-        validate={toFormikValidate(Schema)}
-        onSubmit={async (values, { resetForm }) => {
-          await addFeed.mutateAsync(values);
-          await utils.feeds.invalidate();
+      <form onSubmit={submit}>
+        <div>
+          <label className="block text-sm font-bold" htmlFor="url">
+            URL
+          </label>
 
-          resetForm();
-        }}
-      >
-        {({ errors, touched, handleSubmit, isSubmitting }) => (
-          <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            className="v-input"
+            {...form.register("url")}
+            placeholder="https://example.com"
+          />
+          <ErrorMessage name="url" errors={form.formState.errors} />
+        </div>
+
+        <div>
+          <label className="block text-sm font-bold">Categories</label>
+
+          {/* TODO: aria-labelled-by */}
+          {categories.data?.map((category) => (
             <div>
-              <label className="block text-sm font-bold" htmlFor="url">
-                URL
-              </label>
-
-              <Field className="v-input" id="url" type="text" name="url" />
-
-              {touched.url && errors.url}
+              <label htmlFor={category.id}>{category.icon}</label>
+              <input
+                id={category.id}
+                type="checkbox"
+                className="v-input"
+                value={category.id}
+                {...form.register("categoryIds")}
+              />
             </div>
-
-            <div>
-              <label className="block text-sm font-bold">Categories</label>
-
-              {/* TODO: aria-labelled-by */}
-              {categories.data?.map((category) => (
-                <Fragment>
-                  <label htmlFor={category.id} title={category.name}>
-                    {category.icon}
-                  </label>
-
-                  <Field
-                    id={category.id}
-                    type="checkbox"
-                    name="categoryIds"
-                    value={category.id}
-                  />
-                </Fragment>
-              ))}
-              {touched.categoryIds && errors.categoryIds}
-            </div>
-            <div>
-              <button
-                type="submit"
-                className="v-button px-8!"
-                disabled={isSubmitting}
-              >
-                Add
-              </button>
-            </div>
-          </form>
-        )}
-      </Formik>
+          ))}
+          <ErrorMessage name="categoryId" errors={form.formState.errors} />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="v-button px-8!"
+            disabled={form.formState.isSubmitting}
+          >
+            Add
+          </button>
+        </div>
+      </form>
 
       <div className="outline-4 outline-red-500 ml-24">
         <AddCategoryForm />

@@ -1,7 +1,9 @@
-import { Formik } from "formik";
-import { toFormikValidate } from "zod-formik-adapter";
+import { useForm } from "react-hook-form";
 import { rpc } from "../rpc";
 import { CategorySchema } from "@virginia/server";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { ErrorMessage } from "@hookform/error-message";
 
 const Schema = CategorySchema.omit({ id: true });
 
@@ -9,70 +11,54 @@ export default function AddCategoryForm() {
   const utils = rpc.useUtils();
   const addCategory = rpc.addCategory.useMutation();
 
-  return (
-    <Formik
-      initialValues={{ name: "", icon: "" }}
-      validate={toFormikValidate(Schema)}
-      onSubmit={async (values, { resetForm }) => {
-        await addCategory.mutateAsync(values);
-        await utils.categories.invalidate();
+  const form = useForm<z.infer<typeof Schema>>({
+    values: { name: "", icon: "" },
+    resolver: zodResolver(Schema),
+  });
 
-        resetForm();
-      }}
-    >
-      {({
-        values,
-        errors,
-        touched,
-        handleSubmit,
-        handleChange,
-        handleBlur,
-        isSubmitting,
-      }) => (
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label className="block text-sm font-bold" htmlFor="name">
-              Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              className="v-input"
-              placeholder="friends"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.name}
-            />
-            {touched.name && errors.name}
-          </div>
-          <div>
-            <label className="block text-sm font-bold" htmlFor="icon">
-              Icon
-            </label>
-            <input
-              id="icon"
-              name="icon"
-              type="text"
-              className="v-input"
-              placeholder="🌈"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.icon}
-            />
-            {touched.icon && errors.icon}
-          </div>
-          <div>
-            <button
-              type="submit"
-              className="v-button px-8!"
-              disabled={isSubmitting}
-            >
-              Add
-            </button>
-          </div>
-        </form>
-      )}
-    </Formik>
+  const submit = form.handleSubmit(async (values) => {
+    await addCategory.mutateAsync(values);
+    await utils.categories.invalidate();
+
+    form.reset();
+  });
+
+  return (
+    <form onSubmit={submit}>
+      <div>
+        <label className="block text-sm font-bold" htmlFor="name">
+          Name
+        </label>
+        <input
+          type="text"
+          className="v-input"
+          placeholder="friends"
+          {...form.register("name")}
+        />
+        <ErrorMessage name="name" errors={form.formState.errors} />
+      </div>
+      <div>
+        <label className="block text-sm font-bold" htmlFor="icon">
+          Icon
+        </label>
+        <input
+          id="icon"
+          type="text"
+          className="v-input"
+          placeholder="🌈"
+          {...form.register("icon")}
+        />
+        <ErrorMessage name="icon" errors={form.formState.errors} />
+      </div>
+      <div>
+        <button
+          type="submit"
+          className="v-button px-8!"
+          disabled={form.formState.isSubmitting}
+        >
+          Add
+        </button>
+      </div>
+    </form>
   );
 }
