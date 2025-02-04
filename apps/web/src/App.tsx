@@ -179,8 +179,10 @@ function TimeBadge({ time }: { time?: number | null | string }) {
   return (
     <span
       className={classNames(
-        "px-2 py-1 rounded-sm text-xs scale-75",
-        Date.now() - timeF < WEEK ? "bg-green-600 text-white" : " bg-white/70"
+        "px-2 py-1 rounded-sm text-xs scale-75 font-bold",
+        Date.now() - timeF < WEEK
+          ? "bg-green-600 text-white"
+          : " bg-white/70 text-foreground/70"
       )}
     >
       <TimeAgo time={timeF} />
