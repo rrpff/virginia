@@ -82,11 +82,17 @@ const app = express();
 const db = new PrismaClient();
 const rpc = router({
   addFeed: proc
-    .input(z.object({ url: z.string().url() }))
-    .mutation(async ({ input: { url } }) => {
+    .input(
+      z.object({
+        url: z.string().url(),
+        categories: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input: { url, categories } }) => {
       return await db.feed.create({
         data: {
           url,
+          categories,
         },
       });
     }),

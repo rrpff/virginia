@@ -7,14 +7,18 @@ export default function AddFeedPage() {
   const addFeed = rpc.addFeed.useMutation();
 
   const [url, setUrl] = useState("");
+  const [categories, setCategories] = useState("");
   const submit = useCallback(
     async (e: FormEvent) => {
       e.preventDefault();
 
-      await addFeed.mutateAsync({ url: url.trim() });
+      await addFeed.mutateAsync({
+        url: url.trim(),
+        categories: categories.trim(),
+      });
       setLocation("/");
     },
-    [addFeed, setLocation, url]
+    [addFeed, categories, setLocation, url]
   );
 
   return (
@@ -27,9 +31,20 @@ export default function AddFeedPage() {
             id="url"
             type="text"
             className="bg-white border-2 rounded-sm border-foreground p-1 px-2"
-            placeholder="Website"
+            placeholder="website"
             value={url}
             onChange={(e) => setUrl(e.currentTarget.value)}
+          />
+        </div>
+        <div className="flex flex-row items-center gap-2">
+          <label htmlFor="url">Categories:</label>
+          <input
+            id="url"
+            type="text"
+            className="bg-white border-2 rounded-sm border-foreground p-1 px-2"
+            placeholder="space separated emojis"
+            value={categories}
+            onChange={(e) => setCategories(e.currentTarget.value)}
           />
         </div>
         <div>
