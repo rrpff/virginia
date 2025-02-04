@@ -53,6 +53,8 @@ function HomePage() {
     await feeds.refetch();
   }, [feeds, refresh]);
 
+  if (!feeds.isFetched) return;
+
   return (
     <main className="flex flex-row gap-4">
       <header className="flex flex-col gap-4 p-4">
