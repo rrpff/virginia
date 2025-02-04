@@ -89,9 +89,9 @@ function Feed({ feed }: { feed: FeedWithItems }) {
         <ul className="flex flex-col gap-0.5">
           {items.data?.pages.map((page, idx) => (
             <Fragment key={idx}>
-              {page.map((item) => (
+              {page.map((item, idx) => (
                 <a
-                  key={item.url}
+                  key={idx}
                   href={item.url}
                   className="flex flex-row text-xs items-center group"
                 >
