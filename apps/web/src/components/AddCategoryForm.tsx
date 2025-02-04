@@ -1,13 +1,17 @@
 import { useForm } from "react-hook-form";
 import { rpc } from "../rpc";
-import { CategorySchema } from "@virginia/server";
+import { Category, CategorySchema } from "@virginia/server";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
 
 const Schema = CategorySchema.omit({ id: true });
 
-export default function AddCategoryForm() {
+export default function AddCategoryForm({
+  onSubmit,
+}: {
+  onSubmit?: (category: Category) => void;
+}) {
   const utils = rpc.useUtils();
   const addCategory = rpc.addCategory.useMutation();
 
@@ -17,10 +21,11 @@ export default function AddCategoryForm() {
   });
 
   const submit = form.handleSubmit(async (values) => {
-    await addCategory.mutateAsync(values);
+    const category = await addCategory.mutateAsync(values);
     await utils.categories.invalidate();
 
     form.reset();
+    onSubmit?.(category);
   });
 
   return (
