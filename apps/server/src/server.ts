@@ -8,7 +8,7 @@ import { Adapter } from "./adapters";
 import { RSSAdapter } from "./adapters/rss";
 import { PatreonAdapter } from "./adapters/patreon";
 import { YoutubeAdapter } from "./adapters/youtube";
-import { FeedItem } from "./schema";
+import { FeedItem, Site } from "./schema";
 
 const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
 
@@ -20,8 +20,20 @@ function getAdapter(feed: PrismaFeed): Adapter {
 
 async function refreshFeed(feed: PrismaFeed) {
   const adapter = getAdapter(feed);
-  const site = await adapter.site(feed.url); // TODO: not every time lol
-  const items = await adapter.feed(feed.url);
+
+  let site: Site = {};
+  try {
+    site = await adapter.site(feed.url); // TODO: not every time lol
+  } catch (err) {
+    console.error(`Unable to fetch site meta for ${feed.url}: ${err}`);
+  }
+
+  let items: FeedItem[] = [];
+  try {
+    items = await adapter.feed(feed.url);
+  } catch (err) {
+    console.error(`Unable to fetch items for ${feed.url}: ${err}`);
+  }
 
   return {
     site,
