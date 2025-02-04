@@ -4,6 +4,7 @@
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "build": "run-p build:*",
     "build:js": "swc src -d dist -C module.type=commonjs",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",

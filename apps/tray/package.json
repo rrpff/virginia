@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "tauri build": "tauri build",
+    "typecheck": "tsc --noEmit",
+    "build": "tauri build",
     "dev": "tauri dev"
   },
   "dependencies": {

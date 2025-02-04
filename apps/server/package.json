@@ -4,6 +4,7 @@
   "type": "module",
   "types": "./dist/src/client.d.ts",
   "scripts": {
+    "typecheck": "tsc --noEmit",
     "build": "run-p build:*",
     "build:js": "swc src -d dist",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",

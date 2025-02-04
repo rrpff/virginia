@@ -1,6 +1,7 @@
 {
   "name": "virginia",
   "scripts": {
+    "typecheck": "run-p 'typecheck -w packages/core' 'typecheck -w apps/server' 'typecheck -w apps/web'",
     "build": "run-s 'build -w packages/core' 'build -w apps/server' 'build -w apps/web'",
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core'",
     "start": "run-p 'start -w apps/server'",
