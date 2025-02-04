@@ -55,7 +55,7 @@ async function refresh() {
     data: allItems.map((item) => {
       return {
         feedId: item.feed.id,
-        url: item.url,
+        url: item.url ?? item.feed.url, // TODO: what do i do here??? tilde town help
         title: item.title,
         description: item.description,
         imageUrl: item.image_url,
