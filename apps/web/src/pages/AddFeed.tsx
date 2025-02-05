@@ -11,7 +11,7 @@ export default function AddFeedPage() {
 
   return (
     <main>
-      <h1 className="font-bold text-xl mb-2">Add a feed</h1>
+      <h1 className="font-bold text-xl mb-2">Add a website</h1>
       <FeedForm
         form={form}
         onSubmit={async (values) => {
