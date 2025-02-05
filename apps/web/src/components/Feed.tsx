@@ -23,7 +23,7 @@ export default function Feed({
       <Link
         href={`/f/${feed.id}`}
         className={classNames(
-          "group flex flex-row items-center gap-2",
+          "group flex flex-row items-center gap-3",
           link ? "pointer-events-auto" : "pointer-events-none"
         )}
       >
@@ -34,7 +34,7 @@ export default function Feed({
           </span>
         </span>
       </Link>
-      <ul className="flex flex-col pl-8 gap-2">
+      <ul className="flex flex-col pl-9 gap-2">
         {items.map((item, idx) => (
           <a key={idx} href={item.url} className="flex flex-col text-xs group">
             <span className="flex flex-row items-center gap-1">
