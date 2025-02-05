@@ -70,6 +70,7 @@ async function getFavicon(siteUrl: string) {
   const href =
     $('link[rel="icon"][sizes="32x32"]').attr("href")?.trim() ??
     $('link[rel="icon"][sizes="16x16"]').attr("href")?.trim() ??
+    $('link[rel="shortcut icon"]').attr("href")?.trim() ??
     $('link[rel="icon"][href$="ico"]').attr("href")?.trim() ??
     "/favicon.ico";
 
