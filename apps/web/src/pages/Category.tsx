@@ -13,7 +13,7 @@ export default function CategoryPage() {
 
   return (
     <article>
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-15">
         {feeds.data?.map((feed) => (
           <Feed key={feed.url} feed={feed} items={feed.items} />
         ))}
