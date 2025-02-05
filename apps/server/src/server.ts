@@ -5,8 +5,8 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import z from "zod";
 import { slug } from "../utils/ids.js";
 import db from "./db.js";
-import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 import { ServerEvent } from "./schema.js";
+import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 
 const app = express();
 const rpc = router({
@@ -29,7 +29,7 @@ const rpc = router({
         },
       });
 
-      refreshScheduler.refresh(feed.id);
+      RefreshScheduler.refresh(feed.id);
       return feed;
     }),
 
@@ -57,12 +57,12 @@ const rpc = router({
         },
       });
 
-      refreshScheduler.refresh(feed.id);
+      RefreshScheduler.refresh(feed.id);
       return feed;
     }),
 
   refresh: proc.mutation(() => {
-    refreshScheduler.refreshAll();
+    RefreshScheduler.refreshAll();
   }),
 
   categories: proc.query(async () => {
@@ -177,7 +177,6 @@ app.use(
   })
 );
 
-const refreshScheduler = new RefreshScheduler();
 app.get("/sse", (_req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Content-Type", "text/event-stream");
@@ -192,14 +191,14 @@ app.get("/sse", (_req, res) => {
   const ended = () => send({ type: "refresh-ended" });
   const updated = (feedId: string) => send({ type: "feed-updated", feedId });
 
-  refreshScheduler.on("refresh-started", started);
-  refreshScheduler.on("refresh-ended", ended);
-  refreshScheduler.on("feed-updated", updated);
+  RefreshScheduler.on("refresh-started", started);
+  RefreshScheduler.on("refresh-ended", ended);
+  RefreshScheduler.on("feed-updated", updated);
 
   res.on("close", () => {
-    refreshScheduler.off("refresh-started", started);
-    refreshScheduler.off("refresh-ended", ended);
-    refreshScheduler.off("feed-updated", updated);
+    RefreshScheduler.off("refresh-started", started);
+    RefreshScheduler.off("refresh-ended", ended);
+    RefreshScheduler.off("feed-updated", updated);
     res.end();
   });
 });

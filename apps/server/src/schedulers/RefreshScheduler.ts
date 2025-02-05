@@ -8,7 +8,7 @@ type Events = {
   "feed-updated": (feedId: string) => void;
 };
 
-export default class RefreshScheduler extends TypedEmitter<Events> {
+class RefreshScheduler extends TypedEmitter<Events> {
   private refreshCount = 0;
   constructor() {
     super();
@@ -40,3 +40,5 @@ export default class RefreshScheduler extends TypedEmitter<Events> {
     }
   }
 }
+
+export default new RefreshScheduler();

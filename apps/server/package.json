@@ -9,7 +9,7 @@
     "build:js": "swc src -d dist",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
     "dev": "run-p dev:*",
-    "dev:watch": "tsx watch ./src/index.ts",
+    "dev:watch": "NODE_ENV=development tsx watch ./src/index.ts",
     "dev:js": "npm run build:js -- --watch",
     "dev:types": "npm run build:types -- --watch --preserveWatchOutput",
     "start": "node ./dist/src/index.js"
@@ -22,6 +22,7 @@
     "cors": "^2.8.5",
     "exponential-backoff": "^3.1.1",
     "express": "^4.21.2",
+    "node-schedule": "^2.1.1",
     "rss-parser": "^3.13.0",
     "tiny-typed-emitter": "^2.1.0",
     "zod": "^3.24.1"
@@ -30,6 +31,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
+    "@types/node-schedule": "^2.1.7",
     "@virginia/tsconfig": "*",
     "prisma": "^6.3.0",
     "tsx": "^4.19.2",
