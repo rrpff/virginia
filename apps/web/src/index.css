@@ -3,6 +3,12 @@
 @theme {
   --color-background: oklch(94.85% 0.0148 19.18148516721477);
   --color-foreground: oklch(37.5% 0.0296 19.18148516721477);
+
+  /* --color-background: var(--arc-palette-background);
+  --color-foreground: var(--arc-palette-foregroundPrimary); */
+
+  /* --color-background: oklch(45.2% 0.31313625765874376 264.05300810418345);
+  --color-foreground: oklch(100% 0 0); */
 }
 
 :root {
