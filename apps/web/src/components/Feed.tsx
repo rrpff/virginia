@@ -35,23 +35,20 @@ export default function Feed({
             </span>
           </span>
         </Link>
-        <a href={feed.url} className="opacity-50 font-bold">
-          <small className="inline-flex flex-row items-center gap-1 hover:underline">
-            {formatURL(feed.url)} <LuExternalLink />
-          </small>
-        </a>
       </div>
-      <ul className="flex flex-col gap-0.5 pl-8">
+      <ul className="flex flex-col pl-8 gap-2">
         {items.map((item, idx) => (
-          <a
-            key={idx}
-            href={item.url}
-            className="flex flex-row text-xs items-center group"
-          >
-            <span className="font-bold font-sans line-clamp-1 group-hover:underline">
-              {item.title || <>&mdash;</>}
+          <a key={idx} href={item.url} className="flex flex-col text-xs group">
+            <span className="flex flex-row items-center">
+              <span className="font-bold font-sans line-clamp-1 group-hover:underline">
+                {item.title || <>&mdash;</>}
+              </span>
+              <TimeBadge time={item.timestamp} />
             </span>
-            <TimeBadge time={item.timestamp} />
+            <span className="flex flex-row items-center gap-1 text-foreground/50">
+              <span className="line-clamp-1">{formatURL(item.url)}</span>
+              <LuExternalLink />
+            </span>
           </a>
         ))}
       </ul>
