@@ -1,7 +1,9 @@
+import { useLocation } from "wouter";
 import FeedForm, { useFeedForm } from "../components/FeedForm";
 import { rpc } from "../rpc";
 
 export default function AddFeedPage() {
+  const [, setLocation] = useLocation();
   const addFeed = rpc.addFeed.useMutation();
   const utils = rpc.useUtils();
 
@@ -13,10 +15,9 @@ export default function AddFeedPage() {
       <FeedForm
         form={form}
         onSubmit={async (values) => {
-          await addFeed.mutateAsync(values);
+          const feed = await addFeed.mutateAsync(values);
           await utils.feeds.invalidate();
-          form.reset();
-          // TODO: redirect? some kinda feedback
+          setLocation(`/f/${feed.id}`);
         }}
       />
     </main>
