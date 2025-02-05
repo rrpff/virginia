@@ -1,8 +1,6 @@
 import classNames from "classnames";
 import { Link, useLocation } from "wouter";
 import { rpc, RpcOutputs } from "../rpc";
-import { getQueryKey } from "@trpc/react-query";
-import { useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useState } from "react";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
 import {
@@ -27,14 +25,14 @@ import { useLiveContext } from "../contexts/live";
 export default function Sidebar() {
   const categories = rpc.categories.useQuery();
   const refresh = rpc.refresh.useMutation();
-  const queryClient = useQueryClient();
+  const utils = rpc.useUtils();
   const { isRefreshing } = useLiveContext();
 
   const reload = useCallback(async () => {
     await refresh.mutateAsync();
 
-    queryClient.invalidateQueries(getQueryKey(rpc.feeds));
-  }, [queryClient, refresh]);
+    utils.category.invalidate();
+  }, [refresh, utils.category]);
 
   if (!categories.data) return null;
 

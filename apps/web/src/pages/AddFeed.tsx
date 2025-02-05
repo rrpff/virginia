@@ -16,7 +16,7 @@ export default function AddFeedPage() {
         form={form}
         onSubmit={async (values) => {
           const feed = await addFeed.mutateAsync(values);
-          await utils.feeds.invalidate();
+          await utils.category.invalidate();
           setLocation(`/f/${feed.id}`);
         }}
       />

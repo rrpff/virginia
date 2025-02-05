@@ -128,9 +128,9 @@ const rpc = router({
       });
     }),
 
-  feeds: proc
-    .input(z.object({ category: z.string().optional() }))
-    .query(async ({ input: { category } }) => {
+  category: proc
+    .input(z.object({ vanity: z.string().optional() }))
+    .query(async ({ input: { vanity } }) => {
       const feedOrders = await db.feedItem.groupBy({
         by: ["feedId"],
         _max: {
@@ -140,11 +140,11 @@ const rpc = router({
 
       const feeds = await db.feed.findMany({
         include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
-        where: category
+        where: vanity
           ? {
               categories: {
                 some: {
-                  vanity: category,
+                  vanity: vanity,
                 },
               },
             }
