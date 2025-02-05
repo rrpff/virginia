@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import { proc, router } from "./rpc.js";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
-import { Feed, PrismaClient, Feed as PrismaFeed } from "@prisma/client";
+import { Feed, Prisma, PrismaClient, Feed as PrismaFeed } from "@prisma/client";
 import z from "zod";
 import { Adapter } from "./adapters/index.js";
 import { RSSAdapter } from "./adapters/rss.js";
@@ -146,29 +146,22 @@ const rpc = router({
       if (!category) return;
       if (category.position === position) return;
 
-      if (category.position > position) {
-        await db.$transaction([
-          db.category.updateMany({
-            where: { position: { gte: position, lt: category.position } },
-            data: { position: { increment: 1 } },
-          }),
-          db.category.update({
-            where: { id: categoryId },
-            data: { position },
-          }),
-        ]);
-      } else {
-        await db.$transaction([
-          db.category.updateMany({
-            where: { position: { lte: position, gt: category.position } },
-            data: { position: { decrement: 1 } },
-          }),
-          db.category.update({
-            where: { id: categoryId },
-            data: { position },
-          }),
-        ]);
-      }
+      await db.$transaction([
+        db.category.updateMany({
+          data:
+            category.position > position
+              ? { position: { increment: 1 } }
+              : { position: { decrement: 1 } },
+          where:
+            category.position > position
+              ? { position: { gte: position, lt: category.position } }
+              : { position: { lte: position, gt: category.position } },
+        }),
+        db.category.update({
+          data: { position },
+          where: { id: categoryId },
+        }),
+      ]);
     }),
 
   // TODO: validate icon+name are not taken
