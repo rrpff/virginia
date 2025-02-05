@@ -1,9 +1,9 @@
 import classNames from "classnames";
 import { Link, useLocation } from "wouter";
-import { rpc } from "../rpc";
+import { rpc, RpcOutputs } from "../rpc";
 import { getQueryKey } from "@trpc/react-query";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
 import {
   closestCenter,
@@ -21,6 +21,7 @@ import {
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
+import { restrictToParentElement } from "@dnd-kit/modifiers";
 
 export default function Sidebar() {
   const categories = rpc.categories.useQuery();
@@ -33,25 +34,11 @@ export default function Sidebar() {
     queryClient.invalidateQueries(getQueryKey(rpc.feeds));
   }, [queryClient, refresh]);
 
-  const links = useMemo(() => {
-    if (!categories.data) return [];
-
-    return [
-      // TODO: move this in
-      { href: "/", icon: "🌍", isDraggable: false },
-      ...categories.data.map((category) => ({
-        href: `/c/${category.vanity}`,
-        icon: category.icon,
-        isDraggable: true,
-      })),
-    ];
-  }, [categories.data]);
-
   if (!categories.data) return null;
 
   return (
     <header className="flex flex-col items-center gap-4">
-      <CategoryNav links={links} />
+      <CategoryNav />
       <section className="flex flex-col gap-1 mt-2 pl-4">
         <button
           className="v-button bg-background! text-foreground! text-lg aspect-square"
@@ -76,11 +63,8 @@ export default function Sidebar() {
   );
 }
 
-function CategoryNav({
-  links,
-}: {
-  links: { href: string; icon: string; isDraggable: boolean }[];
-}) {
+function CategoryNav() {
+  const { categories, setPosition } = useSortableCategories();
   const [location] = useLocation();
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -89,68 +73,70 @@ function CategoryNav({
     })
   );
 
-  const [orders, setOrders] = useState<string[]>([]);
-  useEffect(() => {
-    setOrders(links.map((l) => l.href));
-  }, [links]);
-
   const handleDragEnd = useCallback(
     (event: DragEndEvent) => {
-      if (!event.over) return;
+      if (event.over && event.active.id !== event.over.id) {
+        const fromIndex = categories.findIndex((c) => c.id === event.active.id);
+        const toIndex = categories.findIndex((c) => c.id === event.over!.id);
 
-      const link = links.find((l) => l.href === event.over!.id);
-      if (!link || !link.isDraggable) return;
-
-      if (event.active.id !== event.over.id) {
-        setOrders((current) => {
-          const oldIndex = current.indexOf(event.active.id as string);
-          const newIndex = current.indexOf(event.over!.id as string);
-
-          return arrayMove(current, oldIndex, newIndex);
-        });
+        if (fromIndex !== undefined && toIndex !== undefined) {
+          setPosition(fromIndex, toIndex);
+        }
       }
     },
-    [links]
+    [categories, setPosition]
   );
 
   return (
-    <DndContext
-      sensors={sensors}
-      collisionDetection={closestCenter}
-      onDragEnd={handleDragEnd}
-    >
-      <SortableContext items={orders} strategy={verticalListSortingStrategy}>
-        <div className="flex flex-col gap-1">
-          {links.map((link) => {
-            const order = orders.findIndex((o) => o === link.href);
+    <div className="flex flex-col gap-1">
+      <CategoryLink
+        id="root"
+        href="/"
+        icon="🌍"
+        isDraggable={false}
+        isActive={"/" === location}
+      />
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+        modifiers={[restrictToParentElement]}
+      >
+        <SortableContext
+          items={categories}
+          strategy={verticalListSortingStrategy}
+        >
+          {categories.map((category) => {
+            const href = `/c/${category.vanity}`;
             return (
               <CategoryLink
-                href={link.href}
-                icon={link.icon}
-                isDraggable={link.isDraggable}
-                isActive={link.href === location}
-                order={order}
+                key={href}
+                href={href}
+                id={category.id}
+                icon={category.icon}
+                isDraggable
+                isActive={href === location}
               />
             );
           })}
-        </div>
-      </SortableContext>
-    </DndContext>
+        </SortableContext>
+      </DndContext>
+    </div>
   );
 }
 
 function CategoryLink({
+  id,
   href,
   icon,
   isActive,
   isDraggable = true,
-  order,
 }: {
+  id: string;
   href: string;
   icon: string;
   isActive: boolean;
   isDraggable?: boolean;
-  order: number;
 }) {
   const {
     setNodeRef,
@@ -160,19 +146,23 @@ function CategoryLink({
     transition,
     isDragging,
   } = useSortable({
-    id: href,
+    id,
     disabled: !isDraggable,
   });
 
   const dragStyle = transform
-    ? { transform: `translate3d(0px, ${transform.y}px, 0)`, transition }
+    ? {
+        transform: `translate3d(0px, ${transform.y}px, 0)`,
+        transition,
+        pointerEvents: "none" as const,
+      }
     : undefined;
 
   return (
     <Link
       ref={setNodeRef}
       href={href}
-      style={{ order, ...dragStyle }} // TODO: fix this order behaviour
+      style={dragStyle}
       {...listeners}
       {...attributes}
       className={classNames(
@@ -186,4 +176,25 @@ function CategoryLink({
       <span className="relative">{icon}</span>
     </Link>
   );
+}
+
+type SortableCategory = RpcOutputs["categories"][number];
+function useSortableCategories() {
+  const categories = rpc.categories.useQuery();
+  const [sorted, setSorted] = useState<SortableCategory[]>([]);
+
+  useEffect(() => {
+    setSorted(categories.data ?? []);
+  }, [categories.data]);
+
+  const setPosition = useCallback((from: number, to: number) => {
+    setSorted((current) => {
+      return arrayMove(current, from, to);
+    });
+  }, []);
+
+  return {
+    categories: sorted,
+    setPosition,
+  };
 }
