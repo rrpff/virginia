@@ -8,6 +8,7 @@ import {
 } from "@headlessui/react";
 import { rpc, RpcOutputs } from "../rpc";
 import classNames from "classnames";
+import { LuLoader } from "react-icons/lu";
 
 type FeedDefinition = RpcOutputs["feedDefinitions"][number];
 
@@ -31,14 +32,26 @@ export function FeedDefinitionInput({ onSelectFeed, ...props }: Props) {
         }
       }}
     >
-      <ComboboxInput
-        {...props}
-        className={classNames(
-          "v-input w-96 data-[open]:rounded-b-none!",
-          props.className
-        )}
-        onChange={(e) => setQuery(e.currentTarget.value)}
-      />
+      <div className="flex flex-row w-96 relative">
+        <ComboboxInput
+          {...props}
+          className={classNames(
+            "v-input w-full data-[open]:rounded-b-none! pr-8!",
+            props.className
+          )}
+          onChange={(e) => setQuery(e.currentTarget.value)}
+        />
+        <div className="absolute right-6 top-0 h-full flex items-center">
+          <LuLoader
+            className={classNames(
+              "absolute pointer-events-none",
+              results.isFetching
+                ? "opacity-100 animate-spin"
+                : "invisible animate-none"
+            )}
+          />
+        </div>
+      </div>
       <ComboboxOptions
         anchor="bottom start"
         className="bg-white w-96 border-2 border-t-0 border-foreground rounded-b-sm empty:invisible"
