@@ -6,6 +6,7 @@ import { YoutubeAdapter } from "../adapters/youtube.js";
 import { FeedItem, Site } from "../schema.js";
 import db from "../db.js";
 import { backOff } from "exponential-backoff";
+import { WikipediaAdapter } from "../adapters/wikipedia.js";
 
 export async function RefreshFeed(feedId: string) {
   const feed = await db.feed.findFirst({ where: { id: feedId } });
@@ -66,10 +67,10 @@ export async function RefreshFeed(feedId: string) {
   ]);
 }
 
-const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
+const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter, WikipediaAdapter];
 
 function getAdapter(feed: PrismaFeed): Adapter {
   const url = new URL(feed.url);
-  const adapter = ADAPTERS.find((a) => a.hostname === url.hostname);
+  const adapter = ADAPTERS.find((a) => a.hostname?.test(url.hostname));
   return adapter ?? RSSAdapter;
 }

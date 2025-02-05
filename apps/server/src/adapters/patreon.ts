@@ -2,7 +2,7 @@ import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
 
 export const PatreonAdapter: Adapter = {
-  hostname: "www.patreon.com",
+  hostname: /^www\.patreon\.com$/,
   site: async (url: string) => {
     const meta = await getPatreonMeta(url);
 

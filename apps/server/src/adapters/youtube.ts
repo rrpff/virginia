@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
 
 export const YoutubeAdapter: Adapter = {
-  hostname: "www.youtube.com",
+  hostname: /^www\.youtube\.com$/,
   site: async (url: string) => {
     const res = await fetch(url);
     const html = await res.text();
