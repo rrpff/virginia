@@ -23,7 +23,6 @@ import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { useLiveContext } from "../contexts/live";
 
 export default function Sidebar() {
-  const categories = rpc.categories.useQuery();
   const refresh = rpc.refresh.useMutation();
   const utils = rpc.useUtils();
   const { isRefreshing } = useLiveContext();
@@ -33,8 +32,6 @@ export default function Sidebar() {
 
     utils.category.invalidate();
   }, [refresh, utils.category]);
-
-  if (!categories.data) return null;
 
   return (
     <header className="flex flex-col items-center gap-4">

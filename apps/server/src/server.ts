@@ -131,6 +131,11 @@ const rpc = router({
   category: proc
     .input(z.object({ vanity: z.string().optional() }))
     .query(async ({ input: { vanity } }) => {
+      if (vanity) {
+        const category = db.category.findFirst({ where: { vanity } });
+        if (!category) return null;
+      }
+
       const feedOrders = await db.feedItem.groupBy({
         by: ["feedId"],
         _max: {
