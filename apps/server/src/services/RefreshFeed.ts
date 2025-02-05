@@ -34,8 +34,8 @@ export async function RefreshFeed(feedId: string) {
     db.feed.update({
       where: { id: feed.id },
       data: {
-        name: site.name,
-        iconUrl: site.iconUrl,
+        name: site.name ?? null,
+        iconUrl: site.iconUrl ?? null,
         items: {
           createMany: {
             data: items.map((item) => {
