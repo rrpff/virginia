@@ -22,11 +22,13 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
+import { useLiveContext } from "../contexts/live";
 
 export default function Sidebar() {
   const categories = rpc.categories.useQuery();
   const refresh = rpc.refresh.useMutation();
   const queryClient = useQueryClient();
+  const { isRefreshing } = useLiveContext();
 
   const reload = useCallback(async () => {
     await refresh.mutateAsync();
@@ -42,13 +44,13 @@ export default function Sidebar() {
       <section className="flex flex-col gap-1 mt-2 pl-4">
         <button
           className="v-button bg-background! text-foreground! text-lg aspect-square"
-          disabled={refresh.isLoading}
+          disabled={isRefreshing}
           onClick={() => reload()}
         >
           <LuRefreshCw
             style={{
               transition: "transform 0.4s",
-              animation: refresh.isLoading ? "spin 1s infinite" : "",
+              animation: isRefreshing ? "spin 1s infinite" : "",
             }}
           />
         </button>

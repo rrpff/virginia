@@ -5,10 +5,8 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import z from "zod";
 import { slug } from "../utils/ids.js";
 import db from "./db.js";
-import RefreshAll from "./services/RefreshAll.js";
-import { RefreshFeed } from "./services/RefreshFeed.js";
-
-// TODO: update client on changes
+import RefreshScheduler from "./schedulers/RefreshScheduler.js";
+import { ServerEvent } from "./schema.js";
 
 const app = express();
 const rpc = router({
@@ -31,7 +29,7 @@ const rpc = router({
         },
       });
 
-      RefreshFeed(feed.id); // TODO: add proper side bg handling rather than just throwing promises out there
+      refreshScheduler.refresh(feed.id);
       return feed;
     }),
 
@@ -59,12 +57,12 @@ const rpc = router({
         },
       });
 
-      RefreshFeed(feed.id);
+      refreshScheduler.refresh(feed.id);
       return feed;
     }),
 
-  refresh: proc.mutation(async () => {
-    await RefreshAll(); // TODO: sameee
+  refresh: proc.mutation(() => {
+    refreshScheduler.refreshAll();
   }),
 
   categories: proc.query(async () => {
@@ -178,6 +176,33 @@ app.use(
     },
   })
 );
+
+const refreshScheduler = new RefreshScheduler();
+app.get("/sse", (_req, res) => {
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Connection", "keep-alive");
+  res.flushHeaders();
+
+  const send = (event: ServerEvent) => {
+    res.write(`data: ${JSON.stringify(event)}\n\n`);
+  };
+
+  const started = () => send({ type: "refresh-started" });
+  const ended = () => send({ type: "refresh-ended" });
+  const updated = (feedId: string) => send({ type: "feed-updated", feedId });
+
+  refreshScheduler.on("refresh-started", started);
+  refreshScheduler.on("refresh-ended", ended);
+  refreshScheduler.on("feed-updated", updated);
+
+  res.on("close", () => {
+    refreshScheduler.off("refresh-started", started);
+    refreshScheduler.off("refresh-ended", ended);
+    refreshScheduler.off("feed-updated", updated);
+    res.end();
+  });
+});
 
 export default app;
 export type RPC = typeof rpc;

@@ -28,3 +28,8 @@ export const CategorySchema = z.object({
   name: z.string().min(1, "can't be empty!"),
   icon: z.string().regex(/\p{Extended_Pictographic}{1}/u, "just emoji ok!"),
 });
+
+export type ServerEvent =
+  | { type: "refresh-started" }
+  | { type: "refresh-ended" }
+  | { type: "feed-updated"; feedId: string };
