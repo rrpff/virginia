@@ -15,8 +15,14 @@ class RefreshScheduler extends TypedEmitter<Events> {
   }
 
   async refreshAll() {
-    const feeds = await db.feed.findMany();
-    await Promise.all(feeds.map((feed) => this.refresh(feed.id)));
+    return this.run(async () => {
+      const feeds = await db.feed.findMany();
+      await Promise.all(
+        feeds.map((feed) => {
+          return this.refresh(feed.id);
+        })
+      );
+    });
   }
 
   async refresh(feedId: string) {
