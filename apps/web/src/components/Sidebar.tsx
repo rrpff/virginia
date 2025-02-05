@@ -67,7 +67,11 @@ function CategoryNav() {
   const { categories, setPosition } = useSortableCategories();
   const [location] = useLocation();
   const sensors = useSensors(
-    useSensor(PointerSensor),
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 3,
+      },
+    }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     })
@@ -96,31 +100,33 @@ function CategoryNav() {
         isDraggable={false}
         isActive={"/" === location}
       />
-      <DndContext
-        sensors={sensors}
-        collisionDetection={closestCenter}
-        onDragEnd={handleDragEnd}
-        modifiers={[restrictToParentElement]}
-      >
-        <SortableContext
-          items={categories}
-          strategy={verticalListSortingStrategy}
+      <div className="flex flex-col gap-1">
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+          modifiers={[restrictToParentElement]}
         >
-          {categories.map((category) => {
-            const href = `/c/${category.vanity}`;
-            return (
-              <CategoryLink
-                key={href}
-                href={href}
-                id={category.id}
-                icon={category.icon}
-                isDraggable
-                isActive={href === location}
-              />
-            );
-          })}
-        </SortableContext>
-      </DndContext>
+          <SortableContext
+            items={categories}
+            strategy={verticalListSortingStrategy}
+          >
+            {categories.map((category) => {
+              const href = `/c/${category.vanity}`;
+              return (
+                <CategoryLink
+                  key={href}
+                  href={href}
+                  id={category.id}
+                  icon={category.icon}
+                  isDraggable
+                  isActive={href === location}
+                />
+              );
+            })}
+          </SortableContext>
+        </DndContext>
+      </div>
     </div>
   );
 }
@@ -151,30 +157,32 @@ function CategoryLink({
   });
 
   const dragStyle = transform
-    ? {
-        transform: `translate3d(0px, ${transform.y}px, 0)`,
-        transition,
-        pointerEvents: "none" as const,
-      }
+    ? { transform: `translate3d(0px, ${transform.y}px, 0)`, transition }
     : undefined;
 
   return (
-    <Link
+    <div
       ref={setNodeRef}
-      href={href}
       style={dragStyle}
-      {...listeners}
-      {...attributes}
       className={classNames(
         "relative group overflow-hidden",
-        "text-2xl pl-8 pr-4 py-2 rounded-r-md",
+        "text-2xl rounded-r-md cursor-pointer",
         isActive ? "bg-white" : "bg-background hover:bg-foreground/10",
-        isDragging ? "bg-foreground/10 z-10" : "", // TODO: stop opacity
-        "active:border-foreground"
+        isDragging ? "bg-foreground/10 z-10" : "" // TODO: stop opacity
       )}
+      {...listeners}
+      {...attributes}
     >
-      <span className="relative">{icon}</span>
-    </Link>
+      <Link
+        className={classNames(
+          "block pl-8 pr-4 py-2",
+          isDragging ? "pointer-events-none" : "pointer-events-auto"
+        )}
+        href={href}
+      >
+        <span className="relative">{icon}</span>
+      </Link>
+    </div>
   );
 }
 
