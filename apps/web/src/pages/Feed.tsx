@@ -28,7 +28,7 @@ export default function FeedPage() {
   return (
     <div className="flex flex-row justify-between gap-4">
       <div className="flex basis-0 grow">
-        <Feed feed={feed.data} items={feed.data.items} />
+        <Feed feed={feed.data} items={feed.data.items} link={false} />
       </div>
       <aside className="flex flex-col grow-0 pr-16">
         <h2 className="font-bold leading-none mb-2">Settings</h2>
