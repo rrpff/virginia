@@ -63,8 +63,8 @@ const rpc = router({
       return feed;
     }),
 
-  refresh: proc.mutation(() => {
-    RefreshAll(); // TODO: sameee
+  refresh: proc.mutation(async () => {
+    await RefreshAll(); // TODO: sameee
   }),
 
   categories: proc.query(async () => {
