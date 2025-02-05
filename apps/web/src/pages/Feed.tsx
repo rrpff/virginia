@@ -22,7 +22,7 @@ export default function FeedPage() {
     );
   }, [feed.data, form]);
 
-  if (!id) return <NotFound />;
+  if (!id || (feed.isFetched && feed.data === null)) return <NotFound />;
   if (!feed.data) return null;
 
   return (
