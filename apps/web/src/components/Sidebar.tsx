@@ -168,7 +168,7 @@ function CategoryLink({
       style={dragStyle}
       className={classNames(
         "relative group overflow-hidden",
-        "text-2xl rounded-r-md cursor-pointer",
+        "text-2xl rounded-r-md cursor-default",
         isActive ? "bg-white" : "bg-background hover:bg-foreground/10",
         isDragging ? "bg-foreground/10 z-10" : "" // TODO: stop opacity
       )}
@@ -177,7 +177,7 @@ function CategoryLink({
     >
       <Link
         className={classNames(
-          "block pl-8 pr-4 py-2",
+          "block pl-8 pr-4 py-2 cursor-default",
           isDragging ? "pointer-events-none" : "pointer-events-auto"
         )}
         href={href}
