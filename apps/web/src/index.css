@@ -22,8 +22,9 @@
 }
 
 .v-input {
-  @apply rounded-sm p-1 px-2;
+  @apply rounded-sm p-2;
   @apply bg-white border-2 border-foreground;
+  @apply outline outline-transparent focus:outline-foreground/50;
 }
 
 .v-icon {
