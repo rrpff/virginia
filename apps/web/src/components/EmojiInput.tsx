@@ -81,17 +81,19 @@ export default function EmojiInput(props: Props) {
   }, [emojis, selectedIndex, setEmoji]);
 
   return (
-    <div>
+    <div className="relative">
       <input
         ref={inputRef}
         className={classNames("v-input", props.className)}
         type="text"
         {...props}
         onChange={(e) => props.onChange?.(e.currentTarget.value)}
+        autoComplete="off"
       />
       <div
         className={classNames(
-          "absolute bg-white w-68 flex flex-row flex-wrap gap-1 p-2 rounded-sm z-20",
+          "fixed bg-white w-69 flex flex-row flex-wrap gap-1 p-2 rounded-sm z-20",
+          "border-2 border-foreground",
           visible ? "block pointer-events-auto" : "hidden pointer-events-none"
         )}
         style={{ left: position.x, top: position.y }}

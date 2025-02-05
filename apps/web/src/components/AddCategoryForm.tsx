@@ -4,6 +4,7 @@ import { Category, CategorySchema } from "@virginia/server";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
+import EmojiInput from "./EmojiInput";
 
 const Schema = CategorySchema.omit({ id: true });
 
@@ -28,6 +29,8 @@ export default function AddCategoryForm({
     onSubmit?.(category);
   });
 
+  const icon = form.watch("icon");
+
   return (
     <form onSubmit={submit}>
       <div>
@@ -46,12 +49,13 @@ export default function AddCategoryForm({
         <label className="block text-sm font-bold" htmlFor="icon">
           Icon
         </label>
-        <input
+        <EmojiInput
           id="icon"
           type="text"
           className="v-input"
           placeholder="🌈"
-          {...form.register("icon")}
+          value={icon}
+          onChange={(value) => form.setValue("icon", value)}
         />
         <ErrorMessage name="icon" errors={form.formState.errors} />
       </div>
