@@ -5,6 +5,7 @@ import { RSSAdapter } from "../adapters/rss.js";
 import { YoutubeAdapter } from "../adapters/youtube.js";
 import { FeedItem, Site } from "../schema.js";
 import db from "../db.js";
+import { backOff } from "exponential-backoff";
 
 export async function RefreshFeed(feedId: string) {
   const feed = await db.feed.findFirst({ where: { id: feedId } });
@@ -16,15 +17,26 @@ export async function RefreshFeed(feedId: string) {
   const adapter = getAdapter(feed);
 
   let site: Site = {};
+  // TODO: not every time lol
   try {
-    site = await adapter.site(feed.url); // TODO: not every time lol
+    site = await backOff(() => adapter.site(feed.url), {
+      numOfAttempts: 3,
+      startingDelay: 100,
+      timeMultiple: 5,
+      jitter: "full",
+    });
   } catch (err) {
     console.error(`Unable to fetch site meta for ${feed.url}: ${err}`);
   }
 
   let items: Omit<FeedItem, "id" | "feedId">[] = [];
   try {
-    items = await adapter.feed(feed.url);
+    items = await backOff(() => adapter.feed(feed.url), {
+      numOfAttempts: 3,
+      startingDelay: 100,
+      timeMultiple: 5,
+      jitter: "full",
+    });
   } catch (err) {
     console.error(`Unable to fetch items for ${feed.url}: ${err}`);
   }

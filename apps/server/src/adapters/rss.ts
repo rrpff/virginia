@@ -9,8 +9,6 @@ export const RSSAdapter: Adapter = {
     const data = await new RSS().parseURL(feedUrl);
     const icon = data.image?.url ?? (await getFavicon(siteUrl));
 
-    // TODO: mothercain
-
     return {
       name: data.title,
       iconUrl: icon,

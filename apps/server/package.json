@@ -20,6 +20,7 @@
     "@virginia/core": "*",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
+    "exponential-backoff": "^3.1.1",
     "express": "^4.21.2",
     "rss-parser": "^3.13.0",
     "tiny-typed-emitter": "^2.1.0",
