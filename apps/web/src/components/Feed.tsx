@@ -19,50 +19,42 @@ export default function Feed({
   link?: boolean;
 }) {
   return (
-    <div className="max-w-180 flex flex-row">
-      <Link
-        href={`/f/${feed.id}`}
-        className={classNames(
-          "shrink-0 px-2 peer",
-          link ? "pointer-events-auto" : "pointer-events-none"
-        )}
-      >
-        {<img src={feed.iconUrl ?? ""} className="v-icon" />}
-      </Link>
-      <div className="peer-hover:[&_.peer-link]:underline">
-        <span className="flex items-center gap-2 font-bold">
-          <span className="mb-1 leading-none">
-            <Link
-              href={`/f/${feed.id}`}
-              className={classNames(
-                "peer-link hover:underline",
-                link ? "pointer-events-auto" : "pointer-events-none"
-              )}
-            >
+    <div className="max-w-180 flex flex-col gap-1">
+      <div className="flex flex-row gap-2">
+        <Link
+          href={`/f/${feed.id}`}
+          className={classNames(
+            "group flex flex-row items-center gap-2",
+            link ? "pointer-events-auto" : "pointer-events-none"
+          )}
+        >
+          <img src={feed.iconUrl ?? ""} className="v-icon" />
+          <span className="leading-none flex flex-row gap-1">
+            <span className="font-bold group-hover:underline">
               {feed.name ?? formatURL(feed.url)}
-            </Link>{" "}
-            <a href={feed.url} className="opacity-50 group">
-              <small className="inline-flex flex-row items-center gap-1 group-hover:underline">
-                {formatURL(feed.url)} <LuExternalLink />
-              </small>
-            </a>
+            </span>
           </span>
-        </span>
-        <ul className="flex flex-col gap-0.5">
-          {items.map((item, idx) => (
-            <a
-              key={idx}
-              href={item.url}
-              className="flex flex-row text-xs items-center group"
-            >
-              <span className="font-bold font-sans line-clamp-1 group-hover:underline">
-                {item.title}
-              </span>
-              <TimeBadge time={item.timestamp} />
-            </a>
-          ))}
-        </ul>
+        </Link>
+        <a href={feed.url} className="opacity-50 font-bold">
+          <small className="inline-flex flex-row items-center gap-1 hover:underline">
+            {formatURL(feed.url)} <LuExternalLink />
+          </small>
+        </a>
       </div>
+      <ul className="flex flex-col gap-0.5 pl-8">
+        {items.map((item, idx) => (
+          <a
+            key={idx}
+            href={item.url}
+            className="flex flex-row text-xs items-center group"
+          >
+            <span className="font-bold font-sans line-clamp-1 group-hover:underline">
+              {item.title || <>&mdash;</>}
+            </span>
+            <TimeBadge time={item.timestamp} />
+          </a>
+        ))}
+      </ul>
     </div>
   );
 }
