@@ -130,15 +130,61 @@ const rpc = router({
   }),
 
   categories: proc.query(async () => {
-    return db.category.findMany();
+    return db.category.findMany({ orderBy: { position: "asc" } });
   }),
+
+  setCategoryPosition: proc
+    .input(
+      z.object({ categoryId: z.string(), position: z.number().int().gte(0) })
+    )
+    .mutation(async ({ input: { categoryId, position } }) => {
+      const category = await db.category.findFirst({
+        where: { id: categoryId },
+        select: { position: true },
+      });
+
+      if (!category) return;
+      if (category.position === position) return;
+
+      if (category.position > position) {
+        await db.$transaction([
+          db.category.updateMany({
+            where: { position: { gte: position, lt: category.position } },
+            data: { position: { increment: 1 } },
+          }),
+          db.category.update({
+            where: { id: categoryId },
+            data: { position },
+          }),
+        ]);
+      } else {
+        await db.$transaction([
+          db.category.updateMany({
+            where: { position: { lte: position, gt: category.position } },
+            data: { position: { decrement: 1 } },
+          }),
+          db.category.update({
+            where: { id: categoryId },
+            data: { position },
+          }),
+        ]);
+      }
+    }),
 
   // TODO: validate icon+name are not taken
   addCategory: proc
     .input(z.object({ name: z.string(), icon: z.string() }))
     .mutation(async ({ input: { name, icon } }) => {
       const vanity = slug(name);
-      return db.category.create({ data: { name, icon, vanity } });
+      const position = await db.category.count();
+      return db.category.create({
+        data: {
+          name,
+          icon,
+          vanity,
+          position,
+        },
+      });
     }),
 
   feed: proc

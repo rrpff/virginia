@@ -189,17 +189,27 @@ function CategoryLink({
 type SortableCategory = RpcOutputs["categories"][number];
 function useSortableCategories() {
   const categories = rpc.categories.useQuery();
+  const setDbPosition = rpc.setCategoryPosition.useMutation();
   const [sorted, setSorted] = useState<SortableCategory[]>([]);
 
   useEffect(() => {
     setSorted(categories.data ?? []);
   }, [categories.data]);
 
-  const setPosition = useCallback((from: number, to: number) => {
-    setSorted((current) => {
-      return arrayMove(current, from, to);
-    });
-  }, []);
+  const setPosition = useCallback(
+    (from: number, to: number) => {
+      const category = sorted[from];
+
+      setSorted((current) => {
+        return arrayMove(current, from, to);
+      });
+
+      if (category) {
+        setDbPosition.mutate({ categoryId: category.id, position: to });
+      }
+    },
+    [setDbPosition, sorted]
+  );
 
   return {
     categories: sorted,
