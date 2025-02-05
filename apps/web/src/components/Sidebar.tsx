@@ -7,7 +7,6 @@ import {
   closestCenter,
   DndContext,
   DragEndEvent,
-  KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
@@ -15,7 +14,6 @@ import {
 import {
   arrayMove,
   SortableContext,
-  sortableKeyboardCoordinates,
   useSortable,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
@@ -45,7 +43,7 @@ export default function Sidebar() {
           <LuRefreshCw
             style={{
               transition: "transform 0.4s",
-              animation: isRefreshing ? "spin 1s infinite" : "",
+              animation: isRefreshing ? "spin 1s infinite" : "", // TODO: tw has this
             }}
           />
         </button>
@@ -68,10 +66,11 @@ function CategoryNav() {
       activationConstraint: {
         distance: 3,
       },
-    }),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
     })
+    // TODO: means you can't open links lol
+    // useSensor(KeyboardSensor, {
+    //   coordinateGetter: sortableKeyboardCoordinates,
+    // })
   );
 
   const handleDragEnd = useCallback(
@@ -164,11 +163,12 @@ function CategoryLink({
       className={classNames(
         "relative group overflow-hidden",
         "text-2xl rounded-r-md cursor-default",
+        "outline-4 outline-transparent focus:outline-focus",
         isActive ? "bg-white" : "bg-background hover:bg-foreground/10",
         isDragging ? "bg-foreground/10 z-10" : "" // TODO: stop opacity
       )}
       {...listeners}
-      {...attributes}
+      {...attributes} // TODO: fix focus
     >
       <Link
         className={classNames(

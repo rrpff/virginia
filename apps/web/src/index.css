@@ -3,6 +3,7 @@
 @theme {
   --color-background: oklch(94.85% 0.0148 19.18148516721477);
   --color-foreground: oklch(37.5% 0.0296 19.18148516721477);
+  --color-focus: oklch(84.85% 0.1653 94.76);
 
   /* --color-background: var(--arc-palette-background);
   --color-foreground: var(--arc-palette-foregroundPrimary); */
@@ -19,12 +20,13 @@
   @apply cursor-pointer p-1 px-2 rounded-sm;
   @apply bg-foreground text-background;
   @apply disabled:cursor-not-allowed disabled:bg-foreground/50;
+  @apply outline-4 outline-transparent focus:outline-focus;
 }
 
 .v-input {
   @apply rounded-sm p-2;
   @apply bg-white border-2 border-foreground;
-  @apply outline outline-transparent focus:outline-foreground/50;
+  @apply outline-4 outline-transparent focus:outline-focus;
 }
 
 .v-icon {

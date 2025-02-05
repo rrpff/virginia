@@ -36,7 +36,8 @@ export function FeedDefinitionInput({ onSelectFeed, ...props }: Props) {
         <ComboboxInput
           {...props}
           className={classNames(
-            "v-input w-full data-[open]:rounded-b-none! pr-8!",
+            "v-input w-full pr-8!",
+            results.data?.length && "data-[open]:rounded-b-none!",
             props.className
           )}
           onChange={(e) => setQuery(e.currentTarget.value)}
@@ -54,7 +55,10 @@ export function FeedDefinitionInput({ onSelectFeed, ...props }: Props) {
       </div>
       <ComboboxOptions
         anchor="bottom start"
-        className="bg-white w-96 border-2 border-t-0 border-foreground rounded-b-sm empty:invisible"
+        className={classNames(
+          "w-96 rounded-b-sm empty:invisible",
+          "bg-white border-2 border-t-0 border-foreground"
+        )}
       >
         {results.data?.map((result) => (
           <ComboboxOption
