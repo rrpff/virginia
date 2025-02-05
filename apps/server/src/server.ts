@@ -7,9 +7,16 @@ import { slug } from "../utils/ids.js";
 import db from "./db.js";
 import { ServerEvent } from "./schema.js";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
+import { GetAdapter } from "./adapters/index.js";
 
 const app = express();
 const rpc = router({
+  feedDefinitions: proc
+    .input(z.object({ url: z.string().url() }))
+    .query(async ({ input: { url } }) => {
+      return GetAdapter(url).getFeedDefinitions(url);
+    }),
+
   addFeed: proc
     .input(
       z.object({

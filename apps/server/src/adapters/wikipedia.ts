@@ -1,44 +1,46 @@
-import { Adapter } from "./index.js";
-import { RSSAdapter } from "./rss.js";
+// import { Adapter } from "./index.js";
+// import { RSSAdapter } from "./rss.js";
 
-export const WikipediaAdapter: Adapter = {
-  hostname: /^\w+\.wikipedia\.org$/,
-  site: async (url: string) => {
-    const atomUrl = rewriteUrl(url);
-    return RSSAdapter.site(atomUrl);
-  },
-  feed: async (url: string) => {
-    const atomUrl = rewriteUrl(url);
-    return RSSAdapter.feed(atomUrl);
-  },
-};
+// export const WikipediaAdapter: Adapter = {
+//   async getFeedDefinitions(url: string) {
+//     const atomUrl = rewriteUrl(url);
+//     return RSSAdapter.getFeedDefinitions(url);
+//   },
 
-function rewriteUrl(url: string) {
-  const { slug, locale } = resolveSlug(url);
-  if (!slug || !locale) return url;
+//   async site(url: string) {
+//     const atomUrl = rewriteUrl(url);
+//     return RSSAdapter.site(atomUrl);
+//   },
 
-  return `https://${locale}.wikipedia.org/w/index.php?title=${slug}&feed=atom&action=history`;
-}
+//   async feed(url: string) {
+//     const atomUrl = rewriteUrl(url);
+//     return RSSAdapter.feed(atomUrl);
+//   },
+// };
 
-const SLUG_MATCH = /\/\/(\w+)\.wikipedia\.org\/wiki\/([^\/]+)/;
-const PHP_MATCH = /\/\/(\w+)\.wikipedia\.org\/w\//;
-function resolveSlug(url: string) {
-  const slugMatch = url.match(SLUG_MATCH);
-  if (slugMatch) {
-    return {
-      locale: slugMatch[1],
-      slug: slugMatch[2],
-    };
-  }
+// function rewriteUrl(url: string) {
+//   const { slug, locale } = resolveSlug(url);
+//   if (!slug || !locale) return url;
 
-  const phpMatch = url.match(PHP_MATCH);
-  const slug = new URL(url).searchParams.get("title");
-  return {
-    locale: phpMatch ? phpMatch[1] : null,
-    slug: slug,
-  };
-}
+//   return `https://${locale}.wikipedia.org/w/index.php?title=${slug}&feed=atom&action=history`;
+// }
 
-// https://en.wikipedia.org/wiki/Xiu_Xiu
-// https://en.wikipedia.org/w/index.php?title=Xiu_Xiu&action=history
-// https://en.wikipedia.org/w/index.php?title=Xiu_Xiu&feed=atom&action=history
+// const SLUG_MATCH = /\/\/(\w+)\.wikipedia\.org\/wiki\/([^\/]+)/; // e.g. https://en.wikipedia.org/wiki/Xiu_Xiu
+// const PHP_MATCH = /\/\/(\w+)\.wikipedia\.org\/w\//; // e.g. https://en.wikipedia.org/w/index.php?title=Xiu_Xiu&action=history
+
+// function resolveSlug(url: string) {
+//   const slugMatch = url.match(SLUG_MATCH);
+//   if (slugMatch) {
+//     return {
+//       locale: slugMatch[1],
+//       slug: slugMatch[2],
+//     };
+//   }
+
+//   const phpMatch = url.match(PHP_MATCH);
+//   const slug = new URL(url).searchParams.get("title");
+//   return {
+//     locale: phpMatch ? phpMatch[1] : null,
+//     slug: slug,
+//   };
+// }

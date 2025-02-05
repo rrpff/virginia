@@ -2,8 +2,18 @@ import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
 
 export const PatreonAdapter: Adapter = {
-  hostname: /^www\.patreon\.com$/,
-  site: async (url: string) => {
+  async getFeedDefinitions(url) {
+    const site = await this.site(url);
+    return [
+      {
+        url,
+        name: site.name ?? null,
+        iconUrl: site.iconUrl ?? null,
+      },
+    ];
+  },
+
+  async site(url: string) {
     const meta = await getPatreonMeta(url);
 
     return {
@@ -13,7 +23,8 @@ export const PatreonAdapter: Adapter = {
           .attributes.avatar_photo_image_urls.thumbnail_small,
     };
   },
-  feed: async (url: string) => {
+
+  async feed(url: string) {
     const json = await getPatreonData(url);
     return json.data
       .filter((item) => item.type === "post")

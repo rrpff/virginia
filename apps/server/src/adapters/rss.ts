@@ -4,8 +4,30 @@ import url from "url";
 import { Adapter } from "./index.js";
 
 export const RSSAdapter: Adapter = {
+  async getFeedDefinitions(url: string) {
+    const feedUrls = await getFeedUrls(url);
+    const favicon = await getFavicon(url);
+
+    return await Promise.all(
+      feedUrls.map(async (feedUrl) => {
+        const data = await new RSS().parseURL(feedUrl);
+        const icon = data.image?.url ?? favicon;
+
+        return {
+          name: data.title ?? null,
+          iconUrl: icon,
+          url: feedUrl,
+        };
+      })
+    );
+  },
+
   site: async (siteUrl: string) => {
-    const feedUrl = await resolve(siteUrl);
+    const [feedUrl] = await getFeedUrls(siteUrl);
+    if (!feedUrl) {
+      return {}; // TODO: log
+    }
+
     const data = await new RSS().parseURL(feedUrl);
     const icon = data.image?.url ?? (await getFavicon(siteUrl));
 
@@ -15,7 +37,11 @@ export const RSSAdapter: Adapter = {
     };
   },
   feed: async (siteUrl: string) => {
-    const feedUrl = await resolve(siteUrl);
+    const [feedUrl] = await getFeedUrls(siteUrl); // TODO: receive feed url directly
+    if (!feedUrl) {
+      return []; // TODO: log
+    }
+
     const rss = new RSS();
     const { items } = await rss.parseURL(feedUrl); // TODO: get/write a parser that includes images
 
@@ -38,24 +64,38 @@ export const RSSAdapter: Adapter = {
 };
 
 const FEED_EXTENSIONS = [".rss", ".atom", "xml"];
-async function resolve(uri: string) {
-  if (FEED_EXTENSIONS.some((ext) => uri.endsWith(ext))) return uri;
+async function getFeedUrls(uri: string): Promise<string[]> {
+  if (FEED_EXTENSIONS.some((ext) => uri.endsWith(ext))) return [uri];
 
   const res = await fetch(uri);
   const html = await res.text();
 
   try {
-    // Try and parse the RSS
+    // If the URL itself parses as RSS, return it
     await new RSS().parseString(html);
-    return uri;
+    return [uri];
   } catch (_err) {
     const $ = cheerio.load(html);
-    const href =
-      $('link[type="application/rss+xml"]').attr("href") ||
-      $('link[type="application/atom+xml"]').attr("href") ||
-      uri;
 
-    return url.resolve(uri, href);
+    const feeds: string[] = [];
+
+    // Add all RSS feeds
+    $('link[type="application/rss+xml"]').each((_, el) => {
+      const href = $(el).attr("href");
+      if (href) {
+        feeds.push(url.resolve(uri, href));
+      }
+    });
+
+    // Add all atom feeds
+    $('link[type="application/atom+xml"]').each((_, el) => {
+      const href = $(el).attr("href");
+      if (href) {
+        feeds.push(url.resolve(uri, href));
+      }
+    });
+
+    return feeds;
   }
 }
 
