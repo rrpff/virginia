@@ -30,7 +30,7 @@ export default function Feed({
         >
           <img src={feed.iconUrl ?? ""} className="v-icon" />
           <span className="leading-none flex flex-row gap-1">
-            <span className="font-bold group-hover:underline">
+            <span className="font-bold group-hover:underline underline-offset-2">
               {feed.name ?? formatURL(feed.url)}
             </span>
           </span>
@@ -39,8 +39,8 @@ export default function Feed({
       <ul className="flex flex-col pl-8 gap-2">
         {items.map((item, idx) => (
           <a key={idx} href={item.url} className="flex flex-col text-xs group">
-            <span className="flex flex-row items-center">
-              <span className="font-bold font-sans line-clamp-1 group-hover:underline">
+            <span className="flex flex-row items-center gap-1">
+              <span className="font-bold font-sans line-clamp-1 group-hover:underline underline-offset-2">
                 {item.title || <>&mdash;</>}
               </span>
               <TimeBadge time={item.timestamp} />
