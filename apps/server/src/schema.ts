@@ -25,11 +25,6 @@ export const FeedSchema = z.object({
 export type Category = z.infer<typeof CategorySchema>;
 export const CategorySchema = z.object({
   id: z.string(),
-  name: z
-    .string()
-    .min(1, "can't be empty!")
-    .refine((string) => {
-      return null === string.match(/([^a-z|0-9|\s])/);
-    }, "only lower cases and spaces!"), // TODO: lower case is unnecessary
+  name: z.string().min(1, "can't be empty!"),
   icon: z.string().regex(/\p{Extended_Pictographic}{1}/u, "just emoji ok!"),
 });

@@ -12,6 +12,7 @@
 .v-button {
   @apply cursor-pointer p-1 px-2 rounded-sm;
   @apply bg-foreground text-background;
+  @apply disabled:cursor-not-allowed disabled:bg-foreground/50;
 }
 
 .v-input {

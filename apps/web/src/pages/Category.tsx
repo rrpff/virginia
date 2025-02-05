@@ -7,10 +7,7 @@ import NotFound from "./NotFound";
 export default function CategoryPage() {
   const { category } = useParams();
   const categories = rpc.categories.useQuery();
-  const feeds = rpc.feeds.useQuery(
-    { categoryId: category },
-    { keepPreviousData: true }
-  );
+  const feeds = rpc.feeds.useQuery({ category }, { keepPreviousData: true });
 
   if (!categories.data || !feeds.data) return null;
   if (feeds.data.length === 0) return <NotFound />;
@@ -22,7 +19,7 @@ export default function CategoryPage() {
           <li key={feed.url}>
             <Feed feed={feed} items={feed.items} />
             <Link
-              href={`/feed/${feed.id}`}
+              href={`/f/${feed.id}`}
               className="ml-10 mt-2 inline-block p-1 rounded-sm bg-white/50 text-foreground text-sm"
             >
               <LuArrowRight />

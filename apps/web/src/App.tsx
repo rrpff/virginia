@@ -31,9 +31,9 @@ export default function App() {
           <article className="py-3 w-full">
             <Router>
               <Switch>
-                <Route path="/feed/:id" component={FeedPage} />
+                <Route path="/f/:id" component={FeedPage} />
                 <Route path="/add" component={AddFeedPage} />
-                <Route path="/:category" component={CategoryPage} />
+                <Route path="/c/:category" component={CategoryPage} />
                 <Route path="/" component={CategoryPage} />
                 <Route component={NotFound} />
               </Switch>

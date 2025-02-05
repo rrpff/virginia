@@ -34,9 +34,10 @@ model FeedItem {
 }
 
 model Category {
-  id   String @id @default(uuid())
-  name String
-  icon String
+  id     String @id @default(uuid())
+  name   String
+  vanity String
+  icon   String
 
   feeds Feed[]
 }

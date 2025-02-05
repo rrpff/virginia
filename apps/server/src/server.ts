@@ -9,6 +9,7 @@ import { RSSAdapter } from "./adapters/rss.js";
 import { PatreonAdapter } from "./adapters/patreon.js";
 import { YoutubeAdapter } from "./adapters/youtube.js";
 import { FeedItem, Site } from "./schema.js";
+import { slug } from "../utils/ids.js";
 
 const ADAPTERS = [RSSAdapter, PatreonAdapter, YoutubeAdapter];
 
@@ -136,7 +137,8 @@ const rpc = router({
   addCategory: proc
     .input(z.object({ name: z.string(), icon: z.string() }))
     .mutation(async ({ input: { name, icon } }) => {
-      return db.category.create({ data: { name, icon } });
+      const vanity = slug(name);
+      return db.category.create({ data: { name, icon, vanity } });
     }),
 
   feed: proc
@@ -152,8 +154,8 @@ const rpc = router({
     }),
 
   feeds: proc
-    .input(z.object({ categoryId: z.string().optional() }))
-    .query(async ({ input: { categoryId } }) => {
+    .input(z.object({ category: z.string().optional() }))
+    .query(async ({ input: { category } }) => {
       const feedOrders = await db.feedItem.groupBy({
         by: ["feedId"],
         _max: {
@@ -163,11 +165,11 @@ const rpc = router({
 
       const feeds = await db.feed.findMany({
         include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
-        where: categoryId
+        where: category
           ? {
               categories: {
                 some: {
-                  id: categoryId,
+                  vanity: category,
                 },
               },
             }

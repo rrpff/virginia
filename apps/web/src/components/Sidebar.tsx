@@ -28,8 +28,8 @@ export default function Sidebar() {
           <CategoryLink
             key={cat.id}
             icon={cat.icon}
-            href={`/${cat.id}`} // TODO: use vanity
-            isActive={location === `/${cat.id}`}
+            href={`/c/${cat.vanity}`}
+            isActive={location === `/c/${cat.vanity}`}
           />
         ))}
       </div>
