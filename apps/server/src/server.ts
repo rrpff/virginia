@@ -50,6 +50,7 @@ const rpc = router({
           url,
           categories: categories
             ? {
+                set: [],
                 connect: categories.map((category) => ({
                   id: category,
                 })),
