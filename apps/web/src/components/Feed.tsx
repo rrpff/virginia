@@ -20,22 +20,20 @@ export default function Feed({
 }) {
   return (
     <div className="max-w-180 flex flex-col gap-1">
-      <div className="flex flex-row gap-2">
-        <Link
-          href={`/f/${feed.id}`}
-          className={classNames(
-            "group flex flex-row items-center gap-2",
-            link ? "pointer-events-auto" : "pointer-events-none"
-          )}
-        >
-          <img src={feed.iconUrl ?? ""} className="v-icon" />
-          <span className="leading-none flex flex-row gap-1">
-            <span className="font-bold group-hover:underline underline-offset-2">
-              {feed.name ?? formatURL(feed.url)}
-            </span>
+      <Link
+        href={`/f/${feed.id}`}
+        className={classNames(
+          "group flex flex-row items-center gap-2",
+          link ? "pointer-events-auto" : "pointer-events-none"
+        )}
+      >
+        <img src={feed.iconUrl ?? ""} className="v-icon" />
+        <span className="leading-none flex flex-row gap-1">
+          <span className="font-bold group-hover:underline underline-offset-2">
+            {feed.name ?? formatURL(feed.url)}
           </span>
-        </Link>
-      </div>
+        </span>
+      </Link>
       <ul className="flex flex-col pl-8 gap-2">
         {items.map((item, idx) => (
           <a key={idx} href={item.url} className="flex flex-col text-xs group">
