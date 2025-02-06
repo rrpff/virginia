@@ -22,21 +22,6 @@ export const RSSAdapter: Adapter = {
     );
   },
 
-  async site(siteUrl: string) {
-    const [feedUrl] = await getFeedUrls(siteUrl);
-    if (!feedUrl) {
-      return {}; // TODO: log
-    }
-
-    const data = await new RSS().parseURL(feedUrl);
-    const icon = data.image?.url ?? (await getFavicon(siteUrl));
-
-    return {
-      name: data.title,
-      iconUrl: icon,
-    };
-  },
-
   async latest(siteUrl: string) {
     const [feedUrl] = await getFeedUrls(siteUrl); // TODO: receive feed url directly
     if (!feedUrl) {

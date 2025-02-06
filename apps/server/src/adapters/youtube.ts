@@ -4,25 +4,17 @@ import { Adapter } from "./index.js";
 
 export const YoutubeAdapter: Adapter = {
   async getSources(url) {
-    const site = await this.site(url);
-    return [
-      {
-        url,
-        name: site.name ?? null,
-        iconUrl: site.iconUrl ?? null,
-      },
-    ];
-  },
-
-  async site(url: string) {
     const res = await fetch(url);
     const html = await res.text();
     const $ = cheerio.load(html);
 
-    return {
-      name: $('meta[property="og:title"]').attr("content"),
-      iconUrl: $('meta[property="og:image"]').attr("content"),
-    };
+    return [
+      {
+        url,
+        name: $('meta[property="og:title"]').attr("content") ?? null,
+        iconUrl: $('meta[property="og:image"]').attr("content") ?? null,
+      },
+    ];
   },
 
   async latest(url: string) {

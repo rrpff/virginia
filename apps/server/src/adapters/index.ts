@@ -13,7 +13,6 @@ export type FeedDefinition = {
 
 export type Adapter = {
   getSources(url: string): Promise<FeedDefinition[]>;
-  site(url: string): Promise<Site>; // TODO: replcae with #meta and FeedMeta?
   latest(url: string): Promise<FeedItem[]>;
 };
 

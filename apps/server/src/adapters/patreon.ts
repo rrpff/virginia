@@ -3,25 +3,20 @@ import { Adapter } from "./index.js";
 
 export const PatreonAdapter: Adapter = {
   async getSources(url) {
-    const site = await this.site(url);
+    const meta = await getPatreonMeta(url);
+    const envelope = meta.props.pageProps.bootstrapEnvelope;
+    const name = envelope.meta.title;
+    const iconUrl =
+      envelope.pageBootstrap.campaign.data.attributes.avatar_photo_image_urls
+        .thumbnail_small;
+
     return [
       {
         url,
-        name: site.name ?? null,
-        iconUrl: site.iconUrl ?? null,
+        name: name ?? null,
+        iconUrl: iconUrl ?? null,
       },
     ];
-  },
-
-  async site(url: string) {
-    const meta = await getPatreonMeta(url);
-
-    return {
-      name: meta.props.pageProps.bootstrapEnvelope.meta.title,
-      iconUrl:
-        meta.props.pageProps.bootstrapEnvelope.pageBootstrap.campaign.data
-          .attributes.avatar_photo_image_urls.thumbnail_small,
-    };
   },
 
   async latest(url: string) {
