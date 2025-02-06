@@ -14,14 +14,14 @@ import {
   SourceDeleteSchema,
 } from "./schema.js";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
-import { GetAdapter, GetSiteMeta } from "./adapters/index.js";
+import { GetUrlSources } from "./adapters/index.js";
 
 const app = express();
 const rpc = router({
   sourcesForUrl: proc
     .input(z.object({ url: z.string().url() }))
     .query(async ({ input: { url } }) => {
-      return GetAdapter(url).getSources(url);
+      return GetUrlSources(url);
     }),
 
   addFeed: proc
@@ -72,15 +72,7 @@ const rpc = router({
   }),
 
   addSource: proc.input(SourceCreateSchema).mutation(async ({ input }) => {
-    const meta = await GetSiteMeta(input.url);
-    const source = await db.source.create({
-      data: {
-        name: meta.name ?? null,
-        iconUrl: meta.iconUrl ?? null,
-        url: input.url,
-        feedId: input.feedId,
-      },
-    });
+    const source = await db.source.create({ data: input });
 
     RefreshScheduler.refreshSource(source.id);
     return source;

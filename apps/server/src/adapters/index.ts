@@ -17,7 +17,7 @@ export type Adapter = {
   latest(url: string): Promise<FeedItem[]>;
 };
 
-export function GetAdapter(url: string): Adapter {
+function GetAdapter(url: string): Adapter {
   const hostname = new URL(url).hostname;
 
   // if (hostname.match(/^\w+\.wikipedia\.org/)) return WikipediaAdapter;
@@ -26,14 +26,9 @@ export function GetAdapter(url: string): Adapter {
   return RSSAdapter;
 }
 
-export async function GetSiteMeta(url: string) {
+export function GetUrlSources(url: string) {
   const adapter = GetAdapter(url);
-  return await backOff(() => adapter.site(url), {
-    numOfAttempts: 3,
-    startingDelay: 100,
-    timeMultiple: 5,
-    jitter: "full",
-  });
+  return adapter.getSources(url);
 }
 
 export async function GetSiteLatest(url: string) {
