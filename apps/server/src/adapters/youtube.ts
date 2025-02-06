@@ -31,7 +31,7 @@ export const YoutubeAdapter: Adapter = {
         url: item.link!,
         title: item.title!,
         description: item.contentSnippet ?? null,
-        imageUrl: null, // TODO: implement
+        imageUrl: null,
         timestamp: new Date(item.isoDate!),
       };
     });

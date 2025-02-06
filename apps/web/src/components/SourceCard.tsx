@@ -1,7 +1,6 @@
 import classNames from "classnames";
 import { LuTrash } from "react-icons/lu";
 
-// TODO: reuse something else
 type Source = {
   url: string;
   name: string | null;

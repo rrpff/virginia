@@ -22,14 +22,9 @@ export const RSSAdapter: Adapter = {
     );
   },
 
-  async latest(siteUrl: string) {
-    const [feedUrl] = await getFeedUrls(siteUrl); // TODO: receive feed url directly
-    if (!feedUrl) {
-      return []; // TODO: log
-    }
-
+  async latest(feedUrl: string) {
     const rss = new RSS();
-    const { items } = await rss.parseURL(feedUrl); // TODO: get/write a parser that includes images
+    const { items } = await rss.parseURL(feedUrl);
 
     return items.map((item) => {
       const title = item.title || item.contentSnippet;
@@ -42,7 +37,7 @@ export const RSSAdapter: Adapter = {
         url: item.link!,
         title: title!,
         description: description ?? null,
-        imageUrl: null, // TODO: implement
+        imageUrl: null,
         timestamp: item.isoDate ? new Date(item.isoDate) : new Date(-1),
       };
     });

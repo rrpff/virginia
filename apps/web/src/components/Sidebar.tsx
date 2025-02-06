@@ -50,7 +50,7 @@ export default function Sidebar() {
           <LuRefreshCw
             style={{
               transition: "transform 0.4s",
-              animation: isRefreshing ? "spin 1s infinite" : "", // TODO: tw has this
+              animation: isRefreshing ? "spin 1s infinite" : "",
             }}
           />
         </button>
