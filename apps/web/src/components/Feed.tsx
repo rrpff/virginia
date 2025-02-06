@@ -99,8 +99,10 @@ function TimeBadge({ time }: { time?: number | null | string }) {
   if (!time) return;
 
   const timeF = typeof time === "string" ? Date.parse(time) : time;
+  const timeD = new Date(timeF);
   return (
     <span
+      title={timeD.toISOString()}
       className={classNames(
         "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-foreground/70",
         Date.now() - timeF < WEEK && "bg-foreground text-white"
