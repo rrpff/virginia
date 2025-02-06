@@ -14,13 +14,15 @@ export default function Feed({
   feed,
   sources,
   link = true,
+  limit,
 }: {
   feed: Feed;
   sources: Source[];
   link?: boolean;
+  limit?: number;
 }) {
   const items = useMemo(() => {
-    return sources
+    const sorted = sources
       .flatMap((source) => source.items)
       .sort((a, b) => {
         return a.timestamp > b.timestamp
@@ -29,7 +31,9 @@ export default function Feed({
           ? 1
           : 0;
       });
-  }, [sources]);
+
+    return limit ? sorted.slice(0, limit) : sorted;
+  }, [limit, sources]);
 
   return (
     <div className="max-w-180 flex flex-col gap-1">

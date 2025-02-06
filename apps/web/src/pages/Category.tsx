@@ -17,7 +17,8 @@ export default function CategoryPage() {
     <article>
       <div className="flex flex-col gap-11">
         {category.data.feeds.map((feed) => (
-          <Feed key={feed.id} feed={feed} sources={feed.sources} />
+          // TODO: get rid of the need for limit
+          <Feed key={feed.id} feed={feed} sources={feed.sources} limit={3} />
         ))}
 
         {category.data.feeds.length === 0 && !categoryVanity && (
