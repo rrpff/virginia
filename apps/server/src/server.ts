@@ -27,23 +27,12 @@ const rpc = router({
   addFeed: proc
     .input(FeedCreateSchema)
     .mutation(async ({ input: { sources, categoryIds } }) => {
-      const sourceInputs = await Promise.all(
-        sources.map(async (source) => {
-          const meta = await GetSiteMeta(source.url);
-          return {
-            url: source.url,
-            name: meta.name ?? null,
-            iconUrl: meta.iconUrl ?? null,
-          };
-        })
-      );
-
       const feed = await db.feed.create({
         data: {
-          name: sourceInputs[0]?.name,
-          iconUrl: sourceInputs[0]?.iconUrl,
+          name: sources[0]?.name,
+          iconUrl: sources[0]?.iconUrl,
           sources: {
-            create: sourceInputs,
+            create: sources,
           },
           categories: {
             connect: categoryIds.map((categoryId) => ({

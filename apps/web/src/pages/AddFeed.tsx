@@ -1,6 +1,6 @@
 import { SourceInput } from "../components/SourceInput";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FeedCreateSchema } from "@virginia/server";
+import { FeedCreateSchema, SourceCreateSchema } from "@virginia/server";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CategoriesSelector from "../components/CategoriesSelector";
@@ -10,15 +10,7 @@ import SourceCard from "../components/SourceCard";
 
 type SchemaType = z.infer<typeof Schema>;
 const Schema = FeedCreateSchema.extend({
-  sources: z
-    .array(
-      z.object({
-        url: z.string().url(),
-        name: z.string().nullable(),
-        iconUrl: z.string().nullable(),
-      })
-    )
-    .min(1),
+  sources: z.array(SourceCreateSchema.omit({ feedId: true })).min(1),
 });
 
 export default function AddFeedPage() {

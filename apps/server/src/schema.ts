@@ -38,6 +38,8 @@ export type ServerEvent =
 export const SourceCreateSchema = z.object({
   feedId: z.string().uuid(),
   url: z.string(),
+  name: z.string().nullable(),
+  iconUrl: z.string().nullable(),
 });
 
 export const SourceDeleteSchema = z.object({
