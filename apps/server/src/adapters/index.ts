@@ -1,5 +1,5 @@
+import { Item } from "@prisma/client";
 import { backOff } from "exponential-backoff";
-import type { FeedItem, Site } from "../schema.js";
 import { PatreonAdapter } from "./patreon.js";
 import { RSSAdapter } from "./rss.js";
 // import { WikipediaAdapter } from "./wikipedia.js";
@@ -11,9 +11,17 @@ export type FeedDefinition = {
   iconUrl: string | null;
 };
 
+type SourceItem = {
+  title: string;
+  url: string;
+  imageUrl: string | null;
+  description: string | null;
+  timestamp: Date;
+};
+
 export type Adapter = {
   getSources(url: string): Promise<FeedDefinition[]>;
-  latest(url: string): Promise<FeedItem[]>;
+  latest(url: string): Promise<SourceItem[]>;
 };
 
 function GetAdapter(url: string): Adapter {

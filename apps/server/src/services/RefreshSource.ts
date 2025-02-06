@@ -1,6 +1,6 @@
-import { FeedItem } from "../schema.js";
-import db from "../db.js";
+import type { Item } from "@prisma/client";
 import { GetSiteLatest } from "../adapters/index.js";
+import db from "../db.js";
 
 export async function RefreshSource(sourceId: string) {
   const source = await db.source.findFirst({ where: { id: sourceId } });
@@ -9,7 +9,7 @@ export async function RefreshSource(sourceId: string) {
     return;
   }
 
-  let items: Omit<FeedItem, "id" | "feedId">[] = [];
+  let items: Omit<Item, "id" | "sourceId">[] = [];
   try {
     items = await GetSiteLatest(source.url);
   } catch (err) {

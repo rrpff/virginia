@@ -41,9 +41,9 @@ export const RSSAdapter: Adapter = {
       return {
         url: item.link!,
         title: title!,
-        description: description,
-        imageUrl: undefined, // TODO: implement
-        timestamp: item.isoDate ? Date.parse(item.isoDate) : -1,
+        description: description ?? null,
+        imageUrl: null, // TODO: implement
+        timestamp: item.isoDate ? new Date(item.isoDate) : new Date(-1),
       };
     });
   },

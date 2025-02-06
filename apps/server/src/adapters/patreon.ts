@@ -27,9 +27,9 @@ export const PatreonAdapter: Adapter = {
         return {
           url: item.attributes.url,
           title: item.attributes.title,
-          description: item.attributes.teaser_text,
-          imageUrl: item.attributes.image?.large_url, // TODO: implement
-          timestamp: Date.parse(item.attributes.published_at),
+          description: item.attributes.teaser_text ?? null,
+          imageUrl: item.attributes.image?.large_url ?? null, // TODO: implement
+          timestamp: new Date(item.attributes.published_at),
         };
       });
   },

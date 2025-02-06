@@ -1,17 +1,20 @@
 import { useForm } from "react-hook-form";
 import { rpc } from "../rpc";
-import { Category, CategorySchema } from "@virginia/server";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ErrorMessage } from "@hookform/error-message";
 import EmojiInput from "./EmojiInput";
 
-const Schema = CategorySchema.omit({ id: true });
+type SchemaType = z.infer<typeof Schema>;
+const Schema = z.object({
+  name: z.string().min(1, "can't be empty!"),
+  icon: z.string().regex(/\p{Extended_Pictographic}{1}/u, "just emoji ok!"),
+});
 
 export default function AddCategoryForm({
   onSubmit,
 }: {
-  onSubmit?: (category: Category) => void;
+  onSubmit?: (category: SchemaType) => void;
 }) {
   const utils = rpc.useUtils();
   const addCategory = rpc.addCategory.useMutation();
