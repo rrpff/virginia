@@ -6,6 +6,7 @@ type Events = {
   "refresh-started": () => void;
   "refresh-ended": () => void;
   "feed-updated": (feedId: string) => void;
+  "source-updated": (feedId: string) => void;
 };
 
 class RefreshScheduler extends TypedEmitter<Events> {
@@ -33,13 +34,14 @@ class RefreshScheduler extends TypedEmitter<Events> {
           return this.refreshSource(source.id);
         })
       );
+      this.emit("feed-updated", feedId);
     });
   }
 
-  async refreshSource(feedId: string) {
+  async refreshSource(sourceId: string) {
     return this.run(async () => {
-      await RefreshSource(feedId);
-      this.emit("feed-updated", feedId);
+      await RefreshSource(sourceId);
+      this.emit("source-updated", sourceId);
     });
   }
 
