@@ -1,7 +1,6 @@
-import { GetAdapter } from "../adapters/index.js";
 import { FeedItem, Site } from "../schema.js";
 import db from "../db.js";
-import { backOff } from "exponential-backoff";
+import { GetSiteLatest, GetSiteMeta } from "../adapters/index.js";
 
 export async function RefreshSource(sourceId: string) {
   const source = await db.source.findFirst({ where: { id: sourceId } });
@@ -10,29 +9,17 @@ export async function RefreshSource(sourceId: string) {
     return;
   }
 
-  const adapter = GetAdapter(source.url);
-
   let site: Site = {};
   // TODO: not every time lol
   try {
-    site = await backOff(() => adapter.site(source.url), {
-      numOfAttempts: 3,
-      startingDelay: 100,
-      timeMultiple: 5,
-      jitter: "full",
-    });
+    site = await GetSiteMeta(source.url);
   } catch (err) {
     console.error(`Unable to fetch site meta for ${source.url}: ${err}`);
   }
 
   let items: Omit<FeedItem, "id" | "feedId">[] = [];
   try {
-    items = await backOff(() => adapter.latest(source.url), {
-      numOfAttempts: 3,
-      startingDelay: 100,
-      timeMultiple: 5,
-      jitter: "full",
-    });
+    items = await GetSiteLatest(source.url);
   } catch (err) {
     console.error(`Unable to fetch items for ${source.url}: ${err}`);
   }

@@ -1,3 +1,4 @@
+import { backOff } from "exponential-backoff";
 import type { FeedItem, Site } from "../schema.js";
 import { PatreonAdapter } from "./patreon.js";
 import { RSSAdapter } from "./rss.js";
@@ -23,4 +24,24 @@ export function GetAdapter(url: string): Adapter {
   if (hostname.match(/^(www\.)?youtube\.com/)) return YoutubeAdapter;
   if (hostname.match(/^(www\.)?patreon\.com/)) return PatreonAdapter;
   return RSSAdapter;
+}
+
+export async function GetSiteMeta(url: string) {
+  const adapter = GetAdapter(url);
+  return await backOff(() => adapter.site(url), {
+    numOfAttempts: 3,
+    startingDelay: 100,
+    timeMultiple: 5,
+    jitter: "full",
+  });
+}
+
+export async function GetSiteLatest(url: string) {
+  const adapter = GetAdapter(url);
+  return await backOff(() => adapter.latest(url), {
+    numOfAttempts: 3,
+    startingDelay: 100,
+    timeMultiple: 5,
+    jitter: "full",
+  });
 }
