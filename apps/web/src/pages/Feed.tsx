@@ -26,21 +26,23 @@ export default function FeedPage() {
 
       <aside className="flex flex-col grow-0 pr-16 max-w-96">
         <h2 className="font-bold leading-none mb-2 text-sm">Sources</h2>
-        {feed.data.sources.map((s) => (
-          <SourceCard
-            size="sm"
-            key={s.id}
-            source={s}
-            onRemove={async () => {
-              await deleteSource.mutateAsync({ sourceId: s.id });
-              await utils.feed.invalidate({ id });
-            }}
-          />
-        ))}
+        <div className="flex flex-col gap-2">
+          {feed.data.sources.map((s) => (
+            <SourceCard
+              size="sm"
+              key={s.id}
+              source={s}
+              onRemove={async () => {
+                await deleteSource.mutateAsync({ sourceId: s.id });
+                await utils.feed.invalidate({ id });
+              }}
+            />
+          ))}
+        </div>
 
         <SourceInput
-          className="mt-2 mb-6"
-          placeholder="Add another URL?"
+          className="mt-2 mb-6 text-sm"
+          placeholder="Add another source?"
           onSelectSource={async (source) => {
             await addSource.mutateAsync({ ...source, feedId: id });
             await utils.feed.invalidate({ id });
