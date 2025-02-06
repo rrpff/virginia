@@ -7,6 +7,7 @@ import { slug } from "../utils/ids.js";
 import db from "./db.js";
 import {
   FeedCreateSchema,
+  FeedDeleteSchema,
   FeedUpdateSchema,
   ServerEvent,
   SourceCreateSchema,
@@ -77,6 +78,10 @@ const rpc = router({
       return feed;
     }),
 
+  deleteFeed: proc.input(FeedDeleteSchema).mutation(async ({ input }) => {
+    await db.feed.delete({ where: { id: input.feedId } });
+  }),
+
   addSource: proc.input(SourceCreateSchema).mutation(async ({ input }) => {
     const meta = await GetSiteMeta(input.url);
     const source = await db.source.create({
@@ -96,10 +101,7 @@ const rpc = router({
     const source = await db.source.findFirst({ where: { id: input.sourceId } });
     if (!source) return;
 
-    await db.$transaction([
-      db.item.deleteMany({ where: { sourceId: input.sourceId } }),
-      db.source.delete({ where: { id: input.sourceId } }),
-    ]);
+    await db.source.delete({ where: { id: input.sourceId } });
   }),
 
   refresh: proc.mutation(() => {

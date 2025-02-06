@@ -27,7 +27,7 @@ model Source {
   name    String?
   iconUrl String?
 
-  feed  Feed   @relation(fields: [feedId], references: [id])
+  feed  Feed   @relation(fields: [feedId], references: [id], onDelete: Cascade)
   items Item[]
 }
 
@@ -40,7 +40,7 @@ model Item {
   imageUrl    String?
   timestamp   DateTime
 
-  source Source @relation(fields: [sourceId], references: [id])
+  source Source @relation(fields: [sourceId], references: [id], onDelete: Cascade)
 }
 
 model Category {

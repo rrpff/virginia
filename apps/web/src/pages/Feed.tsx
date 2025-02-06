@@ -1,4 +1,4 @@
-import { useParams } from "wouter";
+import { useLocation, useParams } from "wouter";
 import Feed from "../components/Feed";
 import { rpc } from "../rpc";
 import NotFound from "./NotFound";
@@ -9,8 +9,10 @@ import { SourceInput } from "../components/SourceInput";
 export default function FeedPage() {
   const { id } = useParams();
 
+  const [, setLocation] = useLocation();
   const feed = rpc.feed.useQuery({ id: id! }, { enabled: id !== undefined });
   const updateFeed = rpc.updateFeed.useMutation();
+  const deleteFeed = rpc.deleteFeed.useMutation();
   const addSource = rpc.addSource.useMutation();
   const deleteSource = rpc.deleteSource.useMutation();
   const utils = rpc.useUtils();
@@ -57,6 +59,19 @@ export default function FeedPage() {
             await utils.feed.invalidate({ id });
           }}
         />
+
+        <h2 className="font-bold leading-none mt-6 mb-2 text-sm">Delete</h2>
+        <button
+          className="v-button"
+          onClick={async () => {
+            if (confirm("Are you sure?")) {
+              await deleteFeed.mutateAsync({ feedId: id });
+              setLocation("/");
+            }
+          }}
+        >
+          Do it, delete {feed.data.name}
+        </button>
       </aside>
     </div>
   );

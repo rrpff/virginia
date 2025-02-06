@@ -56,3 +56,7 @@ export const FeedUpdateSchema = FeedCreateSchema.partial()
   .extend({
     id: z.string().uuid(),
   });
+
+export const FeedDeleteSchema = z.object({
+  feedId: z.string().uuid(),
+});

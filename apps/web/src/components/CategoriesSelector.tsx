@@ -43,14 +43,14 @@ export default function CategoriesSelector({
           className={classNames(
             "flex items-center justify-center",
             "text-2xl w-12 h-12 rounded-sm",
-            "border-2 border-transparent peer-checked:border-foreground",
+            "border-2 border-transparent bg-foreground text-background peer-checked:border-foreground",
             "outline-4 outline-transparent focus:outline-focus"
           )}
         >
           <LuPlus />
         </PopoverButton>
         <PopoverPanel
-          className="absolute -mt-12 z-10 bg-white"
+          className="absolute -mt-9 ml-3 z-10 bg-white rounded-sm"
           anchor="bottom start"
           portal
         >

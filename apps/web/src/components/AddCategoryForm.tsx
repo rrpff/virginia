@@ -32,7 +32,7 @@ export default function AddCategoryForm({
   const icon = form.watch("icon");
 
   return (
-    <form onSubmit={submit}>
+    <form onSubmit={submit} className="flex flex-col gap-4">
       <div>
         <label className="block text-sm font-bold" htmlFor="name">
           Name
