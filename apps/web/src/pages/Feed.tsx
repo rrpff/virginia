@@ -5,6 +5,9 @@ import NotFound from "./NotFound";
 import CategoriesSelector from "../components/CategoriesSelector";
 import SourceCard from "../components/SourceCard";
 import { SourceInput } from "../components/SourceInput";
+import { useMemo } from "react";
+import classNames from "classnames";
+import { dedup } from "../utils/arrays";
 
 export default function FeedPage() {
   const { id } = useParams();
@@ -17,6 +20,15 @@ export default function FeedPage() {
   const deleteSource = rpc.deleteSource.useMutation();
   const utils = rpc.useUtils();
 
+  const icons = useMemo(() => {
+    const sources = feed.data?.sources ?? [];
+    return dedup(
+      sources.flatMap((i) => {
+        return i.iconUrl ? [i.iconUrl] : [];
+      })
+    );
+  }, [feed.data?.sources]);
+
   if (!id || (feed.isFetched && feed.data === null)) return <NotFound />;
   if (!feed.data) return null;
 
@@ -27,6 +39,54 @@ export default function FeedPage() {
       </div>
 
       <aside className="flex flex-col grow-0 pr-16 max-w-96">
+        <div className="flex flex-col mb-6">
+          <label htmlFor="name" className="font-bold leading-none mb-2 text-sm">
+            Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            className="v-input"
+            defaultValue={feed.data.name ?? ""}
+            onKeyDown={(e) => {
+              if (e.code === "Enter") {
+                e.currentTarget.blur();
+              }
+            }}
+            onBlur={async (e) => {
+              await updateFeed.mutateAsync({ id, name: e.currentTarget.value });
+              await utils.feed.invalidate({ id });
+            }}
+          />
+        </div>
+
+        {icons.length > 1 && (
+          <div className="flex flex-col mb-6">
+            <h2 className="font-bold leading-none mb-2 text-sm">Icon</h2>
+
+            <div className="flex flex-row flex-wrap gap-1">
+              {icons.map((icon) => (
+                <div
+                  key={icon}
+                  onClick={async () => {
+                    await updateFeed.mutateAsync({ id, iconUrl: icon });
+                    await utils.feed.invalidate({ id });
+                  }}
+                  className={classNames(
+                    "flex items-center justify-center w-12 h-12 rounded-md",
+                    "border-2",
+                    feed.data?.iconUrl === icon
+                      ? "border-foreground bg-white"
+                      : "border-transparent bg-foreground/10"
+                  )}
+                >
+                  <img className="v-icon" src={icon} />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         <h2 className="font-bold leading-none mb-2 text-sm">Sources</h2>
         <div className="flex flex-col gap-2">
           {feed.data.sources.map((s) => (

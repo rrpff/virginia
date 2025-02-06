@@ -46,26 +46,26 @@ const rpc = router({
       return feed;
     }),
 
-  updateFeed: proc
-    .input(FeedUpdateSchema)
-    .mutation(async ({ input: { id, categoryIds } }) => {
-      const feed = await db.feed.update({
-        where: { id },
-        data: {
-          categories: categoryIds
-            ? {
-                set: [],
-                connect: categoryIds.map((categoryId) => ({
-                  id: categoryId,
-                })),
-              }
-            : undefined,
-        },
-      });
+  updateFeed: proc.input(FeedUpdateSchema).mutation(async ({ input }) => {
+    const feed = await db.feed.update({
+      where: { id: input.id },
+      data: {
+        name: input.name,
+        iconUrl: input.iconUrl,
+        categories: input.categoryIds
+          ? {
+              set: [],
+              connect: input.categoryIds.map((categoryId) => ({
+                id: categoryId,
+              })),
+            }
+          : undefined,
+      },
+    });
 
-      RefreshScheduler.refreshFeed(feed.id);
-      return feed;
-    }),
+    RefreshScheduler.refreshFeed(feed.id);
+    return feed;
+  }),
 
   deleteFeed: proc.input(FeedDeleteSchema).mutation(async ({ input }) => {
     await db.feed.delete({ where: { id: input.feedId } });
