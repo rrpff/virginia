@@ -182,7 +182,7 @@ const rpc = router({
         if (!category) return null;
       }
 
-      const feedOrders = await db.item.groupBy({
+      const sourceOrders = await db.item.groupBy({
         by: ["sourceId"],
         _max: {
           timestamp: true,
@@ -211,13 +211,15 @@ const rpc = router({
       return {
         feeds: feeds
           .map((feed) => {
-            const latest = feedOrders.find((f) =>
-              feed.sources.some((s) => s.id === f.sourceId)
-            );
+            const sourceTimestamps = sourceOrders
+              .filter((so) => feed.sources.some((s) => s.id === so.sourceId))
+              .map((so) => Number(so._max.timestamp));
+
+            const latest = Math.max(...sourceTimestamps) ?? -1;
 
             return {
               ...feed,
-              latest: latest ? Number(latest._max.timestamp) : null,
+              latest: latest,
             };
           })
           .sort((a, b) => {

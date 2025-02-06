@@ -1,6 +1,7 @@
 import { distance } from "fastest-levenshtein";
 import { useMemo } from "react";
 import emojilib from "emojilib";
+import { sortBy } from "../utils/arrays";
 
 export default function useEmojiSearch(query: string) {
   return useMemo(() => {
@@ -23,9 +24,7 @@ export default function useEmojiSearch(query: string) {
 
         return [emoji, dist] as const;
       })
-      .sort((a, b) => {
-        return a[1] < b[1] ? -1 : b[1] < a[1] ? 1 : 0;
-      })
+      .sort(sortBy((e) => e[1], 1))
       .slice(0, 18)
       .map((emoji) => emoji[0]);
   }, [query]);

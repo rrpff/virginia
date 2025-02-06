@@ -5,6 +5,7 @@ import { Link } from "wouter";
 import { LuExternalLink } from "react-icons/lu";
 import { useMemo } from "react";
 import { useLiveContext } from "../contexts/live";
+import { sortBy } from "../utils/arrays";
 
 // TODO: this is getting ugly, what was going on with those domain types huh
 type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "sources" | "categories">;
@@ -25,13 +26,7 @@ export default function Feed({
   const items = useMemo(() => {
     const sorted = sources
       .flatMap((source) => source.items)
-      .sort((a, b) => {
-        return a.timestamp > b.timestamp
-          ? -1
-          : b.timestamp > a.timestamp
-          ? 1
-          : 0;
-      });
+      .sort(sortBy((e) => e.timestamp));
 
     return limit ? sorted.slice(0, limit) : sorted;
   }, [limit, sources]);
