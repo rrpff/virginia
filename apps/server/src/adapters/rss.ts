@@ -43,7 +43,7 @@ export const RSSAdapter: Adapter = {
         title: title!,
         description: description,
         imageUrl: undefined, // TODO: implement
-        timestamp: Date.parse(item.isoDate!),
+        timestamp: item.isoDate ? Date.parse(item.isoDate) : -1,
       };
     });
   },
