@@ -24,11 +24,11 @@ export default function FeedPage() {
         <Feed feed={feed.data} sources={feed.data.sources} link={false} />
       </div>
 
-      <aside className="flex flex-col grow-0 pr-16 max-w-72">
-        <h2 className="font-bold leading-none mb-2">Settings</h2>
-
+      <aside className="flex flex-col grow-0 pr-16 max-w-96">
+        <h2 className="font-bold leading-none mb-2 text-sm">Sources</h2>
         {feed.data.sources.map((s) => (
           <SourceCard
+            size="sm"
             key={s.id}
             source={s}
             onRemove={async () => {
@@ -39,6 +39,7 @@ export default function FeedPage() {
         ))}
 
         <SourceInput
+          className="mt-2 mb-6"
           placeholder="Add another URL?"
           onSelectSource={async (source) => {
             await addSource.mutateAsync({ ...source, feedId: id });
@@ -46,6 +47,7 @@ export default function FeedPage() {
           }}
         />
 
+        <h2 className="font-bold leading-none mb-2 text-sm">Categories</h2>
         <CategoriesSelector
           values={feed.data.categories.map((c) => c.id)}
           onChange={async (nextValues) => {

@@ -93,6 +93,9 @@ const rpc = router({
   }),
 
   deleteSource: proc.input(SourceDeleteSchema).mutation(async ({ input }) => {
+    const source = await db.source.findFirst({ where: { id: input.sourceId } });
+    if (!source) return;
+
     await db.$transaction([
       db.item.deleteMany({ where: { sourceId: input.sourceId } }),
       db.source.delete({ where: { id: input.sourceId } }),

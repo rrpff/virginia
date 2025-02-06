@@ -43,7 +43,8 @@ export default function CategoriesSelector({
           className={classNames(
             "flex items-center justify-center",
             "text-2xl w-12 h-12 rounded-sm",
-            "border-2 border-transparent peer-checked:border-foreground"
+            "border-2 border-transparent peer-checked:border-foreground",
+            "outline-4 outline-transparent focus:outline-focus"
           )}
         >
           <LuPlus />

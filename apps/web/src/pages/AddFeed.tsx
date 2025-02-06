@@ -10,13 +10,15 @@ import SourceCard from "../components/SourceCard";
 
 type SchemaType = z.infer<typeof Schema>;
 const Schema = FeedCreateSchema.extend({
-  sources: z.array(
-    z.object({
-      url: z.string().url(),
-      name: z.string().nullable(),
-      iconUrl: z.string().nullable(),
-    })
-  ),
+  sources: z
+    .array(
+      z.object({
+        url: z.string().url(),
+        name: z.string().nullable(),
+        iconUrl: z.string().nullable(),
+      })
+    )
+    .min(1),
 });
 
 export default function AddFeedPage() {
@@ -43,11 +45,12 @@ export default function AddFeedPage() {
     <main>
       <h1 className="font-bold text-xl mb-2">Add a feed</h1>
 
-      <form onSubmit={submit}>
+      <form onSubmit={submit} className="max-w-96">
         {sources.fields.map((s, idx) => (
           <SourceCard
             key={s.id}
             source={s}
+            size="lg"
             onRemove={() => {
               sources.remove(idx);
             }}
@@ -83,7 +86,11 @@ export default function AddFeedPage() {
         <button
           type="submit"
           className="v-button px-8!"
-          disabled={!form.formState.isDirty || form.formState.isSubmitting}
+          disabled={
+            !form.formState.isValid ||
+            !form.formState.isDirty ||
+            form.formState.isSubmitting
+          }
         >
           Create
         </button>

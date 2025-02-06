@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
   Combobox,
   ComboboxInput,
@@ -9,6 +9,7 @@ import {
 import { rpc, RpcOutputs } from "../rpc";
 import classNames from "classnames";
 import { LuLoader } from "react-icons/lu";
+import useDimensions from "../hooks/useDimensions";
 
 type Source = RpcOutputs["sourcesForUrl"][number];
 
@@ -17,6 +18,8 @@ type Props = ComboboxInputProps & {
 };
 
 export function SourceInput({ onSelectSource, ...props }: Props) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const inputDimensions = useDimensions(inputRef);
   const [query, setQuery] = useState("");
 
   const results = rpc.sourcesForUrl.useQuery(
@@ -32,9 +35,10 @@ export function SourceInput({ onSelectSource, ...props }: Props) {
         }
       }}
     >
-      <div className="flex flex-row w-96 relative">
+      <div className="flex flex-row w-full relative">
         <ComboboxInput
           {...props}
+          ref={inputRef}
           className={classNames(
             "v-input w-full pr-8!",
             results.data?.length && "data-[open]:rounded-b-none!",
@@ -55,8 +59,9 @@ export function SourceInput({ onSelectSource, ...props }: Props) {
       </div>
       <ComboboxOptions
         anchor="bottom start"
+        style={{ width: inputDimensions?.width }}
         className={classNames(
-          "w-96 rounded-b-sm empty:invisible",
+          "rounded-b-sm empty:invisible",
           "bg-white border-2 border-t-0 border-foreground"
         )}
       >
