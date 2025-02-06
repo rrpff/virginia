@@ -4,20 +4,33 @@ import TimeAgo from "./TimeAgo";
 import { RpcOutputs } from "../rpc";
 import { Link } from "wouter";
 import { LuExternalLink } from "react-icons/lu";
+import { useMemo } from "react";
 
 // TODO: this is getting ugly, what was going on with those domain types huh
-type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "items" | "categories">;
-type Item = NonNullable<RpcOutputs["feed"]>["items"][number];
+type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "sources" | "categories">;
+type Source = NonNullable<RpcOutputs["feed"]>["sources"][number];
 
 export default function Feed({
   feed,
-  items,
+  sources,
   link = true,
 }: {
   feed: Feed;
-  items: Item[];
+  sources: Source[];
   link?: boolean;
 }) {
+  const items = useMemo(() => {
+    return sources
+      .flatMap((source) => source.items)
+      .sort((a, b) => {
+        return a.timestamp > b.timestamp
+          ? -1
+          : b.timestamp > a.timestamp
+          ? 1
+          : 0;
+      });
+  }, [sources]);
+
   return (
     <div className="max-w-180 flex flex-col gap-1">
       <Link
@@ -30,7 +43,7 @@ export default function Feed({
         <img src={feed.iconUrl ?? ""} className="v-icon" />
         <span className="leading-none flex flex-row gap-1">
           <span className="font-bold group-hover:underline underline-offset-2">
-            {feed.name ?? formatURL(feed.url)}
+            {feed.name}
           </span>
         </span>
       </Link>

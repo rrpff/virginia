@@ -5,29 +5,45 @@ import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import z from "zod";
 import { slug } from "../utils/ids.js";
 import db from "./db.js";
-import { ServerEvent } from "./schema.js";
+import {
+  FeedCreateSchema,
+  FeedUpdateSchema,
+  ServerEvent,
+  SourceCreateSchema,
+  SourceDeleteSchema,
+} from "./schema.js";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 import { GetAdapter } from "./adapters/index.js";
 
 const app = express();
 const rpc = router({
-  feedDefinitions: proc
+  sourcesForUrl: proc
     .input(z.object({ url: z.string().url() }))
     .query(async ({ input: { url } }) => {
-      return GetAdapter(url).getFeedDefinitions(url);
+      return GetAdapter(url).getSources(url);
     }),
 
   addFeed: proc
-    .input(
-      z.object({
-        url: z.string().url(),
-        categoryIds: z.array(z.string()),
-      })
-    )
-    .mutation(async ({ input: { url, categoryIds } }) => {
+    .input(FeedCreateSchema)
+    .mutation(async ({ input: { sources, categoryIds } }) => {
+      const sourceInputs = await Promise.all(
+        sources.map(async (source) => {
+          const meta = await GetAdapter(source.url).site(source.url);
+          return {
+            url: source.url,
+            name: meta.name ?? null,
+            iconUrl: meta.iconUrl ?? null,
+          };
+        })
+      );
+
       const feed = await db.feed.create({
         data: {
-          url,
+          name: sourceInputs[0]?.name,
+          iconUrl: sourceInputs[0]?.iconUrl,
+          sources: {
+            create: sourceInputs,
+          },
           categories: {
             connect: categoryIds.map((categoryId) => ({
               id: categoryId,
@@ -36,37 +52,52 @@ const rpc = router({
         },
       });
 
-      RefreshScheduler.refresh(feed.id);
+      RefreshScheduler.refreshFeed(feed.id);
       return feed;
     }),
 
   updateFeed: proc
-    .input(
-      z.object({
-        id: z.string(),
-        url: z.string().url().optional(),
-        categories: z.array(z.string()).optional(),
-      })
-    )
-    .mutation(async ({ input: { id, url, categories } }) => {
+    .input(FeedUpdateSchema)
+    .mutation(async ({ input: { id, categoryIds } }) => {
       const feed = await db.feed.update({
         where: { id },
         data: {
-          url,
-          categories: categories
+          categories: categoryIds
             ? {
                 set: [],
-                connect: categories.map((category) => ({
-                  id: category,
+                connect: categoryIds.map((categoryId) => ({
+                  id: categoryId,
                 })),
               }
             : undefined,
         },
       });
 
-      RefreshScheduler.refresh(feed.id);
+      RefreshScheduler.refreshFeed(feed.id);
       return feed;
     }),
+
+  addSource: proc.input(SourceCreateSchema).mutation(async ({ input }) => {
+    const meta = await GetAdapter(input.url).site(input.url);
+    const source = await db.source.create({
+      data: {
+        name: meta.name ?? null,
+        iconUrl: meta.iconUrl ?? null,
+        url: input.url,
+        feedId: input.feedId,
+      },
+    });
+
+    RefreshScheduler.refreshSource(source.id);
+    return source;
+  }),
+
+  deleteSource: proc.input(SourceDeleteSchema).mutation(async ({ input }) => {
+    await db.$transaction([
+      db.item.deleteMany({ where: { sourceId: input.sourceId } }),
+      db.source.delete({ where: { id: input.sourceId } }),
+    ]);
+  }),
 
   refresh: proc.mutation(() => {
     RefreshScheduler.refreshAll();
@@ -130,7 +161,11 @@ const rpc = router({
         where: { id },
         include: {
           categories: true,
-          items: { orderBy: { timestamp: "desc" } },
+          sources: {
+            include: {
+              items: true,
+            },
+          },
         },
       });
     }),
@@ -143,15 +178,22 @@ const rpc = router({
         if (!category) return null;
       }
 
-      const feedOrders = await db.feedItem.groupBy({
-        by: ["feedId"],
+      // TODO: optimise this whole thing. rewrite in sql - try typed sql
+      const feedOrders = await db.item.groupBy({
+        by: ["sourceId"],
         _max: {
           timestamp: true,
         },
       });
 
       const feeds = await db.feed.findMany({
-        include: { items: { orderBy: { timestamp: "desc" }, take: 3 } },
+        include: {
+          sources: {
+            include: {
+              items: { orderBy: { timestamp: "desc" }, take: 3 },
+            },
+          },
+        },
         where: vanity
           ? {
               categories: {
@@ -163,18 +205,23 @@ const rpc = router({
           : {},
       });
 
-      return feeds
-        .map((feed) => {
-          const latest = feedOrders.find((f) => f.feedId === feed.id);
-          return {
-            ...feed,
-            latest: latest ? Number(latest._max.timestamp) : null,
-          };
-        })
-        .sort((a, b) => {
-          if (!a.latest || !b.latest) return 0;
-          return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
-        });
+      return {
+        feeds: feeds
+          .map((feed) => {
+            const latest = feedOrders.find((f) =>
+              feed.sources.some((s) => s.id === f.sourceId)
+            );
+
+            return {
+              ...feed,
+              latest: latest ? Number(latest._max.timestamp) : null,
+            };
+          })
+          .sort((a, b) => {
+            if (!a.latest || !b.latest) return 0;
+            return a.latest > b.latest ? -1 : b.latest > a.latest ? 1 : 0;
+          }),
+      };
     }),
 });
 

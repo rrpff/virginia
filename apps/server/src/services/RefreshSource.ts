@@ -3,44 +3,44 @@ import { FeedItem, Site } from "../schema.js";
 import db from "../db.js";
 import { backOff } from "exponential-backoff";
 
-export async function RefreshFeed(feedId: string) {
-  const feed = await db.feed.findFirst({ where: { id: feedId } });
-  if (!feed) {
-    console.error(`Unable to refresh unknown feed: ${feedId}`);
+export async function RefreshSource(sourceId: string) {
+  const source = await db.source.findFirst({ where: { id: sourceId } });
+  if (!source) {
+    console.error(`Unable to refresh unknown source: ${sourceId}`);
     return;
   }
 
-  const adapter = GetAdapter(feed.url);
+  const adapter = GetAdapter(source.url);
 
   let site: Site = {};
   // TODO: not every time lol
   try {
-    site = await backOff(() => adapter.site(feed.url), {
+    site = await backOff(() => adapter.site(source.url), {
       numOfAttempts: 3,
       startingDelay: 100,
       timeMultiple: 5,
       jitter: "full",
     });
   } catch (err) {
-    console.error(`Unable to fetch site meta for ${feed.url}: ${err}`);
+    console.error(`Unable to fetch site meta for ${source.url}: ${err}`);
   }
 
   let items: Omit<FeedItem, "id" | "feedId">[] = [];
   try {
-    items = await backOff(() => adapter.feed(feed.url), {
+    items = await backOff(() => adapter.latest(source.url), {
       numOfAttempts: 3,
       startingDelay: 100,
       timeMultiple: 5,
       jitter: "full",
     });
   } catch (err) {
-    console.error(`Unable to fetch items for ${feed.url}: ${err}`);
+    console.error(`Unable to fetch items for ${source.url}: ${err}`);
   }
 
   await db.$transaction([
-    db.feedItem.deleteMany({ where: { feedId: feed.id } }),
-    db.feed.update({
-      where: { id: feed.id },
+    db.item.deleteMany({ where: { sourceId: source.id } }),
+    db.source.update({
+      where: { id: source.id },
       data: {
         name: site.name ?? null,
         iconUrl: site.iconUrl ?? null,
@@ -48,7 +48,7 @@ export async function RefreshFeed(feedId: string) {
           createMany: {
             data: items.map((item) => {
               return {
-                url: item.url ?? feed.url, // TODO: what do i do here??? tilde town help
+                url: item.url ?? source.url, // TODO: what do i do here??? tilde town help
                 title: item.title,
                 description: item.description,
                 imageUrl: item.imageUrl,

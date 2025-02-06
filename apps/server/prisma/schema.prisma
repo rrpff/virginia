@@ -11,26 +11,36 @@ datasource db {
 }
 
 model Feed {
-  id  String @id @default(uuid())
-  url String
+  id      String  @id @default(uuid())
+  name    String?
+  iconUrl String?
+
+  sources    Source[]
+  categories Category[]
+}
+
+model Source {
+  id     String @id @default(uuid())
+  feedId String
+  url    String
 
   name    String?
   iconUrl String?
 
-  categories Category[]
-  items      FeedItem[]
+  feed  Feed   @relation(fields: [feedId], references: [id])
+  items Item[]
 }
 
-model FeedItem {
+model Item {
   id          String   @id @default(uuid())
-  feedId      String
+  sourceId    String
   url         String
   title       String
   description String?
   imageUrl    String?
   timestamp   DateTime
 
-  feed Feed @relation(fields: [feedId], references: [id])
+  source Source @relation(fields: [sourceId], references: [id])
 }
 
 model Category {

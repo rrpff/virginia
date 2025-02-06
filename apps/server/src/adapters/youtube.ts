@@ -3,7 +3,7 @@ import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
 
 export const YoutubeAdapter: Adapter = {
-  async getFeedDefinitions(url) {
+  async getSources(url) {
     const site = await this.site(url);
     return [
       {
@@ -25,7 +25,7 @@ export const YoutubeAdapter: Adapter = {
     };
   },
 
-  async feed(url: string) {
+  async latest(url: string) {
     const res = await fetch(url);
     const body = await res.text();
 

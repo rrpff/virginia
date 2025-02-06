@@ -1,5 +1,6 @@
 import z from "zod";
 
+// TODO: REVISE THESE
 export type Site = z.infer<typeof SiteSchema>;
 export const SiteSchema = z.object({
   name: z.string().nullish(),
@@ -33,3 +34,25 @@ export type ServerEvent =
   | { type: "refresh-started" }
   | { type: "refresh-ended" }
   | { type: "feed-updated"; feedId: string };
+
+export const SourceCreateSchema = z.object({
+  feedId: z.string().uuid(),
+  url: z.string(),
+});
+
+export const SourceDeleteSchema = z.object({
+  sourceId: z.string().uuid(),
+});
+
+export const FeedCreateSchema = z.object({
+  sources: z.array(SourceCreateSchema.omit({ feedId: true })),
+  categoryIds: z.array(z.string()),
+  iconUrl: z.string().optional(),
+  name: z.string().optional(),
+});
+
+export const FeedUpdateSchema = FeedCreateSchema.partial()
+  .omit({ sources: true })
+  .extend({
+    id: z.string().uuid(),
+  });

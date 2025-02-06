@@ -11,9 +11,9 @@ export type FeedDefinition = {
 };
 
 export type Adapter = {
-  getFeedDefinitions(url: string): Promise<FeedDefinition[]>;
-  site(url: string): Promise<Site>;
-  feed(url: string): Promise<FeedItem[]>;
+  getSources(url: string): Promise<FeedDefinition[]>;
+  site(url: string): Promise<Site>; // TODO: replcae with #meta and FeedMeta?
+  latest(url: string): Promise<FeedItem[]>;
 };
 
 export function GetAdapter(url: string): Adapter {

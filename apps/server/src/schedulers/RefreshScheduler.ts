@@ -1,5 +1,5 @@
 import { TypedEmitter } from "tiny-typed-emitter";
-import { RefreshFeed } from "../services/RefreshFeed.js";
+import { RefreshSource } from "../services/RefreshSource.js";
 import db from "../db.js";
 
 type Events = {
@@ -19,15 +19,26 @@ class RefreshScheduler extends TypedEmitter<Events> {
       const feeds = await db.feed.findMany();
       await Promise.all(
         feeds.map((feed) => {
-          return this.refresh(feed.id);
+          return this.refreshFeed(feed.id);
         })
       );
     });
   }
 
-  async refresh(feedId: string) {
+  async refreshFeed(feedId: string) {
     return this.run(async () => {
-      await RefreshFeed(feedId);
+      const sources = await db.source.findMany({ where: { feedId } });
+      await Promise.all(
+        sources.map((source) => {
+          return this.refreshSource(source.id);
+        })
+      );
+    });
+  }
+
+  async refreshSource(feedId: string) {
+    return this.run(async () => {
+      await RefreshSource(feedId);
       this.emit("feed-updated", feedId);
     });
   }

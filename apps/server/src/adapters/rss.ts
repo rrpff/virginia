@@ -4,7 +4,7 @@ import url from "url";
 import { Adapter } from "./index.js";
 
 export const RSSAdapter: Adapter = {
-  async getFeedDefinitions(url: string) {
+  async getSources(url: string) {
     const feedUrls = await getFeedUrls(url);
     const favicon = await getFavicon(url);
 
@@ -22,7 +22,7 @@ export const RSSAdapter: Adapter = {
     );
   },
 
-  site: async (siteUrl: string) => {
+  async site(siteUrl: string) {
     const [feedUrl] = await getFeedUrls(siteUrl);
     if (!feedUrl) {
       return {}; // TODO: log
@@ -36,7 +36,8 @@ export const RSSAdapter: Adapter = {
       iconUrl: icon,
     };
   },
-  feed: async (siteUrl: string) => {
+
+  async latest(siteUrl: string) {
     const [feedUrl] = await getFeedUrls(siteUrl); // TODO: receive feed url directly
     if (!feedUrl) {
       return []; // TODO: log

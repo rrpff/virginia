@@ -10,25 +10,25 @@ import { rpc, RpcOutputs } from "../rpc";
 import classNames from "classnames";
 import { LuLoader } from "react-icons/lu";
 
-type FeedDefinition = RpcOutputs["feedDefinitions"][number];
+type Source = RpcOutputs["sourcesForUrl"][number];
 
 type Props = ComboboxInputProps & {
-  onSelectFeed?: (result: FeedDefinition) => void;
+  onSelectSource?: (result: Source) => void;
 };
 
-export function FeedDefinitionInput({ onSelectFeed, ...props }: Props) {
+export function SourceInput({ onSelectSource, ...props }: Props) {
   const [query, setQuery] = useState("");
 
-  const results = rpc.feedDefinitions.useQuery(
+  const results = rpc.sourcesForUrl.useQuery(
     { url: query },
     { enabled: isURL(query) }
   );
 
   return (
     <Combobox
-      onChange={(result: FeedDefinition) => {
+      onChange={(result: Source) => {
         if (result !== null) {
-          onSelectFeed?.(result);
+          onSelectSource?.(result);
         }
       }}
     >
