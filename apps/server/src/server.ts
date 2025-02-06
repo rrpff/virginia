@@ -182,7 +182,6 @@ const rpc = router({
         if (!category) return null;
       }
 
-      // TODO: optimise this whole thing. rewrite in sql - try typed sql
       const feedOrders = await db.item.groupBy({
         by: ["sourceId"],
         _max: {
