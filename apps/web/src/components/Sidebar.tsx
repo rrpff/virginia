@@ -1,5 +1,12 @@
 import classNames from "classnames";
 import { Link, useLocation } from "wouter";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuPortal,
+  ContextMenuTrigger,
+} from "@radix-ui/react-context-menu";
 import { rpc, RpcOutputs } from "../rpc";
 import { useCallback, useEffect, useState } from "react";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
@@ -92,8 +99,10 @@ function CategoryNav() {
       <CategoryLink
         id="root"
         href="/"
+        name="All"
         icon="🌍"
         isDraggable={false}
+        isDeletable={false}
         isActive={"/" === location}
       />
       <div className="flex flex-col gap-1">
@@ -114,8 +123,10 @@ function CategoryNav() {
                   key={href}
                   href={href}
                   id={category.id}
+                  name={category.name}
                   icon={category.icon}
                   isDraggable
+                  isDeletable
                   isActive={href === location}
                 />
               );
@@ -130,15 +141,19 @@ function CategoryNav() {
 function CategoryLink({
   id,
   href,
+  name,
   icon,
   isActive,
-  isDraggable = true,
+  isDraggable,
+  isDeletable,
 }: {
   id: string;
   href: string;
+  name: string;
   icon: string;
   isActive: boolean;
   isDraggable?: boolean;
+  isDeletable?: boolean;
 }) {
   const {
     setNodeRef,
@@ -156,6 +171,9 @@ function CategoryLink({
     ? { transform: `translate3d(0px, ${transform.y}px, 0)`, transition }
     : undefined;
 
+  const deleteCategory = rpc.deleteCategory.useMutation();
+  const utils = rpc.useUtils();
+
   return (
     <div
       ref={setNodeRef}
@@ -170,15 +188,37 @@ function CategoryLink({
       {...listeners}
       {...attributes} // TODO: fix focus
     >
-      <Link
-        className={classNames(
-          "block pl-8 pr-4 py-2 cursor-default",
-          isDragging ? "pointer-events-none" : "pointer-events-auto"
-        )}
-        href={href}
-      >
-        <span className="relative">{icon}</span>
-      </Link>
+      <ContextMenu>
+        <ContextMenuTrigger disabled={!isDeletable}>
+          <Link
+            className={classNames(
+              "block pl-8 pr-4 py-2 cursor-default",
+              isDragging ? "pointer-events-none" : "pointer-events-auto"
+            )}
+            title={name}
+            href={href}
+          >
+            <span className="relative">{icon}</span>
+          </Link>
+        </ContextMenuTrigger>
+        <ContextMenuPortal>
+          <ContextMenuContent className="border-2 border-foreground bg-white p-1 text-xs rounded-sm">
+            {isDeletable && (
+              <ContextMenuItem
+                className="px-2 py-1 focus:bg-foreground focus:text-background focus:outline-none cursor-default"
+                onClick={async () => {
+                  if (confirm("Are you sure?")) {
+                    await deleteCategory.mutateAsync({ categoryId: id });
+                    await utils.categories.invalidate();
+                  }
+                }}
+              >
+                Delete {name}
+              </ContextMenuItem>
+            )}
+          </ContextMenuContent>
+        </ContextMenuPortal>
+      </ContextMenu>
     </div>
   );
 }

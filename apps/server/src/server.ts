@@ -6,6 +6,7 @@ import z from "zod";
 import { slug } from "../utils/ids.js";
 import db from "./db.js";
 import {
+  CategoryDeleteSchema,
   FeedCreateSchema,
   FeedDeleteSchema,
   FeedUpdateSchema,
@@ -120,6 +121,23 @@ const rpc = router({
         db.category.update({
           data: { position },
           where: { id: categoryId },
+        }),
+      ]);
+    }),
+
+  deleteCategory: proc
+    .input(CategoryDeleteSchema)
+    .mutation(async ({ input }) => {
+      const category = await db.category.findFirst({
+        where: { id: input.categoryId },
+      });
+      if (!category) return;
+
+      await db.$transaction([
+        db.category.delete({ where: { id: input.categoryId } }),
+        db.category.updateMany({
+          where: { position: { gt: category.position } },
+          data: { position: { decrement: 1 } },
         }),
       ]);
     }),
