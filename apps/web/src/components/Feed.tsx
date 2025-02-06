@@ -1,10 +1,10 @@
 import classNames from "classnames";
-import { WEEK } from "../utils/time";
 import TimeAgo from "./TimeAgo";
 import { RpcOutputs } from "../rpc";
 import { Link } from "wouter";
 import { LuExternalLink } from "react-icons/lu";
 import { useMemo } from "react";
+import { useLiveContext } from "../contexts/live";
 
 // TODO: this is getting ugly, what was going on with those domain types huh
 type Feed = Omit<NonNullable<RpcOutputs["feed"]>, "sources" | "categories">;
@@ -96,6 +96,7 @@ function FeedItem({ item }: { item: Item }) {
 }
 
 function TimeBadge({ time }: { time?: number | null | string }) {
+  const { lastSeenTime } = useLiveContext();
   if (!time) return;
 
   const timeF = typeof time === "string" ? Date.parse(time) : time;
@@ -105,7 +106,7 @@ function TimeBadge({ time }: { time?: number | null | string }) {
       title={timeD.toISOString()}
       className={classNames(
         "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-foreground/70",
-        Date.now() - timeF < WEEK && "bg-foreground text-white"
+        timeF > lastSeenTime && "bg-foreground text-white"
       )}
     >
       <TimeAgo time={timeF} />
