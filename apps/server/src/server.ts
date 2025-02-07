@@ -75,6 +75,12 @@ const rpc = router({
   addSource: proc.input(SourceCreateSchema).mutation(async ({ input }) => {
     const source = await db.source.create({ data: input });
 
+    // Update feed icon if needed
+    await db.feed.update({
+      where: { id: input.feedId, iconUrl: null },
+      data: { iconUrl: source.iconUrl ?? null },
+    });
+
     RefreshScheduler.refreshSource(source.id);
     return source;
   }),
@@ -84,6 +90,16 @@ const rpc = router({
     if (!source) return;
 
     await db.source.delete({ where: { id: input.sourceId } });
+
+    // Clear feed icon if needed
+    const feed = await db.feed.findFirst({
+      where: { id: source.feedId },
+      include: { _count: true },
+    });
+
+    if (feed?._count.sources === 0) {
+      await db.feed.update({ where: { id: feed.id }, data: { iconUrl: null } });
+    }
   }),
 
   refresh: proc.mutation(() => {
