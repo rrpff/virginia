@@ -27,7 +27,7 @@ export const RSSAdapter: Adapter = {
     const { items } = await rss.parseURL(feedUrl);
 
     return items.map((item) => {
-      const title = item.title || item.contentSnippet;
+      const title = item.title ?? item.contentSnippet ?? "";
       let description = item.contentSnippet;
       if (title === description) {
         description = undefined;
@@ -35,7 +35,7 @@ export const RSSAdapter: Adapter = {
 
       return {
         url: item.link!,
-        title: title!,
+        title: title,
         description: description ?? null,
         imageUrl: null,
         timestamp: item.isoDate ? new Date(item.isoDate) : new Date(-1),
