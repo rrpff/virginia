@@ -8,7 +8,7 @@ import {
   ContextMenuTrigger,
 } from "@radix-ui/react-context-menu";
 import { rpc, RpcOutputs } from "../rpc";
-import { useCallback, useEffect, useState } from "react";
+import { ReactElement, useCallback, useEffect, useState } from "react";
 import { LuPlus, LuRefreshCw } from "react-icons/lu";
 import {
   closestCenter,
@@ -26,6 +26,7 @@ import {
 } from "@dnd-kit/sortable";
 import { restrictToParentElement } from "@dnd-kit/modifiers";
 import { useLiveContext } from "../contexts/live";
+import Logo from "./Logo.svg?react";
 
 export default function Sidebar() {
   const refresh = rpc.refresh.useMutation();
@@ -100,7 +101,9 @@ function CategoryNav() {
         id="root"
         href="/"
         name="All"
-        icon="🌍"
+        icon={
+          <Logo className="w-full text-foreground" width={32} height={32} />
+        }
         isDraggable={false}
         isDeletable={false}
         isActive={"/" === location}
@@ -150,7 +153,7 @@ function CategoryLink({
   id: string;
   href: string;
   name: string;
-  icon: string;
+  icon: string | ReactElement;
   isActive: boolean;
   isDraggable?: boolean;
   isDeletable?: boolean;

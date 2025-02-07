@@ -18,7 +18,8 @@ pub fn run() {
             TrayIconBuilder::new()
                 .menu(&menu)
                 .show_menu_on_left_click(true)
-                .icon(app.default_window_icon().unwrap().clone()) // TODO: change
+                .icon(app.default_window_icon().unwrap().clone())
+                .icon_as_template(true)
                 .build(app)?;
 
             Ok(())
