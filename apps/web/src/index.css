@@ -3,6 +3,7 @@
 @theme {
   --color-background: oklch(94.85% 0.0148 19.18148516721477);
   --color-foreground: oklch(37.5% 0.0296 19.18148516721477);
+  --color-contrast: oklch(100% 0 0);
   --color-focus: oklch(84.85% 0.1653 94.76);
 
   --color-muted: color-mix(
@@ -43,7 +44,7 @@
 
 .v-input {
   @apply rounded-sm p-2;
-  @apply bg-white border-2 border-foreground;
+  @apply bg-contrast border-2 border-foreground;
   @apply outline-4 outline-transparent focus:outline-focus;
 }
 
@@ -54,7 +55,7 @@
 
 /* Fix broken images */
 .v-icon::before {
-  @apply bg-white;
+  @apply bg-contrast;
   @apply absolute top-0 left-0 w-full h-full;
   @apply content-[''];
 }

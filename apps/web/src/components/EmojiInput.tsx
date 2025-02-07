@@ -92,7 +92,7 @@ export default function EmojiInput(props: Props) {
       />
       <div
         className={classNames(
-          "fixed bg-white w-69 flex flex-row flex-wrap gap-1 p-2 rounded-sm z-20",
+          "fixed bg-contrast w-69 flex flex-row flex-wrap gap-1 p-2 rounded-sm z-20",
           "border-2 border-foreground",
           visible ? "block pointer-events-auto" : "hidden pointer-events-none"
         )}

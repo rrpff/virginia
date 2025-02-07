@@ -9,7 +9,7 @@ import {
 } from "@radix-ui/react-context-menu";
 import { rpc, RpcOutputs } from "../rpc";
 import { ReactElement, useCallback, useEffect, useState } from "react";
-import { LuPlus, LuRefreshCw } from "react-icons/lu";
+import { LuPlus, LuRefreshCw, LuSettings2 } from "react-icons/lu";
 import {
   closestCenter,
   DndContext,
@@ -55,6 +55,12 @@ export default function Sidebar() {
             }}
           />
         </button>
+        <Link
+          className="v-button bg-background! text-foreground! flex items-center text-xl aspect-square"
+          href="/settings"
+        >
+          <LuSettings2 />
+        </Link>
         <Link
           className="v-button bg-background! text-foreground! flex items-center text-xl aspect-square"
           href="/add"
@@ -185,7 +191,7 @@ function CategoryLink({
         "relative group overflow-hidden",
         "text-2xl rounded-r-md cursor-default",
         "outline-4 outline-transparent focus:outline-focus",
-        isActive ? "bg-white" : "bg-background hover:bg-faint",
+        isActive ? "bg-contrast" : "bg-background hover:bg-faint",
         isDragging ? "bg-faint z-10" : "" // TODO: stop opacity
       )}
       {...listeners}
@@ -205,7 +211,7 @@ function CategoryLink({
           </Link>
         </ContextMenuTrigger>
         <ContextMenuPortal>
-          <ContextMenuContent className="border-2 border-foreground bg-white p-1 text-xs rounded-sm">
+          <ContextMenuContent className="border-2 border-foreground bg-contrast p-1 text-xs rounded-sm">
             {isDeletable && (
               <ContextMenuItem
                 className="px-2 py-1 focus:bg-foreground focus:text-background focus:outline-none cursor-default"

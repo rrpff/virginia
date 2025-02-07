@@ -106,7 +106,7 @@ function TimeBadge({ time }: { time?: number | null | string }) {
       title={timeD.toISOString()}
       className={classNames(
         "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-muted",
-        timeF > lastSeenTime && "bg-foreground text-white"
+        timeF > lastSeenTime && "bg-foreground text-contrast"
       )}
     >
       <TimeAgo time={timeF} />

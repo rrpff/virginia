@@ -19,7 +19,7 @@ export default function SourceCard({
   return (
     <div
       className={classNames(
-        "flex flex-row items-center gap-2 bg-white/60 rounded-sm",
+        "flex flex-row items-center gap-2 bg-faint rounded-sm",
         {
           "p-3 py-2": size === "sm",
           "p-4": size === "lg",

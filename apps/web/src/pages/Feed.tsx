@@ -76,7 +76,7 @@ export default function FeedPage() {
                     "flex items-center justify-center w-12 h-12 rounded-md",
                     "border-2",
                     feed.data?.iconUrl == icon
-                      ? "border-foreground bg-white"
+                      ? "border-foreground bg-contrast"
                       : "border-transparent bg-faint"
                   )}
                 >

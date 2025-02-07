@@ -50,7 +50,7 @@ export default function CategoriesSelector({
           <LuPlus />
         </PopoverButton>
         <PopoverPanel
-          className="absolute -mt-9 ml-3 z-10 bg-white rounded-sm"
+          className="absolute -mt-9 ml-3 z-10 bg-contrast rounded-sm"
           anchor="bottom start"
           portal
         >

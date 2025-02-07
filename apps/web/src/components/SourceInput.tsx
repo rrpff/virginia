@@ -62,7 +62,7 @@ export function SourceInput({ onSelectSource, ...props }: Props) {
         style={{ width: inputDimensions?.width }}
         className={classNames(
           "rounded-b-sm empty:invisible",
-          "bg-white border-2 border-t-0 border-foreground"
+          "bg-contrast border-2 border-t-0 border-foreground"
         )}
       >
         {results.data?.map((result) => (
