@@ -4,6 +4,7 @@ import { PatreonAdapter } from "./patreon.js";
 import { RSSAdapter } from "./rss.js";
 // import { WikipediaAdapter } from "./wikipedia.js";
 import { YoutubeAdapter } from "./youtube.js";
+import { BlueskyAdapter } from "./bluesky.js";
 
 export type FeedDefinition = {
   url: string;
@@ -30,6 +31,7 @@ function GetAdapter(url: string): Adapter {
   // if (hostname.match(/^\w+\.wikipedia\.org/)) return WikipediaAdapter;
   if (hostname.match(/^(www\.)?youtube\.com/)) return YoutubeAdapter;
   if (hostname.match(/^(www\.)?patreon\.com/)) return PatreonAdapter;
+  if (hostname.match(/^(www\.)?bsky\.app/)) return BlueskyAdapter;
   return RSSAdapter;
 }
 
