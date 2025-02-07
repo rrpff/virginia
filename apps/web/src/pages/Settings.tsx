@@ -1,15 +1,83 @@
-import { ComponentProps, Fragment } from "react";
+import { ComponentProps, useMemo } from "react";
+import Color from "colorjs.io";
 import { useTheme } from "../contexts/theme";
 
 export default function SettingsPage() {
   const { theme, resetTheme, setThemeColor } = useTheme();
 
   return (
-    <Fragment>
-      <h1 className="text-3xl font-black mb-4">Settings</h1>
+    <div className="flex flex-col gap-8">
+      <h1 className="text-3xl font-black">Settings</h1>
+
+      <div>
+        <h2 className="font-bold mb-1">Generated palette</h2>
+        <div className="inline-flex flex-row border-2 border-foreground rounded-sm overflow-hidden">
+          <div
+            className="w-12 h-12 border-r-2 border-foreground"
+            style={{ background: theme.background }}
+          />
+          <div
+            className="w-12 h-12 border-r-2 border-foreground"
+            style={{ background: theme.foreground }}
+          />
+          <div
+            className="w-12 h-12 border-r-2 border-foreground"
+            style={{ background: theme.focus }}
+          />
+          <div
+            className="w-12 h-12 border-foreground"
+            style={{ background: theme.contrast }}
+          />
+        </div>
+      </div>
+
+      <div>
+        <h2 className="font-bold mb-1">Pick!</h2>
+        <ColorPicker
+          value={theme.background}
+          onChange={(background) => {
+            const foreground = background.clone();
+            // foreground.l = 1.0 - foreground.l;
+            foreground.l = background.l > 0.5 ? 0.3 : 0.95;
+            // foreground.l = Math.min(
+            //   1.0,
+            //   Math.max(0.0, 1.0 - Math.round(background.l * 4) / 4)
+            // );
+            // if (Math.abs(foreground.l - background.l) < 0.4) {
+            //   foreground.l = background.l > 0.5 ? 0.2 : 0.8;
+            // }
+
+            const contrast = background.clone();
+            contrast.l = Math.round(contrast.l);
+
+            const focus = background.clone();
+            focus.l = 0.7;
+            focus.h = (focus.h + 180) % 360;
+            focus.c = 0.2;
+
+            setThemeColor("background", background.toString());
+            setThemeColor("foreground", foreground.toString());
+            setThemeColor("focus", focus.toString());
+            setThemeColor("contrast", contrast.toString());
+          }}
+        />
+      </div>
+
+      <div>
+        <button
+          className="v-button"
+          onClick={() => {
+            if (confirm("Really reset?")) {
+              resetTheme();
+            }
+          }}
+        >
+          Reset
+        </button>
+      </div>
 
       {/* TODO: fix warnings using custom color picker */}
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         <div className="flex flex-col">
           <label className="pb-4" htmlFor="foreground">
             Foreground
@@ -64,31 +132,31 @@ export default function SettingsPage() {
             onChange={(e) => setThemeColor("contrast", e.currentTarget.value)}
           />
         </div>
-      </div>
-
-      <button
-        className="mt-12 v-button"
-        onClick={() => {
-          if (confirm("Really reset?")) {
-            resetTheme();
-          }
-        }}
-      >
-        Reset
-      </button>
-    </Fragment>
+      </div> */}
+    </div>
   );
 }
 
-function ColorPicker({ ...props }: ComponentProps<"input">) {
+function ColorPicker({
+  value,
+  onChange,
+  ...props
+}: Omit<ComponentProps<"input">, "value" | "onChange"> & {
+  value: string;
+  onChange: (value: Color) => void;
+}) {
+  const color = useMemo(() => new Color(value).to("srgb"), [value]);
+
   return (
     <div
-      className="relative w-18 h-18 rounded-md border-4 border-black outline-4 outline-white"
-      style={{ background: props.value as string }}
+      className="relative w-18 h-18 rounded-md outline-4 outline-foreground"
+      style={{ background: color.toString() }}
     >
       <input
         type="color"
         className="absolute top-0 left-0 w-full h-full opacity-0"
+        onChange={(e) => onChange(new Color(e.currentTarget.value).to("oklch"))}
+        value={color.toString({ format: "hex" })}
         {...props}
       />
     </div>
