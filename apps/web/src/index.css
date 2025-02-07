@@ -5,6 +5,24 @@
   --color-foreground: oklch(37.5% 0.0296 19.18148516721477);
   --color-focus: oklch(84.85% 0.1653 94.76);
 
+  --color-muted: color-mix(
+    in oklab,
+    var(--color-foreground) 60%,
+    var(--color-background)
+  );
+
+  --color-light: color-mix(
+    in oklab,
+    var(--color-foreground) 30%,
+    var(--color-background)
+  );
+
+  --color-faint: color-mix(
+    in oklab,
+    var(--color-foreground) 10%,
+    var(--color-background)
+  );
+
   /* --color-background: var(--arc-palette-background);
   --color-foreground: var(--arc-palette-foregroundPrimary); */
 
@@ -19,7 +37,7 @@
 .v-button {
   @apply cursor-pointer p-1 px-2 rounded-sm;
   @apply bg-foreground text-background;
-  @apply disabled:cursor-not-allowed disabled:bg-foreground/50;
+  @apply disabled:cursor-not-allowed disabled:bg-muted;
   @apply outline-4 outline-transparent focus:outline-focus;
 }
 

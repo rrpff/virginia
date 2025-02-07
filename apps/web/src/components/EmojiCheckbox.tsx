@@ -20,8 +20,8 @@ const EmojiCheckbox = forwardRef<HTMLInputElement, Props>(
             "flex items-center justify-center",
             "text-2xl w-12 h-12 rounded-sm",
             "border-2 outline-4 outline-transparent",
-            "bg-foreground/10 peer-checked:bg-white",
-            "peer-hover:border-foreground/20 peer-checked:peer-hover:border-foreground",
+            "bg-faint peer-checked:bg-white",
+            "peer-hover:border-muted peer-checked:peer-hover:border-foreground",
             "border-transparent peer-checked:border-foreground",
             "peer-focus:outline-focus peer-checked:peer-focus:outline-focus"
           )}

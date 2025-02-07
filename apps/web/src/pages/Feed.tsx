@@ -75,9 +75,9 @@ export default function FeedPage() {
                   className={classNames(
                     "flex items-center justify-center w-12 h-12 rounded-md",
                     "border-2",
-                    feed.data?.iconUrl === icon
+                    feed.data?.iconUrl == icon
                       ? "border-foreground bg-white"
-                      : "border-transparent bg-foreground/10"
+                      : "border-transparent bg-faint"
                   )}
                 >
                   <img className="v-icon" src={icon} />

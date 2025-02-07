@@ -70,7 +70,10 @@ function FeedItem({ item }: { item: Item }) {
 
   const Tag = isUrl ? "a" : "span";
   return (
-    <Tag href={item.url} className="flex flex-col text-xs group">
+    <Tag
+      href={item.url}
+      className="flex flex-col text-xs group visited:text-muted"
+    >
       <span className="flex flex-row items-center">
         <span
           className={classNames(
@@ -80,9 +83,11 @@ function FeedItem({ item }: { item: Item }) {
         >
           {item.title || <>&mdash;</>}
         </span>
-        <TimeBadge time={item.timestamp} />
+        <span className="shrink-0 text-xs scale-75 font-bold">
+          <TimeBadge time={item.timestamp} />
+        </span>
       </span>
-      <span className="flex flex-row items-center gap-1 text-foreground/50">
+      <span className="flex flex-row items-center gap-1 text-muted">
         <span className="line-clamp-1">{formatted}</span>
         {isUrl && <LuExternalLink />}
       </span>
@@ -100,7 +105,7 @@ function TimeBadge({ time }: { time?: number | null | string }) {
     <span
       title={timeD.toISOString()}
       className={classNames(
-        "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-foreground/70",
+        "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-muted",
         timeF > lastSeenTime && "bg-foreground text-white"
       )}
     >

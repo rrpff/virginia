@@ -41,13 +41,10 @@ export default function SourceCard({
           {source.name}
         </span>
         <span
-          className={classNames(
-            "min-w-0 font-bold text-foreground/50 truncate",
-            {
-              "text-xs": size === "sm",
-              "text-sm": size === "lg",
-            }
-          )}
+          className={classNames("min-w-0 font-bold text-muted truncate", {
+            "text-xs": size === "sm",
+            "text-sm": size === "lg",
+          })}
         >
           {source.url}
         </span>
@@ -57,13 +54,10 @@ export default function SourceCard({
       >
         <button
           type="button"
-          className={classNames(
-            "rounded-full cursor-pointer hover:bg-foreground/10",
-            {
-              "p-2": size === "sm",
-              "p-4": size === "lg",
-            }
-          )}
+          className={classNames("rounded-full cursor-pointer hover:bg-faint", {
+            "p-2": size === "sm",
+            "p-4": size === "lg",
+          })}
           onClick={(e) => {
             e.preventDefault();
             onRemove();

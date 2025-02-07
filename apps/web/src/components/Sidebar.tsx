@@ -185,8 +185,8 @@ function CategoryLink({
         "relative group overflow-hidden",
         "text-2xl rounded-r-md cursor-default",
         "outline-4 outline-transparent focus:outline-focus",
-        isActive ? "bg-white" : "bg-background hover:bg-foreground/10",
-        isDragging ? "bg-foreground/10 z-10" : "" // TODO: stop opacity
+        isActive ? "bg-white" : "bg-background hover:bg-faint",
+        isDragging ? "bg-faint z-10" : "" // TODO: stop opacity
       )}
       {...listeners}
       {...attributes} // TODO: fix focus
