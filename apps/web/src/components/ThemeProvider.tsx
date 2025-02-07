@@ -1,6 +1,13 @@
 import { ReactNode, useCallback, useEffect, useState } from "react";
 import { Theme, ThemeContext } from "../contexts/theme";
 
+const DEFAULT_THEME: Theme = {
+  foreground: "oklch(37.5% 0.0296 19.18148516721477)",
+  background: "oklch(94.85% 0.0148 19.18148516721477)",
+  focus: "oklch(84.85% 0.1653 94.76)",
+  contrast: "oklch(100% 0 0)",
+};
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setTheme] = useState<Theme>({
     foreground: getCssVariable("--color-foreground") ?? "",
@@ -17,6 +24,14 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     }));
   }, []);
 
+  const resetTheme = useCallback(() => {
+    setCssVariable(`--color-foreground`, DEFAULT_THEME.foreground);
+    setCssVariable(`--color-background`, DEFAULT_THEME.background);
+    setCssVariable(`--color-focus`, DEFAULT_THEME.focus);
+    setCssVariable(`--color-contrast`, DEFAULT_THEME.contrast);
+    setTheme({ ...DEFAULT_THEME });
+  }, []);
+
   useEffect(() => {
     localStorage.setItem("v_theme", JSON.stringify(theme));
     console.log(localStorage.getItem("v_theme"));
@@ -24,7 +39,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   return (
     <ThemeContext.Provider
-      value={{ theme, setThemeColor }}
+      value={{ theme, resetTheme, setThemeColor }}
       children={children}
     />
   );

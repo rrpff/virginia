@@ -2,11 +2,11 @@ import { ComponentProps, Fragment } from "react";
 import { useTheme } from "../contexts/theme";
 
 export default function SettingsPage() {
-  const { theme, setThemeColor } = useTheme();
+  const { theme, resetTheme, setThemeColor } = useTheme();
 
   return (
     <Fragment>
-      <h1 className="text-3xl font-black">Settings</h1>
+      <h1 className="text-3xl font-black mb-4">Settings</h1>
 
       {/* TODO: fix warnings using custom color picker */}
       <div className="flex flex-col gap-4">
@@ -65,6 +65,17 @@ export default function SettingsPage() {
           />
         </div>
       </div>
+
+      <button
+        className="mt-12 v-button"
+        onClick={() => {
+          if (confirm("Really reset?")) {
+            resetTheme();
+          }
+        }}
+      >
+        Reset
+      </button>
     </Fragment>
   );
 }

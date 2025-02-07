@@ -9,11 +9,13 @@ export type Theme = {
 
 export type ThemeContextType = {
   setThemeColor: (key: keyof Theme, value: string) => void;
+  resetTheme: () => void;
   theme: Theme;
 };
 
 export const ThemeContext = createContext<ThemeContextType>({
   setThemeColor: () => {},
+  resetTheme: () => {},
   theme: {
     foreground: "",
     background: "",
