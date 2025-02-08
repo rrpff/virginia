@@ -34,7 +34,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     localStorage.setItem("v_theme", JSON.stringify(theme));
-    console.log(localStorage.getItem("v_theme"));
   }, [theme]);
 
   return (
