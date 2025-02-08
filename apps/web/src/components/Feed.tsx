@@ -4,7 +4,6 @@ import { RpcOutputs } from "../rpc";
 import { Link } from "wouter";
 import { LuExternalLink } from "react-icons/lu";
 import { useMemo } from "react";
-import { useLiveContext } from "../contexts/live";
 import { sortBy } from "../utils/arrays";
 
 // TODO: this is getting ugly, what was going on with those domain types huh
@@ -72,7 +71,7 @@ function FeedItem({ item }: { item: Item }) {
   return (
     <Tag
       href={item.url}
-      className="flex flex-col text-xs group visited:text-muted"
+      className="v-feed-item-link flex flex-col text-xs group visited:text-muted"
     >
       <span className="flex flex-row items-center">
         <span
@@ -96,7 +95,6 @@ function FeedItem({ item }: { item: Item }) {
 }
 
 function TimeBadge({ time }: { time?: number | null | string }) {
-  const { lastSeenTime } = useLiveContext();
   if (!time) return;
 
   const timeF = typeof time === "string" ? Date.parse(time) : time;
@@ -104,10 +102,7 @@ function TimeBadge({ time }: { time?: number | null | string }) {
   return (
     <span
       title={timeD.toISOString()}
-      className={classNames(
-        "px-2 py-1 rounded-sm text-xs scale-75 font-bold text-muted",
-        timeF > lastSeenTime && "bg-foreground text-contrast"
-      )}
+      className="v-time-badge px-2 py-1 rounded-sm text-xs scale-75 font-bold"
     >
       <TimeAgo time={timeF} />
     </span>

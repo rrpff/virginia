@@ -77,3 +77,13 @@
     rotate: 270deg;
   }
 }
+
+.v-feed-item-link .v-time-badge {
+  @apply bg-foreground;
+  @apply text-contrast;
+}
+
+.v-feed-item-link:visited .v-time-badge {
+  @apply bg-background;
+  @apply text-muted;
+}
