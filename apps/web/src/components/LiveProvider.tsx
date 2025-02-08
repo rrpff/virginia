@@ -7,15 +7,9 @@ const source = new EventSource("//localhost:26541/sse");
 
 export default function LiveProvider({ children }: { children: ReactNode }) {
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [lastSeenTime, setLastSeenTime] = useState(getLastSeenTime());
   const utils = rpc.useUtils();
 
   useEffect(() => {
-    function updateLastSeen() {
-      setLastSeenTime(Date.now());
-      persistLastSeenTime(Date.now());
-    }
-
     function sse(event: MessageEvent) {
       try {
         const message: ServerEvent = JSON.parse(event.data);
@@ -38,28 +32,15 @@ export default function LiveProvider({ children }: { children: ReactNode }) {
       }
     }
 
-    window.addEventListener("visibilitychange", updateLastSeen);
-    window.addEventListener("beforeunload", updateLastSeen);
     source.addEventListener("message", sse);
     return () => {
-      window.removeEventListener("visibilitychange", updateLastSeen);
-      window.removeEventListener("beforeunload", updateLastSeen);
       source.removeEventListener("message", sse);
     };
   }, [utils.feed]);
 
   return (
-    <LiveContextProvider value={{ isRefreshing, lastSeenTime }}>
+    <LiveContextProvider value={{ isRefreshing }}>
       {children}
     </LiveContextProvider>
   );
-}
-
-function getLastSeenTime() {
-  const value = window.localStorage.getItem("v_last_left_time");
-  return value ? Number(value) : Infinity;
-}
-
-function persistLastSeenTime(t: number) {
-  window.localStorage.setItem("v_last_left_time", t.toString());
 }
