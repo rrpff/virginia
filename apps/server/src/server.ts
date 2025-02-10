@@ -257,6 +257,11 @@ app.use(
   })
 );
 
+app.post("/api/refresh", (_req, res) => {
+  RefreshScheduler.refreshAll();
+  res.status(202).send({});
+});
+
 app.get("/sse", (_req, res) => {
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Content-Type", "text/event-stream");
