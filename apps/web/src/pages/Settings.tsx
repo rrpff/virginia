@@ -12,6 +12,9 @@ export default function SettingsPage() {
 
       const contrast = background.clone();
       contrast.l = Math.round(contrast.l);
+      if (contrast.l === background.l) {
+        contrast.l = contrast.l === 0 ? 0.05 : 0.95;
+      }
 
       const focus = background.clone();
       focus.l = 0.7;
