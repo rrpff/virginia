@@ -71,6 +71,7 @@ function FeedItem({ item }: { item: Item }) {
   return (
     <Tag
       href={item.url}
+      target="_blank"
       className="v-feed-item-link flex flex-col text-xs group visited:text-muted"
     >
       <span className="flex flex-row items-center">
