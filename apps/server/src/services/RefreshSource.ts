@@ -54,16 +54,12 @@ function getLatestItems(source: Source, items: SourceItem[]): SourceItem[] {
     const filtered: SourceItem[] = [];
     for (let item of items) {
       if (item.id === source.lastId) {
-        console.log(
-          `Found ${filtered.length} new items for ${source.url} using id`
-        );
         return filtered;
       } else {
         filtered.push(item);
       }
     }
 
-    console.log(`Did not find id for ${source.url}`);
     return filtered;
   }
 
@@ -73,20 +69,15 @@ function getLatestItems(source: Source, items: SourceItem[]): SourceItem[] {
     const filtered: SourceItem[] = [];
     for (let item of items) {
       if (item.hash === source.lastHash) {
-        console.log(
-          `Found ${filtered.length} new items for ${source.url} using hash`
-        );
         return filtered;
       } else {
         filtered.push(item);
       }
     }
 
-    console.log(`Did not find hash for ${source.url}`);
     return filtered;
   }
 
   // Otherwise assume it's a first run and return everything
-  console.log("returning everything for ", source.url);
   return items;
 }
