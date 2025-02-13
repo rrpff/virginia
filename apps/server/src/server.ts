@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction } from "express";
 import cors from "cors";
 import { proc, router } from "./rpc.js";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
@@ -16,6 +16,9 @@ import {
 } from "./schema.js";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 import { GetUrlSources } from "./adapters/index.js";
+import path from "path";
+import { IncomingMessage } from "http";
+import frontend from "./middleware/frontend.js";
 
 const app = express();
 const rpc = router({
@@ -293,6 +296,10 @@ app.get("/sse", (_req, res) => {
     res.end();
   });
 });
+
+if (process.env.NODE_ENV === "production") {
+  app.use(frontend());
+}
 
 export default app;
 export type RPC = typeof rpc;

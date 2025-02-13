@@ -6,7 +6,7 @@ const HOST = process.env.HOST ?? "0.0.0.0";
 const PORT = Number(process.env.PORT ?? 26541);
 
 // Refresh immediately
-if (process.env.NODE_ENV !== "development") {
+if (process.env.NODE_ENV === "production") {
   RefreshScheduler.refreshAll();
 }
 
