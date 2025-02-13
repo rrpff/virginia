@@ -22,16 +22,3 @@ export default function frontend() {
     });
   };
 }
-
-// if (process.env.NODE_ENV === "production") {
-
-// }
-
-// express.static(__dirname, {index: 'ipad.htm'})
-
-// app.use(function (req, res, next) {
-
-//   const middleware = express.static(__dirname, {index: 'ipad.htm'});
-
-//   return res.
-// })
