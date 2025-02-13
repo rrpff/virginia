@@ -3,7 +3,7 @@ import cors from "cors";
 import { proc, router } from "./rpc.js";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import z from "zod";
-import { slug } from "../utils/ids.js";
+import { slug } from "./utils/ids.js";
 import db from "./db.js";
 import {
   CategoryDeleteSchema,

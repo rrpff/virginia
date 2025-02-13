@@ -2,7 +2,7 @@ import RSS from "rss-parser";
 import * as cheerio from "cheerio";
 import url from "url";
 import { Adapter } from "./index.js";
-import { hashObject } from "../../utils/hash.js";
+import { hashObject } from "../utils/hash.js";
 
 export const RSSAdapter: Adapter = {
   async getSources(url: string) {

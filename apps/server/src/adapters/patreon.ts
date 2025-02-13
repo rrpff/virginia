@@ -1,6 +1,6 @@
 import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
-import { hashObject } from "../../utils/hash.js";
+import { hashObject } from "../utils/hash.js";
 
 export const PatreonAdapter: Adapter = {
   async getSources(url) {
