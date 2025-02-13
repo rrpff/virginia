@@ -73,7 +73,13 @@ const rpc = router({
   }),
 
   addSource: proc.input(SourceCreateSchema).mutation(async ({ input }) => {
-    const source = await db.source.create({ data: input });
+    const source = await db.source.create({
+      data: {
+        ...input,
+        insertedAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
 
     // Update feed icon if needed
     await db.feed.update({

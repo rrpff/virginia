@@ -1,6 +1,7 @@
 import RSS from "rss-parser";
 import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
+import { RSSAdapter } from "./rss.js";
 
 export const YoutubeAdapter: Adapter = {
   async getSources(url) {
@@ -23,17 +24,11 @@ export const YoutubeAdapter: Adapter = {
 
     const $ = cheerio.load(body);
     const href = $('link[type="application/rss+xml"]').attr("href");
+    if (!href) {
+      console.error(`Could not find feed for ${url}`);
+      return [];
+    }
 
-    const rss = new RSS();
-    const { items } = await rss.parseURL(href!);
-    return items.map((item) => {
-      return {
-        url: item.link!,
-        title: item.title!,
-        description: item.contentSnippet ?? null,
-        imageUrl: null,
-        timestamp: new Date(item.isoDate!),
-      };
-    });
+    return RSSAdapter.latest(href);
   },
 };

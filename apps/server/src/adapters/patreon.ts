@@ -1,5 +1,6 @@
 import * as cheerio from "cheerio";
 import { Adapter } from "./index.js";
+import { hashObject } from "../../utils/hash.js";
 
 export const PatreonAdapter: Adapter = {
   async getSources(url) {
@@ -24,12 +25,18 @@ export const PatreonAdapter: Adapter = {
     return json.data
       .filter((item) => item.type === "post")
       .map((item) => {
-        return {
+        const mapped = {
+          id: item.attributes.url,
           url: item.attributes.url,
           title: item.attributes.title,
           description: item.attributes.teaser_text ?? null,
           imageUrl: item.attributes.image?.large_url ?? null,
           timestamp: new Date(item.attributes.published_at),
+        };
+
+        return {
+          ...mapped,
+          hash: hashObject(mapped),
         };
       });
   },

@@ -12,12 +12,14 @@ export type FeedDefinition = {
   iconUrl: string | null;
 };
 
-type SourceItem = {
+export type SourceItem = {
   title: string;
   url: string;
   imageUrl: string | null;
   description: string | null;
   timestamp: Date;
+  id: string | null;
+  hash: string;
 };
 
 export type Adapter = {

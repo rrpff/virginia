@@ -2,6 +2,7 @@ import RSS from "rss-parser";
 import * as cheerio from "cheerio";
 import url from "url";
 import { Adapter } from "./index.js";
+import { hashObject } from "../../utils/hash.js";
 
 export const RSSAdapter: Adapter = {
   async getSources(url: string) {
@@ -33,12 +34,18 @@ export const RSSAdapter: Adapter = {
         description = undefined;
       }
 
-      return {
+      const result = {
         url: item.link!,
         title: title,
         description: description ?? null,
         imageUrl: null,
         timestamp: item.isoDate ? new Date(item.isoDate) : new Date(-1),
+        id: item.guid ?? null,
+      };
+
+      return {
+        ...result,
+        hash: hashObject(result),
       };
     });
   },
