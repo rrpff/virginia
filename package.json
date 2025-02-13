@@ -1,12 +1,16 @@
 {
   "name": "virginia",
+  "bin": "./build/apps/server/src/index.js",
   "scripts": {
     "typecheck": "run-p 'typecheck -w packages/core' 'typecheck -w apps/server' 'typecheck -w apps/web'",
-    "build": "run-s 'build -w packages/core' 'build -w apps/server' 'build -w apps/web'",
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core'",
-    "start": "NODE_ENV=production node ./apps/server/dist/src/index.js",
     "migrate-dev": "npx -w apps/server prisma migrate dev",
-    "compile": "npm run build && mkdir -p ./apps/server/dist/src/public && cp -R ./apps/web/dist/ ./apps/server/dist/src/public"
+    "build": "run-p build:*",
+    "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core'",
+    "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
+    "package": "pkg .",
+    "release": "run-s build package",
+    "start": "NODE_ENV=production DATABASE_URL=file:$(pwd)/apps/server/prisma/dev.db ./binaries/virginia-arm64"
   },
   "workspaces": [
     "apps/server",
@@ -16,6 +20,20 @@
     "packages/tsconfig"
   ],
   "devDependencies": {
-    "npm-run-all": "^4.1.5"
+    "@prisma/client": "^6.3.1",
+    "@yao-pkg/pkg": "^6.3.0",
+    "npm-run-all": "^4.1.5",
+    "prisma": "^6.3.1"
+  },
+  "pkg": {
+    "assets": [
+      "apps/web/dist/**/*",
+      "node_modules/.prisma/**/*"
+    ],
+    "targets": [
+      "node22-macos-arm64",
+      "node22-macos-x64"
+    ],
+    "outputPath": "./binaries"
   }
 }

@@ -2,10 +2,17 @@ import express, { Request, Response, NextFunction } from "express";
 import fs from "fs";
 import path from "path";
 
-const PUBLIC_DIR = path.join(import.meta.dirname, "..", "public");
-const staticMiddleware = express.static(PUBLIC_DIR);
+const ASSETS_DIR = path.join(
+  "/",
+  "snapshot",
+  "virginia",
+  "apps",
+  "web",
+  "dist"
+);
 
 export default function frontend() {
+  const staticMiddleware = express.static(ASSETS_DIR);
   return function frontendMiddleware(
     req: Request,
     res: Response,
@@ -17,7 +24,7 @@ export default function frontend() {
         return;
       }
 
-      const index = path.join(PUBLIC_DIR, "index.html");
+      const index = path.join(ASSETS_DIR, "index.html");
       fs.createReadStream(index).pipe(res);
     });
   };
