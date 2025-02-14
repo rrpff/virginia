@@ -7,11 +7,11 @@ const HOST = process.env.HOST ?? "0.0.0.0";
 const PORT = Number(process.env.PORT ?? 26541);
 
 (async () => {
-  // Apply any database migrations
-  await migrate();
-
-  // Refresh immediately
   if (process.env.NODE_ENV === "production") {
+    // Apply any database migrations
+    await migrate();
+
+    // Schedule a refresh immediately
     RefreshScheduler.refreshAll();
   }
 
