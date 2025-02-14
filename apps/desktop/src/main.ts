@@ -6,10 +6,15 @@ import started from "electron-squirrel-startup";
 import { start } from "@virginia/server";
 import isDev from "electron-is-dev";
 import log from "electron-log";
+import { updateElectronApp } from "update-electron-app";
 
 const API_HOST = "http://localhost:26541";
 const WEB_HOST = isDev ? "http://localhost:26540" : "http://localhost:26541";
 
+// Update app if needed
+updateElectronApp();
+
+// Start writing logs
 log.initialize();
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -32,8 +37,6 @@ if (!isDev) {
   server.log.on("warn", (...args) => log.warn(...args));
   server.log.on("error", (...args) => log.error(...args));
   server.log.on("log", (...args) => log.log(...args));
-
-  log.info(`serving from ${path.join(import.meta.dirname, "..", "public")}`);
 }
 
 const icon =
@@ -86,10 +89,4 @@ app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
   }
-});
-
-app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  // TODO: open in browser?
 });
