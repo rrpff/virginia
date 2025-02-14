@@ -9,7 +9,7 @@
     "dev": "run-p dev:*",
     "build": "run-s build:*",
     "build:js": "swc src -d dist",
-    "build:client": "cp -R ../web/dist ./dist/public/",
+    "build:client": "cp -R ../web/dist/ ./dist/public/",
     "dev:js": "npm run build:js -- --watch",
     "dev:start": "NODE_ENV=development electron-forge start",
     "package": "electron-forge package",
