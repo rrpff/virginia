@@ -21,7 +21,6 @@
   "workspaces": [
     "apps/desktop",
     "apps/server",
-    "apps/tray",
     "apps/web",
     "packages/core",
     "packages/tsconfig"
