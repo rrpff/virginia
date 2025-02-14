@@ -5,11 +5,14 @@ import { MakerDeb } from "@electron-forge/maker-deb";
 import { MakerRpm } from "@electron-forge/maker-rpm";
 import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
+import path from "path";
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
     prune: false,
+    icon: path.join(__dirname, "assets", "appicon"),
+    name: "Virginia",
   },
   rebuildConfig: {},
   makers: [
