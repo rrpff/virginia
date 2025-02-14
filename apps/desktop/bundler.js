@@ -72,8 +72,8 @@ export const bundle = async (source, destination) => {
   const prodDeps = collectProdDeps(sourceNode);
 
   for (const dep of prodDeps) {
-    const dest = dep.location.startsWith("packages")
-      ? path.join(destination, "node_modules", "@microflow", dep.name)
+    const dest = dep.location.startsWith("apps")
+      ? path.join(destination, "node_modules", "@virginia", dep.name)
       : path.join(destination, "node_modules", dep.name);
 
     if (dep.name.startsWith("@types")) {
