@@ -5,12 +5,13 @@
     "typecheck": "run-p 'typecheck -w packages/core' 'typecheck -w apps/server' 'typecheck -w apps/web'",
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core'",
     "migrate-dev": "npx -w apps/server prisma migrate dev",
-    "build": "run-p build:*",
+    "build": "run-s build:prisma ; run-p build:sources build:binary",
     "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core'",
+    "build:prisma": "sed -i -e 's/node:sqlite/sqlite/g' ./node_modules/prisma/prisma-client/runtime/binary.js",
     "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
-    "package": "pkg .",
+    "package": "pkg -d --compress Brotli .",
     "release": "run-s build package",
-    "start": "NODE_ENV=production DATABASE_URL=file:$(pwd)/apps/server/prisma/dev.db ./binaries/virginia-arm64"
+    "start": "NODE_ENV=production ./binaries/virginia-arm64"
   },
   "workspaces": [
     "apps/server",
@@ -26,9 +27,17 @@
     "prisma": "^6.3.1"
   },
   "pkg": {
+    "scripts": [
+      "node_modules/prisma/**/*.js"
+    ],
     "assets": [
       "apps/web/dist/**/*",
-      "node_modules/.prisma/**/*"
+      "node_modules/.prisma/**/*",
+      "node_modules/prisma/build/**/*",
+      "node_modules/prisma/runtime/**/*",
+      "node_modules/prisma/prisma-client/**/*",
+      "node_modules/@prisma/engines/**/*",
+      "node_modules/@prisma/engines/*"
     ],
     "targets": [
       "node22-macos-arm64",
