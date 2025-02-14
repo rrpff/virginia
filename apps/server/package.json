@@ -1,7 +1,7 @@
 {
   "name": "@virginia/server",
   "private": true,
-  "version": "0.1.2",
+  "version": "0.1.3",
   "main": "./dist/src/client.js",
   "type": "module",
   "exports": {
