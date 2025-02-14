@@ -1,7 +1,7 @@
 {
   "name": "@virginia/desktop",
   "private": true,
-  "version": "0.1.4",
+  "version": "0.1.5",
   "main": "./dist/src/main.js",
   "repository": {
     "url": "https://github.com/rrpff/virginia"
