@@ -7,6 +7,8 @@ import { FusesPlugin } from "@electron-forge/plugin-fuses";
 import { FuseV1Options, FuseVersion } from "@electron/fuses";
 import path from "path";
 
+import "dotenv/config";
+
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
@@ -42,6 +44,18 @@ const config: ForgeConfig = {
       [FuseV1Options.EnableEmbeddedAsarIntegrityValidation]: true,
       [FuseV1Options.OnlyLoadAppFromAsar]: true,
     }),
+  ],
+  publishers: [
+    {
+      name: "@electron-forge/publisher-github",
+      config: {
+        prerelease: true,
+        repository: {
+          owner: "rrpff",
+          name: "virginia",
+        },
+      },
+    },
   ],
 };
 
