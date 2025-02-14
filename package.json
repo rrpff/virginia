@@ -7,11 +7,10 @@
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
     "migrate-knex-not-needed": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:latest",
-    "build": "run-p build:migrations build:sources build:binary",
-    "build:migrations": "swc ./apps/server/migrations -d ./migrations -C module.type=commonjs",
+    "build": "run-p build:*",
     "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core'",
     "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
-    "package": "pkg -d .",
+    "package": "pkg --compress Brotli .",
     "release": "run-s build package",
     "start": "NODE_ENV=production ./binaries/virginia-arm64"
   },
@@ -31,7 +30,6 @@
   "pkg": {
     "assets": [
       "apps/web/dist/**/*",
-      "migrations/**/*",
       "node_modules/.prisma/**/*",
       "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
     ],
