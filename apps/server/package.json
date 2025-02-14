@@ -30,7 +30,6 @@
   "dependencies": {
     "@prisma/client": "^6.3.0",
     "@trpc/server": "^10.45.2",
-    "@virginia/core": "*",
     "cheerio": "^1.0.0",
     "cors": "^2.8.5",
     "exponential-backoff": "^3.1.1",
@@ -43,6 +42,8 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@swc/cli": "^0.6.0",
+    "@swc/core": "^1.10.16",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.13.0",
