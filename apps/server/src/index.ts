@@ -1,16 +1,17 @@
 import schedule from "node-schedule";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
-import server from "./server.js";
 import migrate from "./migrate.js";
+import { createServer } from "./server.js";
+import { Config } from "./config.js";
+import log from "./log.js";
 
-const HOST = process.env.HOST ?? "0.0.0.0";
-const PORT = Number(process.env.PORT ?? 26541);
-
-export async function start() {
-  if (process.env.NODE_ENV === "production") {
+export async function start(config: Config) {
+  if (config.migrateOnStart) {
     // Apply any database migrations
     await migrate();
+  }
 
+  if (config.refreshOnStart) {
     // Schedule a refresh immediately
     RefreshScheduler.refreshAll();
   }
@@ -19,7 +20,10 @@ export async function start() {
   schedule.scheduleJob("0,30 * * * *", () => RefreshScheduler.refreshAll());
 
   // Start the web server
-  server.listen(PORT, HOST, () => {
-    console.info(`Listening on http://${HOST}:${PORT}`);
+  const server = createServer(config);
+  server.listen(config.port, config.host, () => {
+    log.info(`Listening on http://${config.host}:${config.port}`);
   });
+
+  return { log };
 }

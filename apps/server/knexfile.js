@@ -1,5 +1,5 @@
 export default {
-  client: "better-sqlite3",
+  client: "sqlite3",
   useNullAsDefault: true,
   migrations: {
     directory: "./src/migrations",

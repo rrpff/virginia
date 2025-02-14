@@ -8,8 +8,9 @@
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
     "migrate-knex-not-needed": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:latest",
     "build": "run-p build:*",
-    "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core' 'build -w packages/desktop'",
+    "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core' 'build -w apps/desktop'",
     "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
+    "rebuild-better-sqlite3": "electron-rebuild -f -w better-sqlite3",
     "package": "pkg --compress Brotli .",
     "release": "run-s build package",
     "start": "NODE_ENV=production ./binaries/virginia-arm64"
@@ -25,6 +26,7 @@
   "devDependencies": {
     "@prisma/client": "^6.3.1",
     "@yao-pkg/pkg": "^6.3.0",
+    "electron-rebuild": "^3.2.9",
     "npm-run-all": "^4.1.5",
     "prisma": "^6.3.1"
   },

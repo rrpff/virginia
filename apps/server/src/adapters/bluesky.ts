@@ -1,3 +1,4 @@
+import log from "../log.js";
 import { Adapter } from "./index.js";
 import { RSSAdapter } from "./rss.js";
 
@@ -32,7 +33,7 @@ async function getAvatar(url: string) {
     const json = (await res.json()) as { avatar?: string };
     return json.avatar ?? null;
   } catch (err) {
-    console.error("Unable to get Bluesky icon:", err);
+    log.error("Unable to get Bluesky icon:", err);
   }
 }
 

@@ -1,11 +1,12 @@
 import { Source } from "@prisma/client";
 import { GetSiteLatest, SourceItem } from "../adapters/index.js";
 import db from "../db.js";
+import log from "../log.js";
 
 export async function RefreshSource(sourceId: string) {
   const source = await db.source.findFirst({ where: { id: sourceId } });
   if (!source) {
-    console.error(`Unable to refresh unknown source: ${sourceId}`);
+    log.error(`Unable to refresh unknown source: ${sourceId}`);
     return;
   }
 
@@ -13,7 +14,7 @@ export async function RefreshSource(sourceId: string) {
   try {
     items = await GetSiteLatest(source.url);
   } catch (err) {
-    console.error(`Unable to fetch items for ${source.url}: ${err}`);
+    log.error(`Unable to fetch items for ${source.url}: ${err}`);
   }
 
   const latest = getLatestItems(source, items);
