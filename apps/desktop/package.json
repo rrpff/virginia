@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "main": "./dist/src/main.js",
+  "repository": {
+    "url": "https://github.com/rrpff/virginia"
+  },
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
