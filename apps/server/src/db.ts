@@ -1,12 +1,12 @@
-import { PrismaClient } from "@prisma/client";
-import path from "path";
 import os from "os";
+import path from "path";
+import { PrismaClient } from "@prisma/client";
 
 export const DATABASE_URL =
   process.env.NODE_ENV === "production"
-    ? `file:${path.join(os.homedir(), "virginia.db")}`
-    : "file:./dev.db";
+    ? path.join(os.homedir(), "virginia.db")
+    : "./dev.db";
 
 export default new PrismaClient({
-  datasourceUrl: DATABASE_URL,
+  datasourceUrl: `file:${DATABASE_URL}`,
 });

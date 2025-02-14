@@ -22,8 +22,10 @@
     "cors": "^2.8.5",
     "exponential-backoff": "^3.1.1",
     "express": "^4.21.2",
+    "knex": "^3.1.0",
     "node-schedule": "^2.1.1",
     "rss-parser": "^3.13.0",
+    "sqlite3": "^5.1.7",
     "tiny-typed-emitter": "^2.1.0",
     "zod": "^3.24.1"
   },

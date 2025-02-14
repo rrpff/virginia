@@ -1,7 +1,7 @@
 import schedule from "node-schedule";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 import server from "./server.js";
-import { migrate } from "./migrate.js";
+import migrate from "./migrate.js";
 
 const HOST = process.env.HOST ?? "0.0.0.0";
 const PORT = Number(process.env.PORT ?? 26541);
