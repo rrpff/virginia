@@ -38,8 +38,8 @@ if (!isDev) {
 
 const icon =
   os.platform() === "win32"
-    ? path.join(import.meta.dirname, "..", "..", "assets", "icon.ico")
-    : path.join(import.meta.dirname, "..", "..", "assets", "icon-Template.png");
+    ? path.join(import.meta.dirname, "..", "..", "assets", "tray.ico")
+    : path.join(import.meta.dirname, "..", "..", "assets", "tray-Template.png");
 
 let tray;
 app.on("ready", () => {
