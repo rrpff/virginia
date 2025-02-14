@@ -7,11 +7,11 @@
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
     "migrate-knex-not-needed": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:latest",
-    "build": "run-s build:prisma ; run-p build:sources build:binary",
+    "build": "run-p build:migrations build:sources build:binary",
+    "build:migrations": "swc ./apps/server/migrations -d ./migrations -C module.type=commonjs",
     "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core'",
-    "build:prisma": "sed -i -e 's/node:sqlite/sqlite/g' ./node_modules/prisma/prisma-client/runtime/binary.js",
     "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
-    "package": "pkg -d --compress Brotli .",
+    "package": "pkg -d .",
     "release": "run-s build package",
     "start": "NODE_ENV=production ./binaries/virginia-arm64"
   },
@@ -29,17 +29,11 @@
     "prisma": "^6.3.1"
   },
   "pkg": {
-    "scripts": [
-      "node_modules/prisma/**/*.js"
-    ],
     "assets": [
       "apps/web/dist/**/*",
+      "migrations/**/*",
       "node_modules/.prisma/**/*",
-      "node_modules/prisma/build/**/*",
-      "node_modules/prisma/runtime/**/*",
-      "node_modules/prisma/prisma-client/**/*",
-      "node_modules/@prisma/engines/**/*",
-      "node_modules/@prisma/engines/*"
+      "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
     ],
     "targets": [
       "node22-macos-arm64",
