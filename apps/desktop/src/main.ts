@@ -42,7 +42,7 @@ const icon =
     : path.join(import.meta.dirname, "..", "..", "assets", "tray-Template.png");
 
 let tray;
-app.on("ready", () => {
+app.on("ready", async () => {
   const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: "Open",
@@ -75,6 +75,8 @@ app.on("ready", () => {
   tray = new Tray(icon);
   tray.setToolTip("Virginia");
   tray.setContextMenu(menu);
+
+  await open(WEB_HOST);
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
