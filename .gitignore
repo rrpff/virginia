@@ -7,3 +7,5 @@ binaries/
 .DS_Store
 
 dev.db
+
+AuthKey.p8
