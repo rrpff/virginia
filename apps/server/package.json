@@ -2,17 +2,30 @@
   "name": "@virginia/server",
   "main": "./dist/src/client.js",
   "type": "module",
-  "types": "./dist/src/client.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.js"
+      }
+    },
+    "./client": {
+      "import": {
+        "types": "./dist/src/client.d.ts",
+        "default": "./dist/src/client.js"
+      }
+    }
+  },
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "run-p build:*",
     "build:js": "swc src -d dist",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
     "dev": "run-p dev:*",
-    "dev:watch": "NODE_ENV=development tsx watch ./src/index.ts",
+    "dev:watch": "NODE_ENV=development tsx watch ./src/start.ts",
     "dev:js": "npm run build:js -- --watch",
     "dev:types": "npm run build:types -- --watch --preserveWatchOutput",
-    "start": "node ./dist/src/index.js"
+    "start": "node ./dist/src/start.js"
   },
   "dependencies": {
     "@prisma/client": "^6.3.0",

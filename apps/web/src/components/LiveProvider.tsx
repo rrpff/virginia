@@ -1,4 +1,4 @@
-import { ServerEvent } from "@virginia/server";
+import { ServerEvent } from "@virginia/server/client";
 import { rpc } from "../rpc";
 import { ReactNode, useEffect, useState } from "react";
 import { LiveContextProvider } from "../contexts/live";

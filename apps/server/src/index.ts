@@ -6,7 +6,7 @@ import migrate from "./migrate.js";
 const HOST = process.env.HOST ?? "0.0.0.0";
 const PORT = Number(process.env.PORT ?? 26541);
 
-(async () => {
+export async function start() {
   if (process.env.NODE_ENV === "production") {
     // Apply any database migrations
     await migrate();
@@ -22,4 +22,4 @@ const PORT = Number(process.env.PORT ?? 26541);
   server.listen(PORT, HOST, () => {
     console.info(`Listening on http://${HOST}:${PORT}`);
   });
-})();
+}

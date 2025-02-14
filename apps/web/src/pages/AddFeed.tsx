@@ -1,6 +1,6 @@
 import { SourceInput } from "../components/SourceInput";
 import { useFieldArray, useForm } from "react-hook-form";
-import { FeedCreateSchema, SourceCreateSchema } from "@virginia/server";
+import { FeedCreateSchema, SourceCreateSchema } from "@virginia/server/client";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CategoriesSelector from "../components/CategoriesSelector";

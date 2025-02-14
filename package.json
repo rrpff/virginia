@@ -2,19 +2,20 @@
   "name": "virginia",
   "bin": "./build/apps/server/src/index.js",
   "scripts": {
-    "typecheck": "run-p 'typecheck -w packages/core' 'typecheck -w apps/server' 'typecheck -w apps/web'",
-    "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core'",
+    "typecheck": "run-p 'typecheck -w packages/core' 'typecheck -w apps/server' 'typecheck -w apps/web' 'typecheck -w apps/desktop'",
+    "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w packages/core' 'dev -w apps/desktop'",
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
     "migrate-knex-not-needed": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:latest",
     "build": "run-p build:*",
-    "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core'",
+    "build:sources": "run-p 'build -w apps/server' 'build -w apps/web' 'build -w packages/core' 'build -w packages/desktop'",
     "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
     "package": "pkg --compress Brotli .",
     "release": "run-s build package",
     "start": "NODE_ENV=production ./binaries/virginia-arm64"
   },
   "workspaces": [
+    "apps/desktop",
     "apps/server",
     "apps/tray",
     "apps/web",
