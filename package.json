@@ -3,15 +3,12 @@
   "version": "0.1.0",
   "bin": "./build/apps/server/src/index.js",
   "scripts": {
-    "typecheck": "run-p 'typecheck -w apps/server' 'typecheck -w apps/web' 'typecheck -w apps/desktop'",
+    "postinstall": "npx -w apps/server prisma generate",
+    "typecheck": "run-p 'typecheck -w apps/server' 'typecheck -w apps/web'",
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w apps/desktop'",
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
-    "migrate-knex-not-needed": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:latest",
-    "build": "run-p build:*",
-    "build:sources": "run-s 'build -w apps/server' 'build -w apps/web' 'build -w apps/desktop'",
-    "build:binary": "swc ./apps/server/src -d ./build -C module.type=commonjs",
-    "rebuild-better-sqlite3": "electron-rebuild -f -w better-sqlite3",
+    "build": "run-s 'build -w apps/server' 'build -w apps/web' 'build -w apps/desktop'",
     "package": "pkg --compress Brotli .",
     "release": "run-s build package",
     "make": "npm run make -w apps/desktop",
@@ -24,22 +21,6 @@
     "apps/web"
   ],
   "devDependencies": {
-    "@prisma/client": "^6.3.1",
-    "@yao-pkg/pkg": "^6.3.0",
-    "electron-rebuild": "^3.2.9",
-    "npm-run-all": "^4.1.5",
-    "prisma": "^6.3.1"
-  },
-  "pkg": {
-    "assets": [
-      "apps/web/dist/**/*",
-      "node_modules/.prisma/**/*",
-      "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
-    ],
-    "targets": [
-      "node22-macos-arm64",
-      "node22-macos-x64"
-    ],
-    "outputPath": "./binaries"
+    "npm-run-all": "^4.1.5"
   }
 }
