@@ -9,6 +9,7 @@ import { FuseV1Options, FuseVersion } from "@electron/fuses";
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
+    prune: false,
   },
   rebuildConfig: {},
   makers: [
@@ -17,6 +18,15 @@ const config: ForgeConfig = {
     new MakerRpm({}),
     new MakerDeb({}),
   ],
+  hooks: {
+    packageAfterCopy: async (_forgeConfig, buildPath) => {
+      // https://gist.github.com/robin-hartmann/ad6ffc19091c9e661542fbf178647047
+      // this is a workaround until we find a proper solution
+      // for running electron-forge in a mono repository
+      const bundler = await import("./bundler.js");
+      await bundler.bundle(__dirname, buildPath);
+    },
+  },
   plugins: [
     // Fuses are used to enable/disable various Electron functionality
     // at package time, before code signing the application

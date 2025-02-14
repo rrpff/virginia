@@ -4,19 +4,17 @@ import os from "os";
 import open from "open";
 import started from "electron-squirrel-startup";
 import { start } from "@virginia/server";
+import isDev from "electron-is-dev";
 
 const API_HOST = "http://localhost:26541";
-const WEB_HOST =
-  process.env.NODE_ENV === "production"
-    ? "http://localhost:26541"
-    : "http://localhost:26540";
+const WEB_HOST = isDev ? "http://localhost:26540" : "http://localhost:26541";
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (started) {
   app.quit();
 }
 
-if (process.env.NODE_ENV === "production") {
+if (!isDev) {
   // Start web server in process
   start();
 }

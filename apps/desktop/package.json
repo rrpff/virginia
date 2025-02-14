@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@virginia/server": "*",
+    "electron-is-dev": "^3.0.1",
     "electron-squirrel-startup": "^1.0.1",
     "open": "^10.1.0"
   },
@@ -29,7 +30,10 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.1",
     "@electron-forge/plugin-fuses": "^7.6.1",
     "@electron/fuses": "^1.8.0",
+    "@manypkg/find-root": "^2.2.3",
+    "@npmcli/arborist": "^9.0.0",
     "@types/electron-squirrel-startup": "^1.0.2",
+    "@types/npmcli__arborist": "^6.3.0",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "electron": "34.2.0",
