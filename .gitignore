@@ -4,3 +4,4 @@ build/
 binaries/
 
 .env
+.DS_Store
