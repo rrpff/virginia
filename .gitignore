@@ -5,3 +5,5 @@ binaries/
 
 .env
 .DS_Store
+
+dev.db
