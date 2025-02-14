@@ -1,7 +1,7 @@
 {
   "name": "@virginia/desktop",
   "private": true,
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "./dist/src/main.js",
   "repository": {
     "url": "https://github.com/rrpff/virginia"
@@ -17,7 +17,7 @@
     "dev:start": "NODE_ENV=development electron-forge start",
     "package": "electron-forge package",
     "make": "npm run build && electron-forge make",
-    "publish": "electron-forge publish",
+    "publish": "npm run build && electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
   "dependencies": {
