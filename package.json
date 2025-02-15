@@ -1,7 +1,7 @@
 {
   "name": "virginia",
   "private": true,
-  "bin": "./build/apps/server/src/index.js",
+  "bin": "./build/apps/server/src/start.js",
   "scripts": {
     "postinstall": "npx -w apps/server prisma generate",
     "typecheck": "run-p 'typecheck -w apps/server' 'typecheck -w apps/web'",
@@ -9,12 +9,12 @@
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w apps/desktop'",
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",
-    "build": "run-s 'build -w apps/server' 'build -w apps/web' 'build -w apps/desktop'",
+    "build": "run-s build:apps build:binary-server",
+    "build:apps": "run-s 'build -w apps/server' 'build -w apps/web' 'build -w apps/desktop'",
+    "build:binary-server": "swc ./apps/server/src -d ./build -C module.type=commonjs",
     "package": "pkg --compress Brotli .",
     "release": "run-s build package",
-    "make": "npm run make -w apps/desktop",
-    "publish": "npm run publish -w apps/desktop",
-    "start": "NODE_ENV=production ./binaries/virginia-arm64"
+    "start": "NODE_ENV=production PUBLIC_ROOT=/snapshot/virginia/apps/web/dist ./binaries/virginia"
   },
   "workspaces": [
     "apps/desktop",
@@ -22,6 +22,18 @@
     "apps/web"
   ],
   "devDependencies": {
+    "@yao-pkg/pkg": "^6.3.0",
     "npm-run-all": "^4.1.5"
+  },
+  "pkg": {
+    "assets": [
+      "apps/web/dist/**/*",
+      "node_modules/.prisma/**/*",
+      "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+    ],
+    "targets": [
+      "node22-macos-arm64"
+    ],
+    "outputPath": "./binaries"
   }
 }

@@ -2,7 +2,7 @@ import knex from "knex";
 import { DATABASE_URL } from "./db.js";
 
 const migrator = knex({
-  client: "sqlite3",
+  client: "better-sqlite3",
   useNullAsDefault: true,
   connection: {
     filename: DATABASE_URL,
