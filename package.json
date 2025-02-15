@@ -12,7 +12,9 @@
     "build": "run-s build:apps build:binary-server",
     "build:apps": "run-s 'build -w apps/server' 'build -w apps/web' 'build -w apps/desktop'",
     "build:binary-server": "swc ./apps/server/src -d ./build -C module.type=commonjs",
-    "package": "pkg --compress Brotli .",
+    "package": "run-s package:binary package:rename",
+    "package:binary": "pkg --compress Brotli .",
+    "package:rename": "mv ./binaries/virginia ./binaries/virginia-aarch64-apple-darwin",
     "release": "run-s build package",
     "start": "NODE_ENV=production PUBLIC_ROOT=/snapshot/virginia/apps/web/dist ./binaries/virginia"
   },
