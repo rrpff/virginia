@@ -9,6 +9,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "clean": "rm -rf ./dist",
     "dev": "run-p dev:*",
     "build": "run-s build:*",
     "build:js": "swc src -d dist",

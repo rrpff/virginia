@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "npx -w apps/server prisma generate",
     "typecheck": "run-p 'typecheck -w apps/server' 'typecheck -w apps/web'",
+    "clean": "run-p 'clean -w apps/server' 'clean -w apps/web' 'clean -w apps/desktop'",
     "dev": "run-p 'dev -w apps/server' 'dev -w apps/web' 'dev -w apps/desktop'",
     "migrate-prisma": "npx -w apps/server prisma migrate dev",
     "migrate-new": "npx -w apps/server tsx ../../node_modules/knex/bin/cli.js migrate:make -x ts",

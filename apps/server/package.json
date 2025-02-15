@@ -19,6 +19,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
+    "clean": "rm -rf ./dist",
     "build": "run-p build:*",
     "build:js": "swc src -d dist",
     "build:types": "tsc --declaration --declarationMap --emitDeclarationOnly --outDir dist",
