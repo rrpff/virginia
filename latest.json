@@ -1,0 +1,11 @@
+{
+  "version": "0.1.8",
+  "notes": "",
+  "pub_date": "2025-02-15T21:05:12+00:00",
+  "platforms": {
+    "darwin-aarch64": {
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbU9yd1dPRkdpY3Y0KzJGeHF5eGlZVTEzNkhjVlR2UW5SY2ZPK0xwbWdNb09McEJxbjA5ekZyeUYrMDdXVGhWRm1xWFg2YTFvTUY5clNlWUUxNWFtNFc3cU94OWkvekE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzM5NjUxNjAxCWZpbGU6VmlyZ2luaWEuYXBwLnRhci5negpCYWV6ZCtWZTBwWHpGWFJaZmxpdGNuYytVTXlSWTFPYkpYNG9QSDArbE1mbDFOb3c4M1Q0bHQ2SExoQkRlTnEyeHY5VElhbGVZdi9CenZUNmdXelhCdz09Cg==",
+      "url": "https://github.com/user/repo/releases/latest/download/Virginia-0.1.8.app.tar.gz"
+    }
+  }
+}
