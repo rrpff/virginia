@@ -38,9 +38,6 @@ pub fn run() {
                 }
             });
 
-            // #[cfg(target_os = "macos")]
-            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
-
             TrayIconBuilder::new()
                 .menu(&menu)
                 .show_menu_on_left_click(true)

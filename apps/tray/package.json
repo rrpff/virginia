@@ -6,6 +6,7 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "build": "tauri build --bundles app,dmg",
+    "icons": "tauri icon ../../assets/icon.svg",
     "dev": "tauri dev"
   },
   "dependencies": {
