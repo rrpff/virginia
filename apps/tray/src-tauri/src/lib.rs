@@ -1,3 +1,8 @@
+use std::{
+    thread::{sleep, spawn},
+    time::Duration,
+};
+
 use open;
 use tauri::{
     menu::{Menu, MenuItem},
@@ -42,6 +47,13 @@ pub fn run() {
                 .icon(app.default_window_icon().unwrap().clone())
                 .icon_as_template(true)
                 .build(app)?;
+
+            spawn(move || {
+                sleep(Duration::from_secs(0));
+                open::that("http://localhost:26541").unwrap_or_else(|error| {
+                    println!("error when opening URL {:?}", error);
+                });
+            });
 
             Ok(())
         })
