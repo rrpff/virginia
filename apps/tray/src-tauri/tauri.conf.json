@@ -4,16 +4,23 @@
   "version": "0.1.6",
   "identifier": "me.rpf.virginia",
   "build": {},
-  "app": {},
+  "app": {
+    "trayIcon": {
+      "id": "tray",
+      "iconPath": "assets/tray-Template@2x.png",
+      "iconAsTemplate": true,
+      "showMenuOnLeftClick": true
+    }
+  },
   "bundle": {
     "active": true,
     "targets": "all",
     "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
+      "assets/icons/32x32.png",
+      "assets/icons/128x128.png",
+      "assets/icons/128x128@2x.png",
+      "assets/icons/icon.icns",
+      "assets/icons/icon.ico"
     ],
     "externalBin": ["../../../binaries/virginia"]
   }

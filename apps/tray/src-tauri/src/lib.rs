@@ -4,10 +4,7 @@ use std::{
 };
 
 use open;
-use tauri::{
-    menu::{Menu, MenuItem},
-    tray::TrayIconBuilder,
-};
+use tauri::menu::{Menu, MenuItem};
 use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -38,12 +35,10 @@ pub fn run() {
                 }
             });
 
-            TrayIconBuilder::new()
-                .menu(&menu)
-                .show_menu_on_left_click(true)
-                .icon(app.default_window_icon().unwrap().clone())
-                .icon_as_template(true)
-                .build(app)?;
+            app.tray_by_id("tray")
+                .unwrap()
+                .set_menu(Some(menu))
+                .unwrap();
 
             spawn(move || {
                 sleep(Duration::from_secs(0));
