@@ -19,6 +19,7 @@
   "workspaces": [
     "apps/desktop",
     "apps/server",
+    "apps/tray",
     "apps/web"
   ],
   "devDependencies": {
