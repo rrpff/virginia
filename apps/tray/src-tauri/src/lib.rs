@@ -9,6 +9,7 @@ use tauri_plugin_shell::{process::CommandEvent, ShellExt};
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
+        .plugin(tauri_plugin_log::Builder::new().build())
         .setup(|app| {
             let item_open = MenuItem::with_id(app, "open", "Open", true, None::<&str>)?;
             let item_refresh = MenuItem::with_id(app, "refresh", "Refresh", true, None::<&str>)?;
@@ -22,12 +23,12 @@ pub fn run() {
                 while let Some(event) = rx.recv().await {
                     if let CommandEvent::Stderr(line_bytes) = &event {
                         let line = String::from_utf8_lossy(&line_bytes);
-                        eprintln!("node: '{:?}'", line);
+                        log::error!("node: '{:?}'", line);
                     }
 
                     if let CommandEvent::Stdout(line_bytes) = &event {
                         let line = String::from_utf8_lossy(&line_bytes);
-                        println!("node: '{:?}'", line);
+                        log::info!("node: '{:?}'", line);
                     }
                 }
             });
