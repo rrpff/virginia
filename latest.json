@@ -1,11 +1,11 @@
 {
-  "version": "0.1.8",
+  "version": "0.1.9",
   "notes": "",
-  "pub_date": "2025-02-15T21:05:12+00:00",
+  "pub_date": "2025-02-15T21:13:39+00:00",
   "platforms": {
     "darwin-aarch64": {
-      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbU9yd1dPRkdpY3Y0KzJGeHF5eGlZVTEzNkhjVlR2UW5SY2ZPK0xwbWdNb09McEJxbjA5ekZyeUYrMDdXVGhWRm1xWFg2YTFvTUY5clNlWUUxNWFtNFc3cU94OWkvekE4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzM5NjUxNjAxCWZpbGU6VmlyZ2luaWEuYXBwLnRhci5negpCYWV6ZCtWZTBwWHpGWFJaZmxpdGNuYytVTXlSWTFPYkpYNG9QSDArbE1mbDFOb3c4M1Q0bHQ2SExoQkRlTnEyeHY5VElhbGVZdi9CenZUNmdXelhCdz09Cg==",
-      "url": "https://github.com/user/repo/releases/latest/download/Virginia-0.1.8.app.tar.gz"
+      "signature": "dW50cnVzdGVkIGNvbW1lbnQ6IHNpZ25hdHVyZSBmcm9tIHRhdXJpIHNlY3JldCBrZXkKUlVRbU9yd1dPRkdpY21DODZtYXl0ZUlEMUxUaWZEUEMrZzNrUGFpS1JtdFViWXFhV0NqSnR2WG5rZlF6eEozQ1pZK1lTSDR4YkRDT2VFVDFtdlFvODl6QUc5SC93UTBpL3c4PQp0cnVzdGVkIGNvbW1lbnQ6IHRpbWVzdGFtcDoxNzM5NjUzODMxCWZpbGU6VmlyZ2luaWEuYXBwLnRhci5negprVDJpRU9tQW54dDFDM0JFTFdjNXRzMG40bEN5MGt6NXRSYkhKU3BGRkk1TVpCZXdOSE9ZcW8yRkQwcHZkUDB4MzdENHAzcytyTnduSHY0ZmY5a1FCdz09Cg==",
+      "url": "https://github.com/user/repo/releases/latest/download/Virginia-0.1.9.app.tar.gz"
     }
   }
 }

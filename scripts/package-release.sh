@@ -5,6 +5,7 @@ BUNDLEDIR=$ROOTDIR/apps/tray/src-tauri/target/release/bundle/macos
 echo "Packaging $VERSION"
 
 echo "\\nCopying bundle from $BUNDLEDIR"
+mkdir -p ./releases/$VERSION
 cp $BUNDLEDIR/Virginia.app.tar.gz ./releases/$VERSION/Virginia-darwin-aarch64-$VERSION.app.tar.gz
 
 echo "\\nCreating update JSON manifest"
