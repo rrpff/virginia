@@ -69,6 +69,7 @@ pub fn run() {
             }
             "quit" => {
                 println!("Quitting");
+                // TODO: actually kill sidecar on app exit
                 app.exit(0);
             }
             _ => {

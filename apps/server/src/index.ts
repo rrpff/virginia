@@ -1,4 +1,5 @@
 import schedule from "node-schedule";
+import { killPortProcess } from "kill-port-process";
 import RefreshScheduler from "./schedulers/RefreshScheduler.js";
 import migrate from "./migrate.js";
 import { createServer } from "./server.js";
@@ -6,6 +7,9 @@ import { Config } from "./config.js";
 import log from "./log.js";
 
 export async function start(config: Config) {
+  // Kill any existing servers
+  await killPortProcess(config.port);
+
   if (config.migrateOnStart) {
     // Apply any database migrations
     await migrate();
