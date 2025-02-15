@@ -1,6 +1,6 @@
 {
   "name": "virginia",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "bin": "./build/apps/server/src/start.js",
   "scripts": {
@@ -17,8 +17,8 @@
     "package:binary": "pkg --compress Brotli .",
     "package:rename": "mv ./binaries/virginia ./binaries/virginia-aarch64-apple-darwin",
     "bundle": "dotenv -- npm run build -w apps/tray",
-    "create-release-artifacts": "./scripts/package-release.sh",
-    "release": "run-s build package bundle create-release-artifacts",
+    "create-artifacts": "./scripts/package-release.sh",
+    "release": "run-s build package bundle create-artifacts",
     "start:binary": "./binaries/virginia"
   },
   "workspaces": [

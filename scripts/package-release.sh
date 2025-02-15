@@ -20,7 +20,7 @@ cat > $ROOTDIR/releases/$VERSION/latest.json << EOF
 {
   "version": "$VERSION",
   "notes": "",
-  "pub_date": "",
+  "pub_date": "$(gdate -Iseconds)",
   "platforms": {
     "darwin-aarch64": {
       "signature": "$SIGNATURE",
