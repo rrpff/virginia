@@ -1,5 +1,6 @@
 {
   "name": "virginia",
+  "version": "0.1.6",
   "private": true,
   "bin": "./build/apps/server/src/start.js",
   "scripts": {
@@ -15,8 +16,9 @@
     "package": "run-s package:binary package:rename",
     "package:binary": "pkg --compress Brotli .",
     "package:rename": "mv ./binaries/virginia ./binaries/virginia-aarch64-apple-darwin",
-    "bundle": "npm run build -w apps/tray",
-    "release": "run-s build package bundle",
+    "bundle": "dotenv -- npm run build -w apps/tray",
+    "zip": "mkdir -p ./releases && cd ./apps/tray/src-tauri/target/release/bundle/macos && zip -r ../../../../../../../releases/Virginia-darwin-arm64-$(cat ../../../../../../../package.json | jq -r .version).zip .",
+    "release": "run-s build package bundle zip",
     "start:binary": "./binaries/virginia"
   },
   "workspaces": [
@@ -27,6 +29,7 @@
   ],
   "devDependencies": {
     "@yao-pkg/pkg": "^6.3.0",
+    "dotenv-cli": "^8.0.0",
     "npm-run-all": "^4.1.5"
   },
   "pkg": {

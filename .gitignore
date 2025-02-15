@@ -2,6 +2,7 @@ node_modules/
 dist/
 build/
 binaries/
+releases/
 
 .env
 .DS_Store
