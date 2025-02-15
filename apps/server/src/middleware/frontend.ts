@@ -3,7 +3,7 @@ import fs from "fs";
 import path from "path";
 
 export default function frontend(dir: string) {
-  console.info("SERVING FROM", dir);
+  console.info(`[FRONTEND] Serving from: ${dir}`);
   const staticMiddleware = express.static(dir);
   return function frontendMiddleware(
     req: Request,
