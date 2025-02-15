@@ -15,8 +15,9 @@
     "package": "run-s package:binary package:rename",
     "package:binary": "pkg --compress Brotli .",
     "package:rename": "mv ./binaries/virginia ./binaries/virginia-aarch64-apple-darwin",
-    "release": "run-s build package",
-    "start": "NODE_ENV=production PUBLIC_ROOT=/snapshot/virginia/apps/web/dist ./binaries/virginia"
+    "bundle": "npm run build -w apps/tray",
+    "release": "run-s build package bundle",
+    "start:binary": "./binaries/virginia"
   },
   "workspaces": [
     "apps/desktop",

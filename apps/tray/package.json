@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "build": "tauri build",
+    "build": "tauri build --bundles app,dmg",
     "dev": "tauri dev"
   },
   "dependencies": {
