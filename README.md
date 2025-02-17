@@ -4,8 +4,22 @@ read stuff
 
 ## development
 
+### setup
+
 1. `npm i`
-1. `npm run dev`
+
+### app (web+server)
+
+1. `npm run dev:app`
+
+runs separate server and vite dev workflows
+
+### desktop
+
+1. `npm run build`
+1. `npm run dev:desktop`
+
+first builds the server/client bundle as a binary, then runs the tauri app
 
 ## release
 
