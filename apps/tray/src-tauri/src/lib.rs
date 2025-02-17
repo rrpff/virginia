@@ -59,7 +59,7 @@ pub fn run() {
                 .unwrap();
 
             spawn(move || {
-                sleep(Duration::from_secs(0));
+                sleep(Duration::from_secs(1));
                 open::that("http://localhost:26541").unwrap_or_else(|error| {
                     println!("error when opening URL {:?}", error);
                 });
